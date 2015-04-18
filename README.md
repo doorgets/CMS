@@ -7,4 +7,4 @@ If you do not host and unable to create your store, we offer a turnkey store, wh
 INSTALLATION
 ========
 
-http://www.doorgets.com/t/en/?installation
+http://www.doorgets.com/t/en/?doc=installation-en
