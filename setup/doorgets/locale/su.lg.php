@@ -1,0 +1,34 @@
+<?php 
+
+	 $_w[0] = "doorGets";
+	 $_w[1] = "Anslut din databas"; 
+	 $_w[367] = "Värd"; 
+	 $_w[368] = "Databas namn"; 
+	 $_w[369] = "Inloggning"; 
+	 $_w[370] = "Lösenord"; 
+	 $_w[371] = "Next Step"; 
+	 $_w[372] = "Föregående steg"; 
+	 $_w[373] = "doorGets är gratis, erbjuds av Mounir R&#39;Quiba"; 
+	 $_w[374] = "Kontrollera ditt skrivande rättigheter"; 
+	 $_w[375] = "Du har skrivbehörighet!"; 
+	 $_w[376] = "Användarvillkor"; 
+	 $_w[377] = "Jag har läst och godkänner användarvillkoren doorGets"; 
+	 $_w[378] = "Välj ditt språk"; 
+	 $_w[379] = "Välj din tidszon"; 
+	 $_w[380] = "Din fil har inte skrivbehörighet ..."; 
+	 $_w[381] = "Anslutningen är inte etablerad!"; 
+	 $_w[382] = "Konfigurera din hemsida"; 
+	 $_w[383] = "Titel"; 
+	 $_w[384] = "Slogan"; 
+	 $_w[385] = "Beskrivning"; 
+	 $_w[386] = "Nyckelord"; 
+	 $_w[387] = "Copyright"; 
+	 $_w[388] = "År för skapande"; 
+	 $_w[389] = "Administratör"; 
+	 $_w[390] = "E-postadress"; 
+	 $_w[391] = "Skapa din hemsida doorGets"; 
+	 $_w[392] = "Klicka på knappen nedan för att skapa din webbplats."; 
+	 $_w[393] = "Du kommer då att omdirigeras till administrationssidan."; 
+	 $_w[394] = "Skapa min hemsida doorGets"; 
+	 $_w[395] = "Tack"; 
+	 $_w[396] = "Du är nästan klar ..."; 

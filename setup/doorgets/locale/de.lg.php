@@ -1,0 +1,34 @@
+<?php 
+
+	 $_w[0] = "doorGets";
+	 $_w[1] = "Verbinden Sie Ihre Datenbank"; 
+	 $_w[367] = "Moderator"; 
+	 $_w[368] = "Datenbank-Name"; 
+	 $_w[369] = "Anmelden"; 
+	 $_w[370] = "Kennwort"; 
+	 $_w[371] = "Next Step"; 
+	 $_w[372] = "Vorheriger Schritt"; 
+	 $_w[373] = "doorGets ist kostenlos, angeboten von Mounir R&#39;Quiba"; 
+	 $_w[374] = "Überprüfen Sie Ihre Rechte schriftlich"; 
+	 $_w[375] = "Sie haben Schreibrechte!"; 
+	 $_w[376] = "Allgemeine Geschäftsbedingungen"; 
+	 $_w[377] = "Ich habe den Nutzungsbedingungen einverstanden doorGets"; 
+	 $_w[378] = "Wählen Sie Ihre Sprache"; 
+	 $_w[379] = "Wählen Sie Ihre Zeitzone"; 
+	 $_w[380] = "Ihre Datei keine Schreibrechte ..."; 
+	 $_w[381] = "Die Verbindung ist nicht aufgebaut!"; 
+	 $_w[382] = "Konfigurieren Sie Ihre Website"; 
+	 $_w[383] = "Titel"; 
+	 $_w[384] = "Slogan"; 
+	 $_w[385] = "Beschreibung"; 
+	 $_w[386] = "Keywords"; 
+	 $_w[387] = "Urheberrecht"; 
+	 $_w[388] = "Jahr der Entstehung"; 
+	 $_w[389] = "Administrator"; 
+	 $_w[390] = "E-Mail-Adresse"; 
+	 $_w[391] = "Generieren Sie Ihre Website doorGets"; 
+	 $_w[392] = "Klicken Sie auf die Schaltfläche unten, um Ihre Website zu generieren."; 
+	 $_w[393] = "Sie werden dann auf der Administrations-Seite umgeleitet werden."; 
+	 $_w[394] = "Generieren Sie meine Website doorGets"; 
+	 $_w[395] = "Danke"; 
+	 $_w[396] = "Sie sind fast fertig ..."; 
