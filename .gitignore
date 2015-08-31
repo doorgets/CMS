@@ -1,0 +1,9 @@
+data/*
+!data/_form/index.php
+!data/_gestion/index.php
+!data/_nodire/index.php
+!data/temp/index.php
+!data/users/index.php
+!data/upload/index.php
+cache/*
+!cache/index.php
