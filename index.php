@@ -2,14 +2,14 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 6.0 - 20, February 2014
+    doorGets 7.0 - 31, August 2015
     doorGets it's free PHP Open Source CMS PHP & MySQL
-    Copyright (C) 2012 - 2014 By Mounir R'Quiba -> Crazy PHP Lover
+    Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
 /*******************************************************************************
 
     Website : http://www.doorgets.com
-    Contact : moonair@doorgets.com
+    Contact : http://www.doorgets.com/t/en/?contact
     
 /*******************************************************************************
     -= One life, One code =-
@@ -31,10 +31,13 @@
 ******************************************************************************
 ******************************************************************************/
 
+umask(0022);
 session_start();
 
-define('BASE','./setup/');
+define('BASE','./');
 define('DOORGETS','http://www.doorgets.com/'); // Ne pas supprimer
 require_once BASE.'config/config.php';
 
-require_once ROUTER.'installerRouter.php';
+define('BASE_URL',URL);
+$langueZone = '';
+require_once ROUTER.'websiteRouter.php';
