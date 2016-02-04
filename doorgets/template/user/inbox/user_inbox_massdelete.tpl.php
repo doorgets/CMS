@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 20, February 2014
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2013 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -41,17 +41,14 @@
     </div>
     <div class="doorGets-rubrique-center-content">
         <legend>
-            <span class="create" ><a class="doorGets-comebackform" href="?controller=[{!$this->doorGets->controllerNameNow()!}]"><img src="[{!BASE_IMG!}]retour.png" class="Retour-img"> [{!$this->doorGets->__('Retour')!}]</a></span>
-            <b class="glyphicon glyphicon-comment"></b> <a href="?controller=inbox">[{!$this->doorGets->__('Boîte de réception')!}]</a>
+            <span class="create" ><a class="doorGets-comebackform" href="?controller=[{!$this->doorGets->controllerNameNow()!}]"><i class="fa fa-undo fa-lg green-c"></i> [{!$this->doorGets->__('Retour')!}]</a></span>
+            <b class="glyphicon glyphicon-envelope"></b> <a href="?controller=inbox">[{!$this->doorGets->__('Boîte de réception')!}]</a>
              / [{!$this->doorGets->__("Supprimer par groupe")!}]
         </legend>
-        
         [{?(empty($varListeFile)):}]
-            
             <div class="alert alert-info">
-                [{!$this->doorGets->__("Aucun élement dans votre séléction.")!}]  <a class="doorGets-comebackform" href="./?controller=[{!$this->doorGets->controllerNameNow()!}]">[{!$this->doorGets->__('Retour')!}]</a>
+                <i class="fa fa-exclamation-triangle"></i> [{!$this->doorGets->__("Aucun élement dans votre séléction.")!}]  <a class="doorGets-comebackform" href="./?controller=[{!$this->doorGets->controllerNameNow()!}]">[{!$this->doorGets->__('Retour')!}]</a>
             </div>
-           
         [??]
             <div class="alert alert-info">
                 [{!$this->doorGets->Form['massdelete_index']->open('post')!}]

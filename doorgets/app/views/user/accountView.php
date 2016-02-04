@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 20, February 2014
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2013 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -64,6 +64,8 @@ class AccountView extends doorGetsUserView{
                 $img['linkedin']    = '<img  src="'.BASE_IMG.'icone_linkedin.png" > ';
                 $img['myspace']     = '<img  src="'.BASE_IMG.'icone_myspace.png" > ';
                 
+                // echo '<pre>';
+                // var_dump($this->user);
                 
                 $nFace      = $img['facebook'].'http://www.facebook.com/<span style="color:#000099;">'.$this->user['id_facebook'].'</span>';
                 $nTwitter   = $img['twitter'].'http://www.twitter.com/<span style="color:#000099;">'.$this->user['id_twitter'].'</span>';

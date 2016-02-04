@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 20, February 2014
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -77,7 +77,7 @@ class UsersView extends doorGetsUserView{
             $LogineExistInfoGroupe = $this->doorGets->dbQS($isContent['network'],'_users_groupes');
 
             if (!empty($LogineExistInfoGroupe)) {
-                $LogineExistInfoGroupe['attributes'] =  @unserialize($LogineExistInfoGroupe['attributes']);
+                $LogineExistInfoGroupe['attributes'] =  @unserialize(base64_decode($LogineExistInfoGroupe['attributes']));
             }
 
             $isActiveNotificationNewsletter = $isActiveNotificationMail = '';
@@ -136,11 +136,12 @@ class UsersView extends doorGetsUserView{
                         "date_creation"=>$this->doorGets->__('Date')
                     );
                     
+
                     $isFieldArraySort   = array('pseudo','last_name','first_name','pseudo','active','network','date_creation',);
                     $isFieldArraySearch = array('pseudo','last_name','first_name','active','network','date_creation_start','date_creation_end',);
                     $isFieldArrayDate   = array('date_creation');
                     
-                    $urlOrderby         = '&orderby='.$isFieldArraySort[0];
+                    $urlOrderby         = '&orderby='.$isFieldArraySort[6];
                     $urlSearchQuery     = '';
                     $urlSort            = '&desc';
                     $urlLg              = '&lg='.$lgActuel;
@@ -158,10 +159,8 @@ class UsersView extends doorGetsUserView{
                     $sqlLabelSearchModo = '  (';
 
                     foreach ($this->doorGets->user['liste_enfant_modo'] as $idGroup) {
-
-                        $arrForCountSearchQuery[] = array('key'=>'network','type'=>'=','value'=> $idGroup);
+                        //$arrForCountSearchQuery[] = array('key'=>'network','type'=>'=','value'=> $idGroup);
                         $sqlLabelSearchModo .=  "  network = $idGroup OR ";
-                        
                     }
                     
                     $sqlLabelSearchModo = substr($sqlLabelSearchModo,0,-3);
@@ -206,8 +205,7 @@ class UsersView extends doorGetsUserView{
                                     && !array_key_exists('doorGets_search_filter_q_'.$v,$params['GET'])
                                     && !empty($params['POST']['doorGets_search_filter_q_'.$v])
                                 )
-                           ) {
-                                
+                            ) {
                                 
                                 if (!empty($valueQP)) {
                                     
@@ -236,32 +234,37 @@ class UsersView extends doorGetsUserView{
                                         
                                         if (strlen(str_replace('_end','',$v)) !== strlen($v)) {
                                             
-                                            $nameTable = $tableName.".".$valEnd;
+                                            $nameTable = $valEnd;
                                             
                                             $sqlLabelSearch .= $nameTable." >= $from AND ";
                                             $sqlLabelSearch .= $nameTable." <= $to AND ";
                                             
-                                            $arrForCountSearchQuery[] = array('key'=>$nameTable,'type'=>'>','value'=>$from);
-                                            $arrForCountSearchQuery[] = array('key'=>$nameTable,'type'=>'<','value'=>$to);
+                                            // $arrForCountSearchQuery[] = array('key'=>$nameTable,'type'=>'>','value'=>$from);
+                                            // $arrForCountSearchQuery[] = array('key'=>$nameTable,'type'=>'<','value'=>$to);
                                             
                                             $urlSearchQuery .= '&doorGets_search_filter_q_'.$valEnd.'_end='.$toFormat;
+
                                         }
                                         
                                     }else{
-                                        
+
                                         if (in_array($v,$isFieldArraySort)) {
                                             
-                                            $sqlLabelSearch .= $tableName.".".$v." LIKE '%".$valueQP."%' AND ";
-                                            $arrForCountSearchQuery[] = array('key'=>$tableName.".".$v,'type'=>'like','value'=>$valueQP);
+                                            if ($v === 'active' || $v === 'network')  {
+
+                                                $sqlLabelSearch .= $v." = ".$valueQP." AND ";
+                                                //$arrForCountSearchQuery[] = array('key'=>$tableName.".".$v,'type'=>'!=!','value'=>$valueQP,'',' AND ');
                                             
+                                            } else {
+
+                                                $sqlLabelSearch .= $v." LIKE '%".$valueQP."%' AND ";
+                                                //$arrForCountSearchQuery[] = array('key'=>$tableName.".".$v,'type'=>'like','value'=>$valueQP,'',' AND ');
+                                            }
                                         }
-                                        
                                         $urlSearchQuery .= '&doorGets_search_filter_q_'.$valEnd.'='.$valueQP;
-                                        
                                     }
                                 }
                             }
-
                         }
                         // préparation de la requête mysql
                         if (!empty($sqlLabelSearch)) {
@@ -270,9 +273,6 @@ class UsersView extends doorGetsUserView{
                             $sqlLabelSearch = " AND ( $sqlLabelSearch ) ";
                             
                         }
-                        
-                        
-                        
                     }
                     
                     // Init Group By
@@ -283,11 +283,11 @@ class UsersView extends doorGetsUserView{
                     ) {
                         
                         $per = $params['GET']['gby'];
-                        
+                        $urlGroupBy = '&gby='.$per;
                     }
 
                     // Init count total fields
-                    $cResultsInt = $this->doorGets->getCountTable($tAll,$arrForCountSearchQuery,'',' OR ');
+                    $cResultsInt = $this->doorGets->getCountTable($tAll,$arrForCountSearchQuery,'WHERE '.$sqlLabelSearchModo.' '.$sqlLabelSearch,' OR ');
                     
                     // Init categorie
                     $sqlCategorie = '';
@@ -383,7 +383,7 @@ class UsersView extends doorGetsUserView{
                         
                         if (
                             $getFilter === $fieldName
-                            || ( empty($getFilter) && $fieldName === $isFieldArraySort[0] )
+                            || ( empty($getFilter) && $fieldName === $isFieldArraySort[6] )
                        ) {
                             $$_css = ' class="green" ';
                             $$_img = $imgTop;
@@ -403,8 +403,12 @@ class UsersView extends doorGetsUserView{
                         {
                             $dgLabel = '<a href="'.$urlPageGo.'&orderby='.$fieldName.$urlSearchQuery.'&gby='.$per.$$_desc.'" '.$$_css.'  >'.$$_img.$fieldNameLabel.'</a>';
                         }
+                        $css = 'td-title';
+                        if ($fieldName === 'date_creation') {
+                            $css = 'tb-50 td-title';
+                        }
                         
-                        $block->addTitle($dgLabel,$fieldName,"$leftFirst td-title center");
+                        $block->addTitle($dgLabel,$fieldName,"$leftFirst $css");
                         $iPos++;
                         
                     }
@@ -487,26 +491,13 @@ class UsersView extends doorGetsUserView{
                         
                     }
                     
-                    
                     for($i=0;$i<$cAll;$i++) {
                         
-                        $ImageStatut = BASE_IMG.'puce-rouge.png';
-                        if ($all[$i]['active'] == '2')
-                        {
-                            
-                            $ImageStatut = BASE_IMG.'puce-verte.png';
-                            
-                        }elseif ($all[$i]['active'] == '3') {
-                            
-                            $ImageStatut = BASE_IMG.'puce-orange.png';
-                            
-                        }elseif ($all[$i]['active'] == '5') {
-                            
-                            $ImageStatut = BASE_IMG.'icone_redaction.png';
-                            
+                        $urlStatut = '<i class="fa fa-exclamation-triangle red-c"></i>';
+                        if (array_key_exists($all[$i]['active'],Constant::$userStatus)) {
+                            $urlStatut = Constant::$userStatus[$all[$i]['active']];
                         }
-                        $urlStatut = '<img src="'.$ImageStatut.'" style="vertical-align: middle;" >';
-                        
+
                         $tGroupes = '-';
                         if (array_key_exists($all[$i]["network"],$groupes)) {
                             $tGroupes = $groupes[$all[$i]["network"]];
@@ -515,10 +506,10 @@ class UsersView extends doorGetsUserView{
                         $imgUser = '<a title="'.$this->doorGets->__('Modifier').'" href="./?controller=users&action=edit&id='.$all[$i]['id'].'"><img class="avatar-listing" src="'.URL.'data/users/'.$all[$i]["avatar"].'" title="'.$all[$i]["pseudo"].'" /></a>';
 
                         $urlMassdelete  = '<input id="'.$all[$i]["id"].'" type="checkbox" class="check-me-mass" >';
-                        $urlPseudo      = '<a title="'.$this->doorGets->__('Modifier').'" href="./?controller=users&action=edit&id='.$all[$i]['id'].'">'.$all[$i]["pseudo"].'</a>';
-                        $urlLastName    = '<a title="'.$this->doorGets->__('Modifier').'" href="./?controller=users&action=edit&id='.$all[$i]['id'].'">'.$all[$i]["last_name"].'</a>';
-                        $urlFirstName   = '<a title="'.$this->doorGets->__('Modifier').'" href="./?controller=users&action=edit&id='.$all[$i]['id'].'">'.$all[$i]["first_name"].'</a>';
-                        $urlGroupe      = '<a title="'.$this->doorGets->__('Modifier').'" href="./?controller=users&action=edit&id='.$all[$i]['id'].'">'.$tGroupes.'</a>';
+                        $urlPseudo      = $all[$i]["pseudo"];
+                        $urlLastName    = $all[$i]["last_name"];
+                        $urlFirstName   = $all[$i]["first_name"];
+                        $urlGroupe      = $tGroupes.'</a>';
                         $urlDelete      = '<a title="'.$this->doorGets->__('Supprimer').'" href="./?controller=users&action=delete&id='.$all[$i]['id'].'"><b class="glyphicon glyphicon-remove red"></b></a>';
                         $urlEdit        = '<a title="'.$this->doorGets->__('Modifier').'" href="./?controller=users&action=edit&id='.$all[$i]['id'].'"><b class="glyphicon glyphicon-pencil green-font" ></b></a>';
                         

@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -44,7 +44,7 @@ class moduleFaqView extends doorgetsWebsiteView{
         $out = '';
         $Website = $this->Website;
         $Module = $Website->getModule();
-        $moduleInfo = $Website->getActiveModules();
+        $moduleInfo = $Website->activeModules;
 
         $labelModule = $moduleInfo[$Module]['all']['nom'];
         
@@ -81,7 +81,7 @@ class moduleFaqView extends doorgetsWebsiteView{
 
         $isContents = $Website->dbQ($sql);
         
-        $labelModuleGroup = $Website->getActiveModules();
+        $labelModuleGroup = $Website->activeModules;
         $labelModule = $labelModuleGroup[$Website->getModule()]['all']['nom'];
         
         foreach($isContents as $k=>$content) {
@@ -99,7 +99,7 @@ class moduleFaqView extends doorgetsWebsiteView{
                 continue;
             }
 
-            $isContents[$k]['reponse'] = htmlspecialchars_decode(html_entity_decode($isContents[$k]['reponse_tinymce']));
+            $isContents[$k]['reponse'] = html_entity_decode($isContents[$k]['reponse_tinymce']);
             unset($isContents[$k]['reponse_tinymce']);
             
             $isContents[$k]['modo']  =  ( $Website->isUser && 
@@ -138,10 +138,10 @@ class moduleFaqView extends doorgetsWebsiteView{
         $i=$ii=1;
         $_imgTop = URL.'/themes/'.$Website->getTheme().'/img/top.png';
 
-        $allModules         = $labelModuleGroup = $Website->getActiveModules();  
+        $allModules         = $labelModuleGroup = $Website->activeModules;  
 
         $urlAfterAction     = urlencode($Website->getCurrentUrl());
-        $urlAdd             = URL_USER.$Website->_lgUrl.'?controller=modulefaq&uri='.$Website->getModule().'&action=add&back='.$urlAfterAction;
+        $urlAdd             = URL_USER.$Website->_lgUrl.'?controller=modulefaq&uri='.$Website->getModule().'&action=add';
 
 
         $tplModuleMultipageListing = Template::getWebsiteView($templateDefault,$Website->getTheme());

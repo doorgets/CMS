@@ -1,0 +1,123 @@
+<?php if (!defined(DOORGETS)) { header('Location:../'); exit(); }
+
+/*******************************************************************************
+/*******************************************************************************
+    doorGets 7.0 - 01, February 2016
+    doorGets it's free PHP Open Source CMS PHP & MySQL
+    Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
+    
+/*******************************************************************************
+
+    Website : http://www.doorgets.com
+    Contact : http://www.doorgets.com/t/en/?contact
+    
+/*******************************************************************************
+    -= One life, One code =-
+/*******************************************************************************
+    
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    
+******************************************************************************
+******************************************************************************/
+
+unset($aActivation[0]);
+
+?>
+<div class="doorGets-rubrique-center">
+    <div class="doorGets-rubrique-center-title page-header">
+        
+    </div>
+    <div class="doorGets-rubrique-center-content">
+        <legend>
+            [{!$htmlAddTop!}]
+            : [{!$this->doorGets->__('Ajouter un produit')!}]
+        </legend>
+        [{!$this->doorGets->Form->open('post','')!}]
+        <div >
+            <ul class="nav nav-tabs">
+                <li class="active" role="presentation" ><a data-toggle="tab" href="#tabs-1">[{!$this->doorGets->__('Information')!}]</a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade in active" id="tabs-1">
+                    [{!$this->doorGets->Form->select($this->doorGets->__('Type'),'product_type',$productType,'simple');}]
+                    <div class="separateur-tb"></div>
+                    <div class="row"> 
+                        <div class="col-md-6">
+                            [{!$this->doorGets->Form->input($this->doorGets->__('Titre').' <span class="cp-obli">*</span>','titre');}]
+                        </div>
+                        <div class="col-md-6">
+                            [{?($is_modo):}]
+                                [{!$this->doorGets->Form->input($this->doorGets->__("Url simplifiée").' <span class="cp-obli">*</span> <small style="font-weight:100;">('.$this->doorGets->__("Caractères alpha numérique seulement").')</small><br />','uri');}]
+                            [??]
+                                [{!$this->doorGets->Form->input('','uri','hidden');}]
+                            [?]
+                        </div>
+                    </div>
+                    <div class="separateur-tb"></div>
+                </div>
+            </div>
+        </div>
+        <div class="separateur-tb"></div>
+        <div class="text-center">
+          [{!$this->doorGets->Form->submit($this->doorGets->__('Sauvegarder'));}]
+        </div>
+        [{!$this->doorGets->Form->close();}]
+                
+        <script type="text/javascript">
+
+            $("#module[{!$moduleInfos['type']!}]_add_titre").keyup(function() {
+
+                var str = $(this).val();
+                str = str.replace(/^\s+|\s+$/g, ''); // trim
+                str = str.toLowerCase();
+              
+                // remove accents, swap ñ for n, etc
+                var from = "ãàáäâẽèéëêìíïîõòóöôùúüûñç·/_,:;";
+                var to   = "aaaaaeeeeeiiiiooooouuuunc------";
+                for (var i=0, l=from.length ; i<l ; i++) {
+                  str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
+                }
+              
+                str = str.replace(/[^a-z0-9 -]/g, '') // remove invalid chars
+                  .replace(/\s+/g, '-') // collapse whitespace and replace by -
+                  .replace(/-+/g, '-'); // collapse dashes
+                  
+                $("#module[{!$moduleInfos['type']!}]_add_uri").val(str);        
+            });
+            $("#module[{!$moduleInfos['type']!}]_add_titre").keyup(function() {
+
+                var str = $(this).val();
+                $("#module[{!$moduleInfos['type']!}]_add_meta_titre").val(str);
+                $("#module[{!$moduleInfos['type']!}]_add_meta_facebook_titre").val(str);
+                $("#module[{!$moduleInfos['type']!}]_add_meta_twitter_titre").val(str);
+                
+            });
+            $("#module[{!$moduleInfos['type']!}]_add_meta_description").keyup(function() {
+
+                var str = $(this).val();
+                var lendesc =  str.length;
+                if (lendesc >= 250) {
+                  str = str.substr(0,250);
+                }
+                $("#module[{!$moduleInfos['type']!}]_add_meta_facebook_description").val(str);
+                $("#module[{!$moduleInfos['type']!}]_add_meta_twitter_description").val(str);
+                
+            });
+            isUploadedInput("moduleshop_add_image");
+            isUploadedMultiInput("moduleshop_add_image_gallery");
+            isUploadedFacebookInput("moduleshop_add_meta_facebook_image");
+            isUploadedTwitterInput("moduleshop_add_meta_twitter_image");
+        </script>
+    </div>
+</div>

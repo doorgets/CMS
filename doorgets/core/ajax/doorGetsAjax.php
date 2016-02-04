@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -189,10 +189,9 @@ class doorGetsAjax extends Langue{
         // Load Uri Module
         if (array_key_exists('uri',$this->Params['GET'])) {
             
-            $uri = $this->Params['GET']['uri'];
+            $uri = str_replace('_', '-', $this->Params['GET']['uri']);
             $isContent = $this->dbQS($uri,'_modules','uri');
             if (!empty($isContent)) {
-
                 $this->Table    = '_m_'.$this->getRealUri($uri);
                 $this->Uri      = $uri;
             }
@@ -283,7 +282,127 @@ class doorGetsAjax extends Langue{
         
     }
 
+    public function filterPost($name) {
+
+        $e = array();
+
+        if (!empty($_POST)) {
+            
+            // captcha verification
+            if (
+                array_key_exists('captcha_num1',$_POST)
+                && array_key_exists('captcha_num2',$_POST)
+                && array_key_exists('captcha_result',$_POST)
+            ) {
+                if ((int)$_POST['captcha_num1'] + (int)$_POST['captcha_num2'] !== (int)$_POST['captcha_result']) {
+                    $e['result_captcha'] = 'error';
+                }
+                
+            }
+            
+            // test token validation
+            // if (!$this->isToken($name,$e)) { 
+            //   $e[$name.'_token'] = 'error'; 
+            // }else{
+            //   unset($_POST[$name.'_token']);
+            // }
+
+            // $_POST checking
+            foreach($_POST as $k=>$v) {
+                
+                $rest = substr($k, -8);
+                $restHtml = substr($k, -5);
+                if ($rest !== '_tinymce' && $restHtml !== '_html' && $restHtml !== '_nofi') {
+                    $_POST[$k] = filter_input(INPUT_POST, $k, FILTER_SANITIZE_STRING) ;
+                }
+            }
+            
+            $HTMLPurifierService = new HTMLPurifierService();
+            
+            // onclic submit form
+            if (isset($_POST[$name.'_submit'])) {
+                
+                unset($_POST[$name.'_submit']);
+                
+                foreach($_POST as $k=>$v) {
+                    
+                    $rest = substr($k, -8);
+                    $restHtml = substr($k, -5);
+                    $k = str_replace($name.'_','',$k);
+                    
+                    if ($restHtml !== '_nofi') {
+                        
+                        if ($rest === '_tinymce' || $restHtml === '_html') {
+                            
+                            //if (!empty($this->i) && empty($e)) {
+                                
+                                //$_POST[$k] = stripcslashes($_POST[$k]);
+                                $v = str_replace('</textarea','',$v);
+                                $v = str_replace('&lt;/textarea','',$v);
+                                $v = str_replace('%3c/textarea','',$v);
+                                $v = str_replace('&#60;/textarea','',$v);
+                                
+                                $v = str_replace('<body','',$v);
+                                $v = str_replace('&lt;body','',$v);
+                                $v = str_replace('%3c/body','',$v);
+                                $v = str_replace('&#60;/body','',$v);
+                                
+                                $this->i[$k] = htmlentities($HTMLPurifierService->purify($v),ENT_QUOTES);
+                            //}
+                            
+                        }else{
+                            $this->i[$k] = Convertag::get($v);
+                        }          
+
+                    }else{
+                        $this->i[$k] = Convertag::get($v);   
+                    }
+                }
+            }
+            
+            // reset captcha
+            if (
+                array_key_exists('captcha_num1',$_POST)
+                && array_key_exists('captcha_num2',$_POST)
+                && array_key_exists('captcha_result',$_POST)
+                && empty($e['result_captcha'])
+            ) {
+                
+                unset($_POST['captcha_num1']);
+                unset($_POST['captcha_num2']);
+                unset($_POST['captcha_result']);
+                
+            }    
+        }
+        
+        return $e;
+    }
     
+    public function isToken($name,$e) {
+
+        if (
+            array_key_exists('doorGetsForms', $_SESSION)
+            && array_key_exists($name, $_SESSION['doorGetsForms']) 
+            && array_key_exists($name.'_token', $_SESSION['doorGetsForms'][$name])
+            && array_key_exists($name.'_token',$_POST)
+        ){
+
+            if ($_SESSION['doorGetsForms'][$name][$name.'_token'] == $_POST[$name.'_token']) {
+              
+                if (!empty($e)) {
+
+                    unset($_SESSION['doorGetsForms'][$name]);
+                    unset($_POST[$name.'_token']);
+
+                }
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function __destruct() {
         
         parent::__destruct();

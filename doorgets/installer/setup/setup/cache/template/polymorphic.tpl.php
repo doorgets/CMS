@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 20, February 2014
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -33,10 +33,10 @@
 ?>
 <div class="doorGets-content-wrapper">
     <div class="doorGets-top-title-content">
-        doorGets 7.0 <small>Free OpenSource CMS PHP/MySQL</small>
+        <img src="<?php echo BASE_IMG; ?>doorgets.png">
     </div>
     <div class="doorGets-title-content">
-        <?php echo $doorgets->l("Vous avez presque fini..."); ?>
+        <?php echo $doorgets->l("Vous avez presque fini ..."); ?>
     </div>
     <?php echo $doorgets->form['doorgets_polymorphic']->open('post','',''); ?>
         <?php echo $doorgets->form['doorgets_polymorphic']->input('','hidden','hidden','1'); ?>
@@ -46,6 +46,10 @@
                 <br />
                 <?php echo $doorgets->l("Vous allez être ensuite redirigé vers la page d'administration."); ?>
                 <br /><br />
+            </div>
+            <div id="show-after-click" style="display: none;">
+                <img src="<?php echo BASE_IMG; ?>loader.gif" style="margin: 10px;" > <br /><br /> 
+                <?php echo $doorgets->l("Installation en cours"); ?> ... 
             </div>
             <?php echo $doorgets->form['doorgets_polymorphic']->submit($doorgets->l('Génerer mon site internet doorGets')); ?>
             <div>
@@ -58,12 +62,9 @@
     <?php echo $doorgets->getHtmlGoBack(); ?>
 </div>
 <script type="text/javascript">
-    
-  $("#installer_create_submit").click(function() {
-    
-      $(".action-bottom-inworks").fadeIn();
-      $(".action-bottom-form").fadeOut();
-      $(".doorGets-comebackform").fadeOut();
-      
-  });
+    document.getElementById('doorgets_polymorphic_submit').addEventListener('click',function(e){
+        document.getElementById('doorgets_polymorphic_submit').style.display = 'none';
+        document.getElementById('doorgets_goback_submit').style.display = 'none';
+        document.getElementById('show-after-click').style.display = 'block';
+    });
 </script>

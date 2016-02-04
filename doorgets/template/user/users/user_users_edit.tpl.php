@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 20, February 2014
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -37,7 +37,8 @@ unset($aUsersActivation[0]);
 $arCountry = $this->doorGets->getArrayForms('country');
 array_unshift($arCountry, $this->doorGets->__('Choisir votre pays'));
 
-
+// $customer = new CustomerService($isContent['id'],$this->doorGets);
+// vdump($customer);
 ?>
 <div class="doorGets-rubrique-center">
     <div class="doorGets-rubrique-center-content">
@@ -45,10 +46,11 @@ array_unshift($arCountry, $this->doorGets->__('Choisir votre pays'));
 
         </div>
         <legend>
-            <span class="create" ><a class="doorGets-comebackform" href="?controller=users"><img src="[{!BASE_IMG!}]retour.png" class="Retour-img"> [{!$this->doorGets->__('Retour');}]</a></span>
+            <span class="create" ><a class="doorGets-comebackform" href="?controller=users"><i class="fa fa-undo fa-lg green-c"></i> [{!$this->doorGets->__('Retour');}]</a></span>
             <b class="glyphicon glyphicon-user"></b> <a href="?controller=users">[{!$this->doorGets->__('Utilisateur')!}] </a>
              / [{!$isContent['pseudo']!}]
         </legend>
+        
         [{?(in_array($isContent['network'],$this->doorGets->user['liste_enfant_modo'])):}]
             [{!$this->doorGets->Form->open('post')!}]
                 <div >
@@ -103,20 +105,29 @@ array_unshift($arCountry, $this->doorGets->__('Choisir votre pays'));
                             <div class="separateur-tb"></div>
                         </div>
                         <div class="tab-pane fade" id="tabs-5">
-                            [{!$this->doorGets->Form->select($this->doorGets->__('Pays'),'country',$arCountry,$isContent['country'])!}]
-                            <div class="separateur-tb"></div>
-                            [{!$this->doorGets->Form->input($this->doorGets->__('Ville').'<br />','city','text',$isContent['city'])!}]
-                            <div class="separateur-tb"></div>
-                            [{!$this->doorGets->Form->input($this->doorGets->__('Code Postal').'<br />','zipcode','text',$isContent['zipcode'])!}]
-                            <div class="separateur-tb"></div>
-                            [{!$this->doorGets->Form->input($this->doorGets->__('Adresse').'<br />','adresse','text',$isContent['adresse'])!}]
-                            <div class="separateur-tb"></div>
-                            [{!$this->doorGets->Form->input($this->doorGets->__('Téléphone fixe').'<br />','tel_fix','text',$isContent['tel_fix'])!}]
-                            <div class="separateur-tb"></div>
-                            [{!$this->doorGets->Form->input($this->doorGets->__('Téléphone mobile').'<br />','tel_mobil','text',$isContent['tel_mobil'])!}]
-                            <div class="separateur-tb"></div>
-                            [{!$this->doorGets->Form->input($this->doorGets->__('Téléphone fax').'<br />','tel_fax','text',$isContent['tel_fax'])!}]
-                            <div class="separateur-tb"></div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    [{!$this->doorGets->Form->select($this->doorGets->__('Pays'),'country',$arCountry,$isContent['country'])!}]
+                                    <div class="separateur-tb"></div>
+                                    [{!$this->doorGets->Form->input($this->doorGets->__('Région').'<br />','region','text',$isContent['region'])!}]
+                                    <div class="separateur-tb"></div>
+                                    [{!$this->doorGets->Form->input($this->doorGets->__('Ville').'<br />','city','text',$isContent['city'])!}]
+                                    <div class="separateur-tb"></div>
+                                    [{!$this->doorGets->Form->input($this->doorGets->__('Code Postal').'<br />','zipcode','text',$isContent['zipcode'])!}]
+                                    <div class="separateur-tb"></div>
+                                    [{!$this->doorGets->Form->input($this->doorGets->__('Adresse').'<br />','adresse','text',$isContent['adresse'])!}]
+                                    <div class="separateur-tb"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    [{!$this->doorGets->Form->input($this->doorGets->__('Téléphone fixe').'<br />','tel_fix','text',$isContent['tel_fix'])!}]
+                                    <div class="separateur-tb"></div>
+                                    [{!$this->doorGets->Form->input($this->doorGets->__('Téléphone mobile').'<br />','tel_mobil','text',$isContent['tel_mobil'])!}]
+                                    <div class="separateur-tb"></div>
+                                    [{!$this->doorGets->Form->input($this->doorGets->__('Téléphone fax').'<br />','tel_fax','text',$isContent['tel_fax'])!}]
+                                    <div class="separateur-tb"></div>
+                                </div>
+                            </div> 
+                                
                         </div>
 
                         <div class="tab-pane fade" id="tabs-6">

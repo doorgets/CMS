@@ -52,7 +52,7 @@
 </div>
 <div class="text-center ">
     <br />
-    <a href="?controller=authentification" class="btn btn-lg btn-link"><b class="glyphicon glyphicon-user"></b> [{!$this->doorGets->__("Se connecter")!}]</a>
+    <a href="?controller=authentification" class="btn btn-lg btn-link "><b class="glyphicon glyphicon-user"></b> [{!$this->doorGets->__("Se connecter")!}]</a>
     <br />
-    <a href="[{!URL!}][{?(count($this->doorGets->allLanguagesWebsite > 1)):}][{!'t/'.$this->doorGets->myLanguage.'/'!}][?]" class="btn btn-lg btn-link"><b class="glyphicon glyphicon-home"></b> [{!$this->doorGets->__('Accéder au site')!}]</a>
+    <a href="[{!URL!}][{?(count($this->doorGets->allLanguagesWebsite > 1)):}][{!'t/'.$this->doorGets->myLanguage.'/'!}][?]" class="btn btn-lg btn-link "><b class="glyphicon glyphicon-home"></b> [{!$this->doorGets->__('Accéder au site')!}]</a>
 </div>

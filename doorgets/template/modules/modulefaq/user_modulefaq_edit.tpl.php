@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -31,16 +31,7 @@
 ******************************************************************************
 ******************************************************************************/
 
-    $phpOpen = '[[php/o]]';
-    $phpClose = '[[php/c]]';
-    
-    $article = $isContent['reponse_tinymce'];
-    
-    $article = str_replace(";?",$phpOpen,$article);
-    $article = str_replace("?&",$phpClose,$article);
-    $article = htmlspecialchars_decode(html_entity_decode($article));
-    $article = str_replace($phpOpen,"; ?",$article); 
-    $article = str_replace($phpClose,"? &",$article);
+    $article = $this->doorGets->_cleanPHP($isContent['reponse_tinymce']);
     
     $cVersion = $this->getCountVersion();
     $versions = $this->getAllVersion();
@@ -99,22 +90,16 @@
                         </tr>
                         [{/($versions as $version):}]
                             [{
-                                $ImageStatut = BASE_IMG.'puce-rouge.png';
-                                if ($version['active'] == '2')
-                                {
-                                    
-                                    $ImageStatut = BASE_IMG.'puce-verte.png';
-                                    
-                                }elseif ($version['active'] == '3') {
-                                    
-                                    $ImageStatut = BASE_IMG.'puce-orange.png';
-                                    
-                                }elseif ($version['active'] == '4') {
-                                    
-                                    $ImageStatut = BASE_IMG.'icone_redaction.png';
-                                    
+                                $ImageStatut = 'fa-ban red';
+                                if ($version['active'] == '2') {
+                                    $ImageStatut = 'fa-eye green-c';
+                                } elseif ($version['active'] == '3') {
+                                    $ImageStatut = 'fa-hourglass-start orange-c';
+                                } elseif ($version['active'] == '4') {
+                                    $ImageStatut = 'fa-pencil gris-c';
                                 }
-                                $urlStatut = '<img src="'.$ImageStatut.'" style="vertical-align: middle;" >';
+
+                                $urlStatut = '<i class="fa '.$ImageStatut.' fa-lg" ></i>';
                             }]
                             <tr>
                                 <td>[{!$version['id']!}]</td>

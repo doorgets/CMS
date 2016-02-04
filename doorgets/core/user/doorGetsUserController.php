@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -87,11 +87,11 @@ class doorGetsUserController {
             }
             
         }
-        
-        $this->getActionMethod();
-        
-        $doorGets->setController($this);
 
+        $this->getActionMethod();
+
+        $doorGets->setController($this);
+        
         $doorGets->Categories = $doorGets->loadCategories($doorGets->Uri);
         $this->doorGets = $doorGets;
         $doorGets->Content = $this->Content;
@@ -150,6 +150,7 @@ class doorGetsUserController {
             empty($this->doorGets->user) && 
             !in_array($this->doorGets->Action(), $_actions)
         ) { 
+            
             $this->Content = $this->indexAction();  return null;
         }
 

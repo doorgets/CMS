@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -40,6 +40,10 @@ require_once BASE.'config/config.php';
 
 define('BASE_URL',URL);
 
+// Google API
+include BASE.'doorgets/lib/google/src/Google/autoload.php';
+
+
 // Authentification User
 
 $Auth = new AuthUser();
@@ -58,7 +62,7 @@ if(array_key_exists('backurl',$_GET)) {
 $crud = new CRUD();
 
 $urlTraduction = '';
-$website = $crud->dbQS(1,'_website');
+$website = $crud->dbQS(Constant::$websiteId,'_website');
 if (!empty($website)) {
 	
 	$langueGroupe = @unserialize($website['langue_groupe']);
@@ -74,7 +78,7 @@ if (!empty($website)) {
 		$client->setAccessType('offline');
 		$client->setClientId($website['oauth_google_id']);
 		$client->setClientSecret($website['oauth_google_secret']);
-		$client->setRedirectUri(BASE_URL.'oauth2/google/connexion/');
+		$client->setRedirectUri(BASE_URL.'oauth2/google/connexion');
 
 		$client->addScope("https://www.googleapis.com/auth/plus.login");
 		$client->addScope("https://www.googleapis.com/auth/userinfo.email");

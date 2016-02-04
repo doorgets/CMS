@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -40,14 +40,14 @@
     </div>
     <div class="doorGets-rubrique-center-content">
         <legend>
-            <span class="create" ><a class="doorGets-comebackform" href="?controller=[{!$nameController!}]&uri=[{!$this->doorGets->Uri!}]"><img src="[{!BASE_IMG!}]retour.png" class="Retour-img"> [{!$this->doorGets->__('Retour')!}]</a></span>
+            <span class="create" ><a class="doorGets-comebackform" href="?controller=[{!$nameController!}]&uri=[{!$this->doorGets->Uri!}]"><i class="fa fa-undo fa-lg green-c"></i> [{!$this->doorGets->__('Retour')!}]</a></span>
             <span class="create" >
                 <a href="?controller=[{!$nameController!}]&uri=[{!$this->doorGets->Uri!}]&action=delete&id=[{!$isContent['id']!}]"  title="[{!$this->doorGets->__("Supprimer")!}]" >
                 <b class="glyphicon glyphicon-remove"></b>
                 [{!$this->doorGets->__("Supprimer")!}]</a>
             </span>
             <span class="create">
-                <small>[{!GetDate::in($isContent['date_modification'],1,$this->doorGets->myLanguage)!}]</small>
+                <small>[{!GetDate::in($isContent['date_creation'],1,$this->doorGets->myLanguage)!}]</small>
             </span>
             <img src="[{!BASE_IMG.'mod_genform.png'!}]" title="[{!$this->doorGets->__("Formulaire")!}]" class="doorGets-img-ico px25" />[{!$moduleInfos['titre']!}]
              / <small>[{!$isContent['id']!}]</small> 

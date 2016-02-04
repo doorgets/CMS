@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -40,24 +40,42 @@ class Langue extends CRUD{
     public  $allLanguagesSession;
     
     public  $myLanguage;
-   
     public  $configWeb;
     
+    public  $arrLangue;
+    public  $wTranslate;
+    public  $_w;
+    
+    public $fileLocale;
+    public $fileTemp;
+
     public function __construct($lg='fr') {
         
-        include BASE.'config/locale.php';
+        $this->fileLocale = BASE.'config/locale.php';
+        include $this->fileLocale;
+        $this->arrLangue           = $arrLangue;
+
+        $this->fileTemp = LANGUE.'temp.lg.php';
+        include $this->fileTemp;
+        $this->wTranslate           = $wTranslate;
         
+
         parent::__construct();
         
         $this->myLanguage   = $lg;
+
+        $fileLangue = LANGUE.$lg.'.lg.php';
+        include $fileLangue;
+        $this->_w = $_w;
+        
         $defaultLg = 'en';
 
         $this->allLanguages = $this->getAllLanguages();
         
-        $this->allLanguagesSession = $arrLangue;
+        $this->allLanguagesSession = $this->arrLangue;
         
         $lgTrad     = $this->getLangueTradution();
-        $infoWeb    = $this->dbQS(1,'_website');
+        $infoWeb    = $this->dbQS(Constant::$websiteId,'_website');
         
         $infoWebTraduction = $this->dbQS($lgTrad,'_website_traduction','langue');
         if (empty($infoWebTraduction)) {
@@ -79,20 +97,53 @@ class Langue extends CRUD{
             $this->configWeb                            = $infoWeb;
             $this->configWeb['oauth_google_active']     =  ($infoWeb['oauth_google_active'] === '1') ? true : false;
             $this->configWeb['oauth_facebook_active']   =  ($infoWeb['oauth_facebook_active'] === '1') ? true : false;
+
+            $this->configWeb['statut_tinymce_edit']     = $this->_cleanPHP($infoWebTraduction['statut_tinymce']);
+            $this->configWeb['privacy_tinymce_edit']    = $this->_cleanPHP($infoWebTraduction['privacy_tinymce']);
+            $this->configWeb['signature_tinymce_edit']  = $this->_cleanPHP($infoWebTraduction['signature_tinymce']);
+            $this->configWeb['cgu_tinymce_edit']        = $this->_cleanPHP($infoWebTraduction['cgu_tinymce']);
+            $this->configWeb['terms_tinymce_edit']      = $this->_cleanPHP($infoWebTraduction['terms_tinymce']);
+            
+            $this->configWeb['privacy_tinymce']         =  html_entity_decode($infoWebTraduction['privacy_tinymce']);
             $this->configWeb['statut_tinymce']          =  html_entity_decode($infoWebTraduction['statut_tinymce']);
+            $this->configWeb['terms_tinymce']           =  html_entity_decode($infoWebTraduction['terms_tinymce']);
+            $this->configWeb['signature_tinymce']       =  html_entity_decode($infoWebTraduction['signature_tinymce']);
+            $this->configWeb['cgu_tinymce']             =  html_entity_decode($infoWebTraduction['cgu_tinymce']);
+            
+            // $this->configWeb['transfer_tinymce_edit']   =  $this->_cleanPHP($this->configWeb['transfer_tinymce']);
+            // $this->configWeb['check_tinymce_edit']      =  $this->_cleanPHP($this->configWeb['check_tinymce']);
+            // $this->configWeb['cash_tinymce_edit']       =  $this->_cleanPHP($this->configWeb['cash_tinymce']);
+            
+            // $this->configWeb['transfer_tinymce']        =  html_entity_decode($this->configWeb['transfer_tinymce']);
+            // $this->configWeb['check_tinymce']           =  html_entity_decode($this->configWeb['check_tinymce']);
+            // $this->configWeb['cash_tinymce']            =  html_entity_decode($this->configWeb['cash_tinymce']);
+            
             $this->configWeb['title']                   =  $infoWebTraduction['title'];
             $this->configWeb['slogan']                  =  $infoWebTraduction['slogan'];
             $this->configWeb['description']             =  $infoWebTraduction['description'];
             $this->configWeb['copyright']               =  $infoWebTraduction['copyright'];
             $this->configWeb['year']                    =  $infoWebTraduction['year'];
+            // $this->configWeb['currency']                =  $infoWebTraduction['currency'];
             $this->configWeb['keywords']                =  $infoWebTraduction['keywords'];
             $this->configWeb['date_modification']       =  $infoWebTraduction['date_modification'];
             
-            $this->configWeb['langue_groupe']        = @unserialize($this->configWeb['langue_groupe']);
+            // $this->configWeb['store_vat']               = $infoWebTraduction['store_vat'];
+            // $this->configWeb['shipping_free_info']      = $infoWebTraduction['shipping_free_info'];
+            // $this->configWeb['shipping_free_active']    = $infoWebTraduction['shipping_free_active'];
+            // $this->configWeb['shipping_slow_info']      = $infoWebTraduction['shipping_slow_info'];
+            // $this->configWeb['shipping_slow_amount']    = $infoWebTraduction['shipping_slow_amount'];
+            // $this->configWeb['shipping_slow_active']    = $infoWebTraduction['shipping_slow_active'];
+            // $this->configWeb['shipping_fast_info']      = $infoWebTraduction['shipping_fast_info'];
+            // $this->configWeb['shipping_fast_amount']    = $infoWebTraduction['shipping_fast_amount'];
+            // $this->configWeb['shipping_fast_active']    = $infoWebTraduction['shipping_fast_active'];
+            
+            $this->configWeb['langue_groupe']           = @unserialize($this->configWeb['langue_groupe']);
+            $this->configWeb['addresses']               = @unserialize($this->configWeb['addresses']);
 
             if (!is_array($this->configWeb['langue_groupe'])) {
               $this->configWeb['langue_groupe'] = array();
             }
+            
             foreach($arrLangue as $k=>$v) {
                 if (
                     !array_key_exists($k,$this->configWeb['langue_groupe'])
@@ -108,27 +159,14 @@ class Langue extends CRUD{
     
     public function getAllLanguages() {
         
-        include BASE.'config/locale.php';
-        return $arrLangue;
+        return $this->arrLangue;
         
     }
     
     
     public function l($word = '') {
         
-        $fileLangue = LANGUE.$this->myLanguage.'.lg.php';
-        $fileLanguePrincipale = LANGUE.'temp.lg.php';
-        
-        if (!is_file($fileLanguePrincipale) || !is_file($fileLangue))
-        {
-            return $word;
-        }
-        
-        include $fileLanguePrincipale;
-        $wDefaut = $wTranslate;
-        
-        unset($wTranslate);
-        include $fileLangue;
+        $wDefaut = $this->wTranslate;
         
         if ($word === 'doorgets') { return 'doorGets'; }
         
@@ -136,16 +174,14 @@ class Langue extends CRUD{
             
             $key = array_search($word,$wDefaut);
             
-            if (array_key_exists($key,$_w) && !empty($_w[$key]) )
+            if (array_key_exists($key,$this->_w) && !empty($this->_w[$key]) )
             {
-                return $_w[$key];
+                return $this->_w[$key];
             }
             
         }
 
-        //$this->addToDatabaseTranslator($word);
         $this->addToTempTranslate($word);
-        
         return $word;
         
     }
@@ -202,25 +238,18 @@ class Langue extends CRUD{
 
     private function addToTempTranslate($word = '') {
         
-        $fileTemp = LANGUE.'temp.lg.php';
-        if (!empty($word) && is_file($fileTemp)) {
+        if (!empty($word) && isset($this->wTranslate) && is_array($this->wTranslate) && !in_array($word,$this->wTranslate)) {
             
-            include $fileTemp;
-            
-            if (isset($wTranslate) && is_array($wTranslate) && !in_array($word,$wTranslate)) {
+            $this->wTranslate[] = $word;
+            $outTempTranslate = '<?php '.PHP_EOL;
+            foreach($this->wTranslate as $w) {
                 
-                $wTranslate[] = $word;
-                $outTempTranslate = '<?php '.PHP_EOL;
-                foreach($wTranslate as $w) {
-                    
-                    $outTempTranslate .= '$wTranslate[] = "'.$w.'"; '.PHP_EOL;
-                    
-                }
+                $outTempTranslate .= '$wTranslate[] = "'.$w.'"; '.PHP_EOL;
                 
-                @file_put_contents($fileTemp,$outTempTranslate);
-            
             }
             
+            file_put_contents($this->fileTemp,$outTempTranslate);
+        
         }
         
     }
@@ -261,7 +290,7 @@ class Langue extends CRUD{
         
     }
     
-    public function genLangueMenuAdmin() {
+    public function genLangueMenuAdmin($withUl= true) {
         
         $i = 0;
         $len = count($this->allLanguagesWebsite);
@@ -286,8 +315,10 @@ class Langue extends CRUD{
             $lgTo = filter_input(INPUT_GET, 'lg', FILTER_SANITIZE_SPECIAL_CHARS);
         }
         
+        if ($withUl) {
+           $out .= '<ul class="nav nav-pills nav-traduction">'; 
+        }
         
-        $out .= '<ul class="nav nav-pills nav-traduction">';
         $out .= '<li class="dropdown">';
         $out .= '<a href="#" class="dropdown-toggle" data-toggle="dropdown">';
         //$out .= '<img src="'.BASE_IMG.'drap_'.$lgTo.'.png" class="px15" />';
@@ -322,8 +353,10 @@ class Langue extends CRUD{
             
         }
         
-        $out .= '</ul></li></ul>';
-        
+        $out .= '</ul></li>';
+        if ($withUl) {
+           $out .= '</ul>'; 
+        }
         
         return $out;
         

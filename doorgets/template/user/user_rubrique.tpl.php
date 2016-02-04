@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 20, February 2014
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2013 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -33,37 +33,59 @@
     
     unset($liste['block']);
     unset($liste['genform']);
+    unset($liste['carousel']);
+    unset($liste['survey']);
 
     // Init $menu from Name Controller
     $menu               = $doorGets->controllerNameNow();
     $action             = $doorGets->Action();
-
+    
     // Init rubrique for module
     $isModuleRubriques  = array('modulenews','modulepage','modulemultipage');
     
     $isModuleRubriques      = array('modules','modulenews','modulecategory','modulepage','modulemultipage','moduleblock',
-                                    'modulelink','moduleimage','modulevideo','modulefaq','modulepartner');
+                                    'modulelink','moduleimage','modulevideo','modulefaq','modulepartner','moduleshop','modulesharedlinks');
     $isRubriquesRubriques   = array('rubriques');
     $isEmailingRubriques    = array('emailing');
     $isDashboardRubriques   = array('dashboard');
     $isDashboardTheme       = array('theme');
     $isUsersRubriques       = array('users','groupes','attributes');
     
+    $iSupportNotRead    = 0;
+    if (in_array('support',$doorGets->user['liste_module_interne'])) {
+        $iSupportNotRead    = $doorGets->getCountSupportNotRead();
+    } else {
+        $iSupportNotRead    = $doorGets->getCountUserSupportNotRead();
+    }
+
+    if (empty($iSupportNotRead)) { $iSupportNotRead = '';}
+    if (!empty($iSupportNotRead)) { $iSupportNotRead    = '<small class="info-counts">'.$iSupportNotRead.'</small>'; }
+    if ($iSupportNotRead > 100) { $iSupportNotRead    = '<small class="info-counts">+99</small>'; }
+
     $iCommentNotRead    = $doorGets->getCountCommentNotRead();
 
     if (empty($iCommentNotRead)) { $iCommentNotRead = '';}
     if (!empty($iCommentNotRead)) { $iCommentNotRead    = '<small class="info-counts">'.$iCommentNotRead.'</small>'; }
-    
+    if ($iCommentNotRead > 100) { $iCommentNotRead    = '<small class="info-counts">+99</small>'; }
+
+    $iMessageNotRead    = $doorGets->getCountMessageNotRead();
+
+    if (empty($iMessageNotRead)) { $iMessageNotRead = '';}
+    if (!empty($iMessageNotRead)) { $iMessageNotRead    = '<small class="info-counts">'.$iMessageNotRead.'</small>'; }
+    if ($iMessageNotRead > 100) { $iMessageNotRead    = '<small class="info-counts">+99</small>'; }
+
     $iInboxNotRead      = $doorGets->getCountInboxNotRead();
     
     if (empty($iInboxNotRead)) { $iInboxNotRead = '';}
     if (!empty($iInboxNotRead)) { $iInboxNotRead      = '<small class="info-counts">'.$iInboxNotRead.'</small>'; }
-    
+    if ($iInboxNotRead > 100) { $iInboxNotRead    = '<small class="info-counts">+99</small>'; }
+
     $iModerationWaitting = $doorGets->getCountModerationWaitting();
 
     if (empty($iModerationWaitting)) { $iModerationWaitting = '';}
     if (!empty($iModerationWaitting)) { $iModerationWaitting      = '<small class="info-counts">'.$iModerationWaitting.'</small>'; }
-    
+    if ($iModerationWaitting > 100) { $iModerationWaitting    = '<small class="info-counts">+99</small>'; }
+
     if (in_array('siteweb', $doorGets->user['liste_module_interne'])) {
         $Rubriques['siteweb']       = $doorGets->__('Site Web');
     }
@@ -208,8 +230,31 @@
             [?]   
         </ul>
         <ul class="nav navbar-nav navbar-right">   
-            
-            [{?(in_array('moderation', $doorGets->user['liste_module_interne'])):}]      
+            [{?(!empty($modulesCanShow)):}]
+                [{$z=0;$max=5;$total=count($modulesCanShow);}]
+                [{/($modulesCanShow as $value):}]
+                    [{?($z==$max):}]
+                    <li >
+                    <a class="dropdown-toggle" data-toggle="dropdown"  href="?controller=account" title="[{!$doorGets->__('Mon compte')!}]">
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu"> 
+                    [?]
+                    <li class="<?php if (in_array($menu,Constant::$modules) && $doorGets->Uri == $value['uri'] ) { echo 'active'; } ?>">
+                        <a href="?controller=module[{!$value['type']!}]&uri=[{!$value['uri']!}]"  >
+                            <img src="[{!$listeInfos[$value['type']]['image']!}]"  class="px15" >
+                            [{!$value['label']!}]
+                        </a>
+                    </li>
+                    [{?($z>=$max && $z==$total-1):}]
+                    </li>
+                    </ul>
+                    [?]
+                    [{$z++;}]
+                [/]
+            [?]
+            [{?((in_array('moderation', $doorGets->user['liste_module_interne']) && !SAAS_ENV) 
+                || (in_array('moderation', $doorGets->user['liste_module_interne']) && SAAS_ENV && SAAS_MODERATION)):}]      
             <li class="<?php if ($menu === 'moderation') { echo 'active'; } ?>">
                 <a href="?controller=moderation" title="[{!$doorGets->__('Modération')!}]">
                     <b class="glyphicon violet glyphicon-bell hidden-xs"></b>
@@ -221,7 +266,8 @@
                 </a>
             </li>
             [?]
-            [{?(in_array('inbox', $doorGets->user['liste_module_interne'])):}]      
+            [{?((in_array('inbox', $doorGets->user['liste_module_interne']) && !SAAS_ENV)
+                || (in_array('inbox', $doorGets->user['liste_module_interne']) && SAAS_ENV && SAAS_INBOX)):}]      
             <li class="<?php if ($menu === 'inbox') { echo 'active'; } ?>">
                 <a href="?controller=inbox" title="[{!$doorGets->__('Message')!}]">
                     <b class="glyphicon violet glyphicon-envelope hidden-xs"></b>
@@ -233,7 +279,8 @@
                 </a>
             </li>
             [?]
-            [{?(in_array('comment', $doorGets->user['liste_module_interne'])):}]
+            [{?((in_array('comment', $doorGets->user['liste_module_interne']) && !SAAS_ENV)
+                || (in_array('comment', $doorGets->user['liste_module_interne']) && SAAS_ENV && SAAS_COMMENT)):}]
             <li class="<?php if ($menu === 'comment') { echo 'active'; } ?>">
                 <a href="?controller=comment" title="[{!$doorGets->__('Commentaire')!}]">
                     <b class="glyphicon violet glyphicon-comment hidden-xs"></b>
@@ -245,20 +292,35 @@
                 </a>
             </li>
             [?]
+            [{?(
+                ((in_array('support_client', $doorGets->user['liste_module_interne']) || in_array('support', $doorGets->user['liste_module_interne'])) && !SAAS_ENV) 
+                || ((in_array('support_client', $doorGets->user['liste_module_interne']) || in_array('support', $doorGets->user['liste_module_interne']))  && SAAS_ENV && SAAS_SUPPORT) 
+            ):}]
+            <li class="divider-vertical"></li>
+            <li class="<?php if ($menu === 'support') { echo 'active'; } ?>">
+                <a href="?controller=support" title="[{!$doorGets->__('Support')!}]">
+                    <b class="glyphicon violet glyphicon-question-sign"></b>
+                    <span class="badge badge-important">[{!$iSupportNotRead!}]</span>
+                </a>
+            </li>
+            [?]
             <li class="divider-vertical"></li>
             <li class="<?php if ($menu === 'account') { echo 'active'; } ?>">
                 <a class="dropdown-toggle" data-toggle="dropdown"  href="?controller=account" title="[{!$doorGets->__('Mon compte')!}]">
                     <span class="visible-xs">
                         <img src="[{!URL.'data/users/'.$doorGets->user['avatar']!}]" class="avatar">
                         [{!$doorGets->__('Mon compte')!}] 
+                        <span class="badge badge-important">[{!$iMessageNotRead!}]</span>
                         <b class="caret"></b>
                     </span>
                     <span class="hidden-xs">
                         <img src="[{!URL.'data/users/'.$doorGets->user['avatar']!}]" class="avatar">
+                        <span class="badge badge-important">[{!$iMessageNotRead!}]</span>
                         <b class="caret"></b>
                     </span>
                 </a>
                 <ul class="dropdown-menu"> 
+                    [{?(in_array('showprofile', $doorGets->user['liste_module_interne'])):}]
                     <li >
                         <a href="[{!URL.'u/'.$doorGets->user['pseudo'].'/'!}]" title="[{!$doorGets->__('Afficher mon profil')!}]">
                             <b class="glyphicon glyphicon-user"></b> 
@@ -266,7 +328,8 @@
                         </a>
                     </li>
                     <li class="divider"></li>
-                    <li class="<?php if ($action === 'index'  && $menu !== 'inbox' && $menu !== 'dashboard' && $menu != 'myinbox') { echo 'active'; } ?>">
+                    [?]
+                    <li class="<?php if ($action === 'index'  && $menu !== 'inbox' && $menu !== 'dashboard' && $menu != 'myinbox' && $menu != 'address') { echo 'active'; } ?>">
                         <a href="?controller=account" title="[{!$doorGets->__('Gérer mon profil')!}]">
                             <b class="glyphicon glyphicon-cog"></b>
                             [{!$doorGets->__('Gérer mon profil')!}]
@@ -278,6 +341,16 @@
                         <a href="?controller=myinbox" title="[{!$doorGets->__('Boîte de récéption')!}]">
                             <b class="glyphicon glyphicon-inbox"></b>
                             [{!$doorGets->__('Boîte de récéption')!}]
+                            <span class="badge badge-important">[{!$iMessageNotRead!}]</span>
+                        </a>
+                    </li>
+                    <li class="divider"></li>
+                    [?]
+                    [{?(in_array('address', $doorGets->user['liste_module_interne'])):}]
+                    <li class="<?php if ($menu === 'address') { echo 'active'; } ?>">
+                        <a href="?controller=address" title="[{!$doorGets->__('Mes adresses')!}]">
+                            <b class="glyphicon glyphicon-road"></b>
+                            [{!$doorGets->__('Mes adresses')!}]
                         </a>
                     </li>
                     <li class="divider"></li>

@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 20, February 2014
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2013 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -495,7 +495,7 @@ class InboxView extends doorGetsUserView{
                         $urlMassdelete  = '<input id="'.$all[$i]["id"].'" type="checkbox" class="check-me-mass" >';
                         
                         $urlDelete      = '<a title="'.$this->doorGets->__('Supprimer').'" href="./?controller='.$this->doorGets->controllerNameNow().'&action=delete&id='.$all[$i]['id'].'"><b class="glyphicon glyphicon-remove red"></b></a>';
-                        $urlSelect        = '<a title="'.$this->doorGets->__('Afficher').'" href="./?controller='.$this->doorGets->controllerNameNow().'&action=select&id='.$all[$i]['id'].'"><b class="glyphicon glyphicon-file"></b></a>';
+                        $urlSelect        = '<a title="'.$this->doorGets->__('Afficher').'" href="./?controller='.$this->doorGets->controllerNameNow().'&action=select&id='.$all[$i]['id'].'"><b class="glyphicon glyphicon-zoom-in"></b></a>';
                         
                         $dateCreation = GetDate::in($all[$i]['date_creation'],2,$this->doorGets->myLanguage());
                         
@@ -504,13 +504,13 @@ class InboxView extends doorGetsUserView{
                         foreach($isFieldArraySearchType as $nameField => $value) {
                             
                             if ($nameField === 'sujet') {
-                               $all[$i][$nameField] = '<a title="'.$this->doorGets->__('Afficher').'" href="./?controller='.$this->doorGets->controllerNameNow().'&action=select&id='.$all[$i]['id'].'">'.$all[$i][$nameField].'</a>'; 
+                               $all[$i][$nameField] = $this->doorGets->_truncate($all[$i][$nameField]); 
                             }
                             
                             $block->addContent($nameField, $all[$i][$nameField]);
                         }
                         
-                        $block->addContent('date_creation',$dateCreation,'center');
+                        $block->addContent('date_creation',$dateCreation,'tb-50 center');
                         $block->addContent('edit',$urlSelect,'center');
                         $block->addContent('delete',$urlDelete,'center');
                         

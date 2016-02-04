@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -142,6 +142,18 @@ class doorGetsUserModuleController extends doorGetsUserController{
     
     public function addAction() {
         
+        $User                   = $this->doorGets->user;
+        $params                 = $this->doorGets->Params();
+        $lgActuel               = $this->doorGets->getLangueTradution();
+
+        $redirectUrlModule      = './?controller=modules&lg='.$lgActuel;
+        $moduleInfos            = $this->doorGets->moduleInfos($this->doorGets->Uri,$lgActuel);
+
+        if (!in_array($moduleInfos['id'], $User['liste_module_add'])) {
+            FlashInfo::set($this->doorGets->l("Vous n'avez pas les droits pour ajouter"),"error");
+            header('Location:./'); exit();
+        }
+
         $this->doorGets->Form = new Formulaire($this->doorGets->controllerNameNow().'_add');
         
         // Generate the model

@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -43,9 +43,61 @@
             <b class="glyphicon glyphicon-align-justify"></b> [{!$this->doorGets->__('Menu')!}]
         </legend>
         [{?($cAll != 0):}]
-            [{!$block->getHtml()!}]
+            <ul id="draggablePanelList" class="list-unstyled">
+            [{-($i=0;$i<$cAll;$i++):}]
+                <li class="panel panel-info">
+                    <div class="row panel-body">
+                        <div class="col-md-10">
+                            <input type="hidden" name="[{!$all[$i]['id']!}]" value="[{!$i!}]">
+                            [{!$all[$i]['title']!}]
+                        </div>
+                        <div class="col-md-1">
+                            [{!$all[$i]['urlEdit']!}]
+                        </div>
+                        <div class="col-md-1">
+                            [{!$all[$i]['urlDelete']!}]
+                        </div>
+                    </div>
+                </li>
+            [-]
+            </ul>
         [??]
-            <div class="alert alert-info">[{!$this->doorGets->__("Aucune rubrique")!}].</span>
+            <div class="alert alert-info text-center"><i class="fa fa-exclamation-triangle"></i> [{!$this->doorGets->__("Aucun résultat")!}]</span>
         [?]
     </div>
 </div>
+<script type="text/javascript">
+    window.addEventListener('load',function(){
+        var panelList = $('#draggablePanelList');
+
+        panelList.sortable({
+            // Only make the .panel-heading child elements support dragging.
+            // Omit this to make the entire <li>...</li> draggable.
+            handle: '.panel-body', 
+            update: function() {
+                var listToSend = "";
+                $('.panel', panelList).each(function(index, elem) {
+                        var $listItem = $(elem);
+                        newIndex = $listItem.index();
+                        var attrToSend = $listItem.find('input').attr('name');
+                        listToSend = listToSend + attrToSend + '|';
+                        $listItem.find('input').val(newIndex);
+                        
+                     // Persist the new indices.
+                });
+                // console.log(newIndex);
+                var url = BASE_URL + 'ajax/?controller=rubriques&action=updateOrder&value='+listToSend;
+
+                $.get(url , {} , function(data){
+                    var rep = JSON.parse(data);
+
+                    if (rep.code == 200) {
+                        console.log(rep);
+                    }
+                });
+                console.log(listToSend);
+            }
+        });
+    });
+        
+</script>

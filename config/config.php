@@ -1,9 +1,9 @@
 <?php
-define('SAAS_ENV',1);
+define('SAAS_ENV',false);
 define('ACTIVE_CACHE',false);
 define('ACTIVE_DEMO',false);
 define('KEY_SECRET','hlHftNZYjunk1UfKyiju');
-define('KEY_DOORGETS','4mHFPzLsMSzPRaYmXxW7');
+define('KEY_DOORGETS','10yFCJmUPsAuFKRwKGSt');
 define('APP',BASE.'doorgets/app/');
 define('CORE',BASE.'doorgets/core/');
 define('LIB',BASE.'doorgets/lib/');
@@ -26,11 +26,12 @@ define('CACHE_DB',BASE.'cache/database/');
 define('CACHE_TEMPLATE',BASE.'cache/template/');
 define('CACHE_THEME',BASE.'cache/themes/');
 define('PROTOCOL','http://');
-define('URL',PROTOCOL.'doorgets.cms:8888/');
-define('URL_ADMIN',PROTOCOL.'doorgets.cms:8888/');
-define('URL_USER',PROTOCOL.'doorgets.cms:8888/dg-user/');
+define('URL',PROTOCOL.'localhost:8888/');
+define('URL_ADMIN',URL.'');
+define('URL_USER',URL.'dg-user/');
 define('SQL_HOST','localhost');
 define('SQL_LOGIN','root');
 define('SQL_PWD','root');
-define('SQL_DB','dgcms');
+define('SQL_DB','d611');
+define('SQL_VERSION','5.5.43');
 require_once CONFIGURATION.'includes.php';

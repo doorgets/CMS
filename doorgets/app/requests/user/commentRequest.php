@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -82,7 +82,7 @@ class CommentRequest extends doorGetsUserRequest{
                     if (empty($this->doorGets->Form->e)) {
                         
                         $this->doorGets->dbQD($isContent['id'],$this->doorGets->Table);
-                        FlashInfo::set("Le commentaire à été corréctement supprimer.");
+                        FlashInfo::set($this->doorGets->__("Le commentaire à été corréctement supprimer"));
                         header('Location:./?controller='.$this->doorGets->controllerNameNow()); exit();
                         
                     }
@@ -111,7 +111,7 @@ class CommentRequest extends doorGetsUserRequest{
                             
                         }
                         
-                        FlashInfo::set("Les données sont supprimées.");
+                        FlashInfo::set($this->doorGets->__("Les données sont supprimées"));
                         header('Location:./?controller='.$this->doorGets->controllerNameNow()); exit();
                         
                     }

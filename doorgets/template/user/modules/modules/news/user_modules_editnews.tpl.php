@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -65,9 +65,9 @@
                     <div class="separateur-tb"></div>
                 </div>
                 <div class="tab-pane fade" id="tabs-2">
-                    [{!$this->doorGets->Form->textarea($this->doorGets->__('Haut de page').'<br />','top_tinymce',htmlspecialchars_decode(html_entity_decode($isContent['top_tinymce'])),'tinymce ckeditor')!}]
+                    [{!$this->doorGets->Form->textarea($this->doorGets->__('Haut de page').'<br />','top_tinymce',$isContent['top_tinymce'],'tinymce ckeditor')!}]
                     <div class="separateur-tb"></div>
-                    [{!$this->doorGets->Form->textarea($this->doorGets->__('Bas de page').'<br />','bottom_tinymce',htmlspecialchars_decode(html_entity_decode($isContent['bottom_tinymce'])),'tinymce ckeditor')!}]
+                    [{!$this->doorGets->Form->textarea($this->doorGets->__('Bas de page').'<br />','bottom_tinymce',$isContent['bottom_tinymce'],'tinymce ckeditor')!}]
                     <div class="separateur-tb"></div>
                 </div>
                 <div class="tab-pane fade" id="tabs-3">

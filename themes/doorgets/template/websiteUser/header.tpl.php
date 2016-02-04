@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -92,14 +92,25 @@ $url = PROTOCOL.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 
         [{!$rssLinks!}]
         
-        <link href="[{!URL!}]skin/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <link href="[{!URL!}]skin/lib/bootstrap/css/bootstrap.[{!$bootstrap_version!}].min.css" rel="stylesheet" type="text/css" />
         <link href="[{!URL!}]skin/lib/magnificpopup/dist/magnific-popup.css" rel="stylesheet" type="text/css" />
         <link href="[{!URL!}]themes/[{!$this->theme!}]/css/doorgets.css" rel="stylesheet" type="text/css" />
+        <link href="[{!URL.'skin/css/font-awesome/css/font-awesome.min.css'!}]" rel="stylesheet" type="text/css" />
+        <link href="[{!URL.'skin/lib/bootstrap-rating/bootstrap-rating.css'!}]" rel="stylesheet" type="text/css" />
+        <link href="[{!URL!}]skin/lib/owl-carousel/owl.carousel.css" rel="stylesheet" type="text/css" >
+        <link href="[{!URL!}]skin/lib/owl-carousel/owl.theme.css" rel="stylesheet" type="text/css" >
 
         [{?($this->isRtlLanguage):}]
             <link href="[{!URL!}]themes/[{!$this->theme!}]/css/doorgets.rtl.css" rel="stylesheet" type="text/css" />
         [?]
-	
+	    <script type="text/javascript">
+            var BASE_URL = "[{!URL!}]"; 
+            var SPIN_URL = "[{!URL!}]skin/img/spinner.gif";
+            var LG_CURRENT = "[{!$this->myLanguage!}]";
+            var MODULE_URI = "[{!$this->getModule()!}]";
+            var CONTENT_URI = "[{!$this->uri!}]";
+        </script>
+
     </head>
     <body>
     

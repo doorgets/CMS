@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -90,6 +90,7 @@ class doorgetsWebsiteUserController {
         
         if (!class_exists ($nameView))
         { echo 'Class  not found : ' . $nameView.' : '; exit(); }
+
         $view = new $nameView($this->Website);
         $this->Website->setContentView($view->getContent());
     

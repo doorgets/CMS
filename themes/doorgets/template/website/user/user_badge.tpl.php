@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -34,6 +34,7 @@
 
 ?>
 <!-- doorGets:start:user/user_badge -->
+[{?($hasBadge):}]
 <div class="author-badge row">
     [{?(!empty($networks)):}]
     <div class="col-md-12 author-badge-follow">
@@ -55,4 +56,5 @@
         <p>[{!$_description!}]</p>
     </div>
 </div>
+[?]
 <!-- doorGets:end:user/user_badge -->

@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -39,7 +39,13 @@ class GenSitemapXml extends Langue{
     public function __construct($lg= 'fr') {
         
         parent::__construct($lg);
-        $this->lg = URL.'t/'.$lg.'/';
+
+        // Merci à www.caron.ws
+        $this->lg = URL;
+        $cLanguages = count($this->allLanguagesWebsite);
+        if ($cLanguages > 1) {
+            $this->lg = URL.'t/'.$lg.'/';
+        }
         $base = $this->lg;
         
         $this->xmlOut = '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
@@ -102,6 +108,8 @@ class GenSitemapXml extends Langue{
                         $this->getSysMultipage($name,$tab['label']);
                         break;
                     case 'news':
+                    case 'shop':
+                    case 'sharedlinks':
                     case 'blog':
                     case 'image':
                     case 'video':
@@ -120,9 +128,6 @@ class GenSitemapXml extends Langue{
                 
             }
         }
-        
-        
-        
     }
     
     private function getSysPage($name,$titre) {
@@ -161,7 +166,6 @@ class GenSitemapXml extends Langue{
         AND _categories.uri_module = '$name'
         ORDER BY _categories.ordre ASC 
         LIMIT 0 , 30";
-        
         $isContent = $this->dbQ($sqlT);
         $cContents = count($isContent);
         if ($cContents > 0) {
@@ -180,8 +184,9 @@ class GenSitemapXml extends Langue{
     private function getSysModuleContent($name,$categorie) {
         
         $out = '';
-        $table = '_m_'.$name;
-        $tableTrad = '_m_'.$name.'_traduction';
+        $nameTable = $this->getRealUri($name);
+        $table = '_m_'.$nameTable;
+        $tableTrad = $table.'_traduction';
         
         $lgActu = $this->myLanguage();
         
@@ -216,8 +221,9 @@ class GenSitemapXml extends Langue{
     private function getSysModuleContentMultipage($name) {
         
         $out = '';
-        $table = '_m_'.$name;
-        $tableTrad = '_m_'.$name.'_traduction';
+        $nameTable = $this->getRealUri($name);
+        $table = '_m_'.$nameTable;
+        $tableTrad = $table.'_traduction';
         
         $lgActu = $this->myLanguage();
         

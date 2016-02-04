@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -31,13 +31,13 @@
 ******************************************************************************
 ******************************************************************************/
 
-if (isset($isContent)) { 
+if (isset($isContent) && $_uri_module != 'delete') { 
 
     if (empty($isContent['nom']) && array_key_exists('titre', $isContent) && !empty($isContent['titre'])) {
         $isContent['nom'] = $isContent['titre'];
     }
 ?>
-<span class="create" ><a class="doorGets-comebackform" href="?controller=modules&lg=[{!$lgActuel!}]"><img src="[{!BASE_IMG!}]retour.png" class="Retour-img"> [{!$this->doorGets->__('Retour')!}]</a></span>
+<span class="create" ><a class="doorGets-comebackform" href="?controller=modules&lg=[{!$lgActuel!}]"><i class="fa fa-undo fa-lg green-c"></i> [{!$this->doorGets->__('Retour')!}]</a></span>
 <span class="create" ><a  href="?controller=module[{!$_uri_module!}]&uri=[{!$isContent['uri']!}]&lg=[{!$lgActuel!}]"><b class="glyphicon glyphicon-pencil"></b> [{!$this->doorGets->__('Gérer le contenu')!}]</a></span>
 <span class="create" >[{!$this->doorGets->genLangueMenuAdmin()!}]</span>
 <img src="[{!$listeInfos[$_uri_module]['image']!}]" class="px25" />

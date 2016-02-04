@@ -2,8 +2,8 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
-    doorGets it's free PHP Open Source CMS PHP & MySQL
+    doorGets 7.0 - 01, February 2016
+    doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
 /*******************************************************************************
@@ -35,44 +35,56 @@
 
 ?>
 <div class="doorGets-rubrique-center">
-    <div class="doorGets-rubrique-center-title page-header">
-
+    <div class="doorGets-rubrique-center-title">
+        
     </div>
     <div class="doorGets-rubrique-center-content">
         <legend>
-            <span class="create" > <a href="?controller=modules&action=type"class="violet" ><b class="glyphicon glyphicon-plus"></b> [{!$this->doorGets->__('Créer un module')!}]</a></span>
-            <b class="glyphicon glyphicon-asterisk"></b> [{!$this->doorGets->__('Modules')!}]
+            <span class="create" ><a href="?controller=modules&action=type"class="violet" ><b class="glyphicon glyphicon-plus"></b>  [{!$this->doorGets->__('Créer un module')!}]</a></span>
             <span class="create">[{!$this->doorGets->genLangueMenuAdmin()!}]</span>
+            <i class="fa fa-asterisk"></i> [{!$this->doorGets->__('Modules')!}] 
         </legend>
-        
-        [{?($cAll === 0 && $callWidgets === 0):}]
-            <div class="alert alert-info text-center">[{!$this->doorGets->__("Aucun module")!}].</span>
-        [??]
-            <div class="panel panel-default module-list-show">
-                <div class="panel-heading">
-                    <div class="title"><b class="glyphicon glyphicon-asterisk"></b> [{!$this->doorGets->__("Modules")!}]</div>
+        <div style="width: 100%;padding: 10px 0 0;overflow: hidden;">
+            
+            <div style="overflow: hidden;">
+                    <div style="float: left;padding: 7px 0 ">
+                    <i>
+                        [{?(!empty($cAll)):}] [{!($ini+1)!}] [{!$this->doorGets->__("à")!}] [{!$finalPer!}] [{!$this->doorGets->__("sur")!}] [?]
+                        <b>[{!$cResultsInt.' '!}] [{?( $cResultsInt > 1 ):}][{!$this->doorGets->__('Modules')!}] [??] [{!$this->doorGets->__('Module')!}] [?]</b>
+                        [{?(!empty($q)):}] [{!$this->doorGets->__('pour la recherche : ').' <b>'.$q.'</b>'!}] [?]
+                    </i>
+                    <span id="doorGets-sort-count">
+                        [{!$this->doorGets->__('Par')!}]
+                        <a href="[{!$urlPagePosition!}]&gby=10" [{?($per=='10'):}] class="active" [?]>10</a>
+                        <a href="[{!$urlPagePosition!}]&gby=20" [{?($per=='20'):}] class="active" [?]>20</a>
+                        <a href="[{!$urlPagePosition!}]&gby=50" [{?($per=='50'):}] class="active" [?]>50</a>
+                        <a href="[{!$urlPagePosition!}]&gby=100" [{?($per=='100'):}] class="active" [?]>100</a>
+                    </span>
+                     
                 </div>
-                <div class="panel-body">
-                    [{?($cAll != 0):}]
-                        [{!$block->getHtml()!}]
-                    [??]
-                        <div class="alert alert-info text-center">[{!$this->doorGets->__("Aucun module")!}].</span>
-                    [?]
+                <div  class="doorGets-box-search-module">
+                    [{!$this->doorGets->Form['_search_filter']->open('post',$urlPageGo,'')!}]
+                    [{!$this->doorGets->Form['_search_filter']->submit($this->doorGets->__('Chercher'),'','btn btn-success')!}]
+                    <a href="?controller=[{!$this->doorGets->controllerNameNow()!}]&lg=[{!$lgActuel!}]" class="btn btn-danger doorGets-filter-bt" >[{!$this->doorGets->__('Reset')!}]</a>
                 </div>
             </div>
             <div class="separateur-tb"></div>
-            <div class="panel panel-default module-list-show">
-                <div class="panel-heading">
-                    <div class="title"><b class="glyphicon glyphicon-asterisk"></b> [{!$this->doorGets->__("Widgets")!}]</div>
+            [{!$block->getHtml()!}]
+            [{!$this->doorGets->Form['_search']->close()!}]
+            [{?(!empty($cAll)):}]
+            
+                <br />
+                [{!$valPage!}]
+                <br /><br />
+                
+            [??]
+               
+                <div class="alert alert-info text-center">
+                    <i class="fa fa-exclamation-triangle"></i> [{!$this->doorGets->__("Aucun résultat");}]
                 </div>
-                <div class="panel-body">
-                    [{?($callWidgets != 0):}]
-                        [{!$blockWidgets->getHtml()!}]
-                    [??]
-                        <div class="alert alert-info text-center">[{!$this->doorGets->__("Aucun module")!}].</span>
-                    [?]
-                </div>
-            </div>
-        [?]
+                
+            [?] 
+        </div>
+        
     </div>
 </div>

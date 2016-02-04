@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -46,17 +46,13 @@ class DashboardView extends doorGetsUserView{
 
         $lgActuel           = $this->doorGets->getLangueTradution();
         $_modules = array();
+
         $modules = $allModules = $this->doorGets->loadModules(true,true);
 
-        $modulesBlocks      = $this->doorGets->loadModulesBlocks(true);
-        $modulesGenforms    = $this->doorGets->loadModulesGenforms(true);
-
-        $canAddType = array('blog','news','multipage','video','faq','image','partner','genform','translator','sharedlinks');
+        $canAddType = array_merge(Constant::$modulesCanAdd,array('genform','carousel','survey','translator'));
         $iCountContents = 0;
+        $arrForCountSearchQuery = array();
         
-        foreach($modulesGenforms as $k => $v) {
-            $modulesGenforms[$k]['count']    = $this->doorGets->getCountTable('_m_'.$v['uri']);
-        }
         
         foreach($modules as $k => $v) {
             
@@ -75,7 +71,7 @@ class DashboardView extends doorGetsUserView{
                 
                 $moduleInfos    = $this->doorGets->moduleInfos($this->doorGets->Uri,$lgActuel);
         
-                (in_array($moduleInfos['id'], $User['liste_module_modo'])) ? $is_modo = true : $is_modo = false;
+                $is_modo = (in_array($moduleInfos['id'], $User['liste_module_modo']))?true:false;
                 (
                     in_array('module', $User['liste_module_interne'])  
                     && in_array('module_'.$moduleInfos['type'],  $User['liste_module_interne'])
@@ -83,7 +79,7 @@ class DashboardView extends doorGetsUserView{
                 ) ? $is_modules_modo = true : $is_modules_modo = false;
 
                 if (!$is_modo) {
-                    $arrForCountSearchQuery = array();
+                    
                     $arrForCountSearchQuery[] = array('key'=>"id_user",'type'=>'=','value'=>$User['id']);
                 }
 
@@ -112,18 +108,32 @@ class DashboardView extends doorGetsUserView{
         include CONFIG.'modules.php';
         
         $lastComments = $lastInbox = array();
-        $iComments = $iInbox = 0;
+        $iComments = $iInbox = $iSupport =0;
 
-        $is_inbox_modo = false;
-        if (!empty($User) && in_array('inbox', $User['liste_module_interne'])) {
-            $is_inbox_modo = true;
+        $is_user_modo = false;
+        if (!empty($User) && (in_array('users', $User['liste_module_interne']) && !SAAS_ENV) ||
+            (in_array('users',  $User['liste_module_interne']) && SAAS_ENV && !SAAS_USERS)) {
+            $is_user_modo = true;
         }
 
         $is_comment_modo = false;
-        if (!empty($User) && in_array('comment', $User['liste_module_interne'])) {
+        if (!empty($User) && (in_array('comment', $User['liste_module_interne']) && !SAAS_ENV) ||
+            (in_array('comment',  $User['liste_module_interne']) && SAAS_ENV && !SAAS_COMMENT)) {
             $is_comment_modo = true;
         }
-        
+
+        $is_inbox_modo = false;
+        if (!empty($User) && (in_array('inbox', $User['liste_module_interne']) && !SAAS_ENV) ||
+            (in_array('inbox',  $User['liste_module_interne']) && SAAS_ENV && !SAAS_INBOX)) {
+            $is_inbox_modo = true;
+        }
+
+        $is_support_modo = false;
+        if (!empty($User) && (in_array('support', $User['liste_module_interne']) && !SAAS_ENV) ||
+            (in_array('support',  $User['liste_module_interne']) && SAAS_ENV && !SAAS_INBOX)) {
+            $is_support_modo = true;
+        }
+
         if (array_key_exists($this->Action,$Rubriques) )
         {
             switch($this->Action) {
@@ -134,6 +144,7 @@ class DashboardView extends doorGetsUserView{
 
                     $filterModules = array(
                         array('key'=>'type','type'=>'!=','value'=>'block'),
+                        array('key'=>'type','type'=>'!=','value'=>'carousel'),
                     );
                     $filterValidation = array(
                         array('key'=>'validation','type'=>'=','value'=>'3'),
@@ -150,9 +161,11 @@ class DashboardView extends doorGetsUserView{
                         $iInbox = $this->doorGets->getCountTable('_dg_inbox');
                     }
 
+                    if ($is_support_modo) {
+                        $iSupport = $this->doorGets->getCountTable('_support');
+                    }
+
                     $iModules = count($allModules);
-                    $iModulesBlocks = count($modulesBlocks);
-                    $iModulesGenforms = count($modulesGenforms);
 
                     if ($is_comment_modo) {
                         $lastComments = $this->doorGets->dbQ("SELECT * FROM _dg_comments ORDER BY date_creation DESC LIMIT 10");
@@ -162,6 +175,47 @@ class DashboardView extends doorGetsUserView{
                         $lastInbox = $this->doorGets->dbQ("SELECT * FROM _dg_inbox ORDER BY date_creation DESC LIMIT 10");
                     }
 
+                    if ($is_support_modo) {
+                        $lastSupport = $this->doorGets->dbQ("SELECT * FROM _support ORDER BY date_creation DESC LIMIT 10");
+                    }
+
+                    if ($is_user_modo) {
+                        // Users
+                        $UsersInfoQuery = new UsersInfoQuery($this->doorGets);
+
+                        if (!empty($this->doorGets->user['liste_enfant_modo'])) {
+                        
+                            foreach ($this->doorGets->user['liste_enfant_modo'] as $idGroup) {
+                        
+                                $UsersInfoQuery->filterByNetwork($this->doorGets->user['liste_enfant_modo'],'OR');
+                            }
+                        }
+                        
+                        $UsersInfoQuery->orderByDateCreation('desc')
+                            ->limit(500)
+                            ->find();
+
+                        $usersInfoCollection = $UsersInfoQuery->_getEntities('array');
+
+                        $totalUsers = $UsersInfoQuery->countTotal();
+                        $totalUsers = number_format($totalUsers,0,',',' ');
+
+                        
+
+                        // // Orders
+                        // $OrderQuery = new OrderQuery($this->doorGets);
+                        // $OrderQuery->orderByDateCreation('desc')
+                        //     ->limit(500)
+                        //     ->find();
+
+                        // $orders = array();
+                        // $ordersCollection = $OrderQuery->_getEntities('array');
+
+                        // $totalOrders = $OrderQuery->countTotal();
+                        // $totalOrders = number_format($totalOrders,0,',',' ');
+                        
+                    }
+                    // Activity
                     $UsersTrackQuery = new UsersTrackQuery($this->doorGets);
                     $UsersTrackQuery->filterByIdUser($this->doorGets->user['id'],'OR');
 
@@ -189,6 +243,7 @@ class DashboardView extends doorGetsUserView{
                             if (array_key_exists($userTrack['uri_module'],$_modules)) {
                                 
                                 $typeModule = 'module'.$_modules[$userTrack['uri_module']]['type'];
+                                
                                 if (!array_key_exists($userTrack['id_user'],$_userInfos)) {
 
                                     $userProfile = $this->doorGets->getProfileLight($userTrack['id_user']);
@@ -269,6 +324,85 @@ class DashboardView extends doorGetsUserView{
                             }
                         }
                     }
+
+                    $type = 'month';
+                    $stats = new StatsService($this->doorGets);
+
+                    $hasUser = (in_array('stats_user',$this->doorGets->user['liste_module_interne']))?true:false;
+                    //$hasCart = (in_array('stats_cart',$this->doorGets->user['liste_module_interne']))?true:false;
+                    //$hasOrder = (in_array('stats_order',$this->doorGets->user['liste_module_interne']))?true:false;
+                    $hasContrib = (in_array('stats_contrib',$this->doorGets->user['liste_module_interne']))?true:false;
+                    $hasComment = (in_array('stats_comment',$this->doorGets->user['liste_module_interne']))?true:false;
+                    $hasCloud = (in_array('stats_cloud',$this->doorGets->user['liste_module_interne']))?true:false;
+                    $hasTickets = (in_array('stats_tickets',$this->doorGets->user['liste_module_interne']))?true:false;
+
+                    $jsChartTitleFinal = '';
+                    $jsChartFinal = '';
+                    $hasStats = false;
+
+                    if (in_array('stats_dash',$this->doorGets->user['liste_module_interne'])) {
+                        foreach ($stats->data['accounts'][$type] as $date => $sum) {
+
+                            $jsChartTitle = "['".$this->doorGets->__('Date')."',";
+                            $jsChart = "['$date',";
+                            
+                            if ($hasUser) {
+                                $hasStats = true;
+                                $jsChartTitle .= "'".$this->doorGets->__('Inscriptions')."', ";
+                                $jsChart .= $stats->data['accounts'][$type][$date].',';
+                            }
+
+                            if ($hasTickets) {
+                                $hasStats = true;
+                                $jsChartTitle .= "'".$this->doorGets->__('Tickets')."', ";
+                                $jsChart .= $stats->data['tickets'][$type][$date].',';
+                            }
+                            
+                            // if ($hasCart) {
+                            //     $hasStats = true;
+                            //     $jsChartTitle .= "'".$this->doorGets->__('Paniers')."', ";
+                            //     $jsChart .= $stats->data['carts'][$type][$date].',';
+                            // }
+                            
+                            // if ($hasOrder) {
+                            //     $hasStats = true;
+                            //     $jsChartTitle .= "'".$this->doorGets->__('Commandes')."', ";
+                            //     $jsChart .= $stats->data['orders'][$type][$date].',';
+                            // }
+                            
+                            if ($hasContrib) {
+                                $hasStats = true;
+                                $jsChartTitle .= "'".$this->doorGets->__('Contributions')."', ";
+                                $jsChart .= $stats->data['contributions'][$type][$date].',';
+                            }
+                            
+                            if ($hasComment) {
+                                $hasStats = true;
+                                $jsChartTitle .= "'".$this->doorGets->__('Commentaires')."', ";
+                                $jsChart .= $stats->data['comments'][$type][$date].',';
+                            }
+                            
+                            if ($hasCloud) {
+                                $hasStats = true;
+                                $jsChartTitle .= "'".$this->doorGets->__('Cloud')."',";
+                                $jsChart .= $stats->data['cloud'][$type][$date].',';
+                            }
+
+                            if ($hasStats) {
+                                $jsChartTitle = substr($jsChartTitle,0,-1);
+                                $jsChart = substr($jsChart,0,-1);    
+                            }
+                            
+                            $jsChartTitle .= "],
+                            ";
+                            $jsChart .= "],
+                            ";
+                        
+                            $jsChartTitleFinal = $jsChartTitle;
+                            $jsChartFinal .= $jsChart;
+                        }
+                    }
+                    
 
                     break;
             }

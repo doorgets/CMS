@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -55,52 +55,56 @@ class BlogView extends doorGetsApiView{
         $idPreviousContent  = 0;
         $id                 = 0;
 
-        // Check if is content modo
-        (in_array($moduleInfos['id'], $User['liste_module_modo'])) ? $is_modo = true : $is_modo = false;
+        if (!empty($User)) {
 
-        // Check if is module modo
-        (
-            in_array('module', $User['liste_module_interne'])  
-            && in_array('module_'.$moduleInfos['type'],  $User['liste_module_interne'])
+            // Check if is content modo
+            $is_modo = (in_array($moduleInfos['id'], $User['liste_module_modo']))?true:false;
 
-        ) ? $is_modules_modo = true : $is_modules_modo = false;
+            // Check if is module modo
+            (
+                in_array('module', $User['liste_module_interne'])  
+                && in_array('module_'.$moduleInfos['type'],  $User['liste_module_interne'])
 
-        // check if user can edit content
-        (in_array($moduleInfos['id'], $User['liste_module_edit'])) ? $user_can_edit = true : $user_can_edit = false;
+            ) ? $is_modules_modo = true : $is_modules_modo = false;
 
-        // check if user can delete content
-        (in_array($moduleInfos['id'], $User['liste_module_delete'])) ? $user_can_delete = true : $user_can_delete = false;
+            // check if user can edit content
+            $user_can_edit = (in_array($moduleInfos['id'], $User['liste_module_edit']))?true:false;
 
-        // get Content for edit / delete
-        $params = $this->doorGets->Params();
-        if (array_key_exists('id',$params['GET'])) {
-            
-            $id = $params['GET']['id'];
-            $isContent = $this->doorGets->dbQS($id,$this->doorGets->Table);
-            
-            if (!empty($isContent)) {
+            // check if user can delete content
+            $user_can_delete = (in_array($moduleInfos['id'], $User['liste_module_delete']))?true:false;
+
+            // get Content for edit / delete
+            $params = $this->doorGets->Params();
+            if (array_key_exists('id',$params['GET'])) {
                 
-                if ($lgGroupe = @unserialize($isContent['groupe_traduction'])) {
+                $id = $params['GET']['id'];
+                $isContent = $this->doorGets->dbQS($id,$this->doorGets->Table);
+                
+                if (!empty($isContent)) {
                     
-                    $idLgGroupe = $lgGroupe[$lgActuel];
-                    
-                    $isContentTraduction = $this->doorGets->dbQS($idLgGroupe,$this->doorGets->Table.'_traduction');
-                    
-                    if (!empty($isContentTraduction)) {
+                    if ($lgGroupe = @unserialize($isContent['groupe_traduction'])) {
                         
-                        $isContent = array_merge($isContent,$isContentTraduction);
-                        $this->isContent = $isContent;
+                        $idLgGroupe = $lgGroupe[$lgActuel];
+                        
+                        $isContentTraduction = $this->doorGets->dbQS($idLgGroupe,$this->doorGets->Table.'_traduction');
+                        
+                        if (!empty($isContentTraduction)) {
+                            
+                            $isContent = array_merge($isContent,$isContentTraduction);
+                            $isContent['article_tinymce'] = html_entity_decode($isContent['article_tinymce']);
+                                
+                            $this->isContent = $isContent;
 
-                        $idNextContent      = $this->doorGets->getIdContentPosition($isContent['id_content']);
-                        $idPreviousContent  = $this->doorGets->getIdContentPosition($isContent['id_content'],'prev');
-                    
-                    } else {
+                            $idNextContent      = $this->doorGets->getIdContentPosition($isContent['id_content']);
+                            $idPreviousContent  = $this->doorGets->getIdContentPosition($isContent['id_content'],'prev');
+                        
+                        } else {
 
-                        $this->isContent = $isContent = array();
+                            $this->isContent = $isContent = array();
+                        }
                     }
                 }
             }
-            
         }
         
         switch ($this->doorGets->requestMethod) {
@@ -228,8 +232,8 @@ class BlogView extends doorGetsApiView{
                                             $toFormat = trim($params['POST']['doorGets_search_filter_q_'.$valEnd.'_end']);
                                         }
                                         
-                                        $isValStart = $this->validateDate($fromFormat);
-                                        $isValEnd   = $this->validateDate($toFormat);
+                                        $isValStart = $this->doorGets->validateDate($fromFormat);
+                                        $isValEnd   = $this->doorGets->validateDate($toFormat);
                                         
                                         $from = "";
                                         $to = "";
@@ -318,11 +322,11 @@ class BlogView extends doorGetsApiView{
                         
                         $getCategorie = $params['GET']['categorie'];
                         
-                        $arrForCountSearchQuery[] = array('key'=>$this->doorGets->Table.'.categorie','type'=>'like','value'=>$getCategorie.',');
+                        $arrForCountSearchQuery[] = array('key'=>$this->doorGets->Table.'.categorie','type'=>'like','value'=>'#'.$getCategorie.',');
                         
                         $cResultsInt = $this->doorGets->getCountTable($tAll,$arrForCountSearchQuery);
                         
-                        $sqlCategorie = " AND ".$this->doorGets->Table.".categorie LIKE '%".$getCategorie.",%'";
+                        $sqlCategorie = " AND ".$this->doorGets->Table.".categorie LIKE '%#".$getCategorie.",%'";
                         
                     }
                     
@@ -401,6 +405,7 @@ class BlogView extends doorGetsApiView{
                             }
                             
                             $all[$pos]['id'] = $all[$pos]['id_content'];
+                            $all[$pos]['article_tinymce'] = $this->doorGets->_truncate(html_entity_decode($all[$pos]['article_tinymce']));
                             unset($all[$pos]['groupe_traduction']);
                             unset($all[$pos]['id_user']);
                             unset($all[$pos]['id_groupe']);

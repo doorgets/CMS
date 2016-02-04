@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -34,12 +34,13 @@
 
 class Template{
     
+    public static $withCache = false;
+
     static function getView($name,$userName = '__')
     {
         if (empty($userName) || is_string($userName)) {
             $userName = '__';
         }
-
         $cacheDirectory = CACHE_TEMPLATE;
         $userCacheDirectory = $cacheDirectory;
 
@@ -77,11 +78,11 @@ class Template{
             
         }
         
-        if (is_file($fileTemp) && ACTIVE_CACHE )
+        if (is_file($fileTemp) && self::$withCache)
         {
             return $fileTemp;
         }
-        
+
         $nameFile = $name.'.php';
         $file = TEMPLATE.$name.'.tpl.php';
         
@@ -188,7 +189,7 @@ class Template{
             
         }
         
-        if (is_file($fileTemp) && ACTIVE_CACHE )
+        if (is_file($fileTemp) && self::$withCache)
         {
             return $fileTemp;
         }
@@ -245,9 +246,14 @@ class Template{
         
     }
 
+    // static function getWebsiteUserView($name,$theme="doorgets",$userName = '__')
+    // {
+    //     return self::getWebsiteView($name,$theme,$userName);
+    // }
+
     static function getWebsiteUserView($name,$theme="doorgets",$userName = '__')
     {
-        
+
         if (empty($userName) || is_string($userName)) {
             $userName = '__';
         }
@@ -299,7 +305,7 @@ class Template{
             
         }
         
-        if (is_file($fileTemp) && ACTIVE_CACHE )
+        if (is_file($fileTemp) && self::$withCache)
         {
             return $fileTemp;
         }
@@ -356,5 +362,17 @@ class Template{
         
     }
 
-    
+    static function get($name,$params = array()) {
+        
+        if (!empty($params)) {
+            foreach ($params as $key => $value) {
+                 $$key = $value;
+            }
+        }
+
+        $tpl = Template::getView($name); 
+        ob_start(); if (is_file($tpl)) { include $tpl; } $out = ob_get_clean();
+
+        return $out;
+    }
 }

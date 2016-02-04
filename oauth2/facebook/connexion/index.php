@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -40,6 +40,34 @@ require_once BASE.'config/config.php';
 
 define('BASE_URL',URL);
 
+// Facebook API
+$phpVersion = phpversion();
+
+if($phpVersion >= '5.4'){
+    include BASE.'doorgets/lib/facebook/src/Facebook/FacebookResponse.php';
+    include BASE.'doorgets/lib/facebook/src/Facebook/GraphObject.php';
+    include BASE.'doorgets/lib/facebook/src/Facebook/GraphSessionInfo.php';
+
+    include BASE.'doorgets/lib/facebook/src/Facebook/FacebookSession.php';
+    include BASE.'doorgets/lib/facebook/src/Facebook/FacebookRequest.php';
+    include BASE.'doorgets/lib/facebook/src/Facebook/FacebookRedirectLoginHelper.php';
+    include BASE.'doorgets/lib/facebook/src/Facebook/FacebookSignedRequestFromInputHelper.php';
+    include BASE.'doorgets/lib/facebook/src/Facebook/FacebookCanvasLoginHelper.php';
+    include BASE.'doorgets/lib/facebook/src/Facebook/Entities/AccessToken.php';
+    include BASE.'doorgets/lib/facebook/src/Facebook/HttpClients/FacebookHttpable.php';
+    include BASE.'doorgets/lib/facebook/src/Facebook/HttpClients/FacebookCurl.php';
+    include BASE.'doorgets/lib/facebook/src/Facebook/HttpClients/FacebookCurlHttpClient.php';
+    include BASE.'doorgets/lib/facebook/src/Facebook/FacebookSDKException.php';
+    include BASE.'doorgets/lib/facebook/src/Facebook/FacebookRequestException.php';
+    include BASE.'doorgets/lib/facebook/src/Facebook/FacebookAuthorizationException.php';
+
+    include BASE.'doorgets/lib/facebook/src/Facebook/GraphLocation.php';
+    include BASE.'doorgets/lib/facebook/src/Facebook/GraphUser.php';
+} else {
+  exit();  
+}
+
+
 // Authentification User
 
 $Auth = new AuthUser();
@@ -57,7 +85,7 @@ if(array_key_exists('backurl',$_GET)) {
 $crud = new CRUD();
 
 $urlTraduction = '';
-$website = $crud->dbQS(1,'_website');
+$website = $crud->dbQS(Constant::$websiteId,'_website');
 if (!empty($website)) {
 	
     $langueGroupe = @unserialize($website['langue_groupe']);

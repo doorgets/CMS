@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 20, February 2014
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -75,7 +75,7 @@ class AttributesView extends doorGetsUserView{
                         
                         $isContent = array_merge($isContent,$isContentTraduction);
 
-                        $isContent['params']            = @unserialize($isContent['params']);
+                        $isContent['params']            = @unserialize(base64_decode($isContent['params']));
                         $isContent['groupe_traduction'] = @unserialize($isContent['groupe_traduction']);
 
                         $this->isContent = $isContent;
@@ -118,18 +118,33 @@ class AttributesView extends doorGetsUserView{
                     
                     $params = $this->doorGets->Params();
                     $lgActuel = $this->doorGets->getLangueTradution();
-                    
+                    $arFilterActivation = $this->doorGets->getArrayForms('content_activation');
+                    $groupes = $this->doorGets->loadGroupesOptionToSelect($this->doorGets->Table,'type');
+
                     $isFieldArray       = array(
-                        "active"=>$this->doorGets->__('Actif'),
                         "id"=>$this->doorGets->__('Id'),
                         "title"=>$this->doorGets->__('Titre'),
+                        'uri' => $this->doorGets->__('Clé'),
                         "type"=>$this->doorGets->__('Type'),
-                        "date_creation"=>$this->doorGets->__('Date')
+                        "active"=>$this->doorGets->__('Actif')
                     );
                     
-                    $isFieldArraySort   = array('active','id','type','title','date_creation',);
-                    $isFieldArraySearch = array('active','id','type','title','date_creation_start','date_creation_end',);
-                    $isFieldArrayDate   = array('date_creation');
+                    $isFieldArraySearchType = array(
+                        
+                        'id'         => array('type' =>'text','value'=>''),
+                        'title'      => array('type' =>'text','value'=>''),
+                        'uri'        => array('type' =>'text','value'=>''),
+                        'type'       => array('type' =>'select','value'=>$groupes),
+                        'active'     => array('type' =>'select','value'=>$arFilterActivation),
+                        
+                    );
+
+                    $isFieldTraductionArray       = array("title");
+
+
+                    $isFieldArraySort   = array('id','uri','title','type','active');
+                    $isFieldArraySearch = array('id','uri','title','type','active');
+                    $isFieldArrayDate   = array();
                     
                     $urlOrderby         = '&orderby='.$isFieldArraySort[0];
                     $urlSearchQuery     = '';
@@ -139,12 +154,14 @@ class AttributesView extends doorGetsUserView{
                     $urlGroupBy         = '&gby='.$per;
                     
                     // Init table query
-                    $tAll = " _users_groupes_attributes "; 
+                    $tAll = " ".$this->doorGets->Table.",".$this->doorGets->Table."_traduction ";  
                     
                     // Create query search for mysql
                     $sqlLabelSearch = '';
                     $arrForCountSearchQuery = array();
-                    
+                    $arrForCountSearchQuery[] = array('key'=>$this->doorGets->Table.'.id','type'=>'!=!','value'=>$this->doorGets->Table.'_traduction.id_attribute');
+                    $arrForCountSearchQuery[] = array('key'=>$this->doorGets->Table.'.id','type'=>'>','value'=>0);
+                    $arrForCountSearchQuery[] = array('key'=>$this->doorGets->Table.'_traduction.langue','type'=>'=','value'=>$lgActuel);
                     // Init Query Search
                     $aGroupeFilter = array();
                     if (!empty($isFieldArraySearch)) {
@@ -228,13 +245,15 @@ class AttributesView extends doorGetsUserView{
                                     }else{
                                         
                                         if (in_array($v,$isFieldArraySort)) {
-                                            
-                                            $sqlLabelSearch .= $tableName.".".$v." LIKE '%".$valueQP."%' AND ";
-                                            $arrForCountSearchQuery[] = array('key'=>$tableName.".".$v,'type'=>'like','value'=>$valueQP);
-                                            
+                                    
+                                            if (in_array($v,$isFieldTraductionArray)) {    
+                                                $sqlLabelSearch .= $tableName."_traduction.".$v." LIKE '%".$valueQP."%' AND ";
+                                                $arrForCountSearchQuery[] = array('key'=>$tableName."_traduction.".$v,'type'=>'like','value'=>$valueQP);
+                                            } else {
+                                                $sqlLabelSearch .= $tableName.".".$v." LIKE '%".$valueQP."%' AND ";
+                                                $arrForCountSearchQuery[] = array('key'=>$tableName.".".$v,'type'=>'like','value'=>$valueQP);
+                                            }
                                         }
-                                        
-                                        $urlSearchQuery .= '&doorGets_search_filter_q_'.$valEnd.'='.$valueQP;
                                         
                                     }
                                 }
@@ -260,7 +279,7 @@ class AttributesView extends doorGetsUserView{
                    ) {
                         
                         $per = $params['GET']['gby'];
-                        
+                        $urlGroupBy = '&gby='.$per;
                     }
                     
                     // Init count total fields
@@ -383,7 +402,7 @@ class AttributesView extends doorGetsUserView{
                             $dgLabel = '<a href="'.$urlPageGo.'&orderby='.$fieldName.$urlSearchQuery.'&gby='.$per.$$_desc.'" '.$$_css.'  >'.$$_img.$fieldNameLabel.'</a>';
                         }
                         
-                        $block->addTitle($dgLabel,$fieldName,"$leftFirst td-title center");
+                        $block->addTitle($dgLabel,$fieldName,"$leftFirst td-title text-center");
                         $iPos++;
                         
                     }
@@ -391,93 +410,79 @@ class AttributesView extends doorGetsUserView{
                     $block->addTitle('','edit','td-title');
                     $block->addTitle('','delete','td-title');
                     
-                    $arFilterActivation = $this->doorGets->getArrayForms('activation');
-                    $yesno = $this->doorGets->getArrayForms();
-
-                    $valFilterId = '';
-                    if (array_key_exists('doorGets_search_filter_q_id',$aGroupeFilter)) {
-                        $valFilterId = $aGroupeFilter['q_id'];
+                    // Search fields
+                    $outFilter = '';
+                    foreach($isFieldArraySearchType as $nameField => $value) {
+                        
+                        $nameFieldVal   = 'valFilter'.ucfirst($nameField);
+                        $sNameFieldVar  = 'sFilter'.ucfirst($nameField);
+                        
+                        $keyNameField   = 'q_'.$nameField;
+                        $keyNameFieldVal   = 'q_'.$nameField;
+                        
+                        $$nameFieldVal  = '';
+                        
+                        if (array_key_exists($keyNameField,$aGroupeFilter)) {
+                            $$nameFieldVal = $aGroupeFilter[$keyNameField];
+                        }
+                        
+                        switch($value['type']) {
+                            
+                            case 'text':
+                                
+                                $$sNameFieldVar = $this->doorGets->Form['_search_filter']->input('',$keyNameFieldVal,'text',$$nameFieldVal);
+                                
+                                break;
+                            case 'select':
+                                
+                                $$sNameFieldVar  = $this->doorGets->Form['_search_filter']->select('',$keyNameFieldVal,$value['value'],$$nameFieldVal);
+                                
+                                break;
+                            
+                        }
+                        
+                        $block->addContent($nameField,$$sNameFieldVar);
+                        
                     }
-
-                    $valFilterActive = 0;
-                    if (array_key_exists('doorGets_search_filter_q_active',$aGroupeFilter)) {
-                        $valFilterActive = $aGroupeFilter['q_active'];
-                    }
                     
-                    $valFilterTitle = '';
-                    if (array_key_exists('doorGets_search_filter_q_title',$aGroupeFilter)) {
-                        $valFilterTitle = $aGroupeFilter['q_title'];
-                    }
-                    
-                    $valFilterType = '';
-                    if (array_key_exists('doorGets_search_filter_q_type',$aGroupeFilter)) {
-                        $valFilterType = $aGroupeFilter['q_type'];
-                    }
-                    
-                    $valFilterDateStart = '';
-                    if (array_key_exists('doorGets_search_filter_q_date_creation_start',$aGroupeFilter)) {
-                        $valFilterDateStart = $aGroupeFilter['q_date_creation_start'];
-                    }
-                    
-                    $valFilterDateEnd = '';
-                    if (array_key_exists('doorGets_search_filter_q_date_creation_end',$aGroupeFilter)) {
-                        $valFilterDateEnd = $aGroupeFilter['q_date_creation_end'];
-                    }
-                    
-                    $sFilterActive = $this->doorGets->Form['_search_filter']->select('','q_active',$yesno,$valFilterActive);
-                    $sFilterId     = $this->doorGets->Form['_search_filter']->input('','q_id','text',$valFilterId);
-                    $sFilterTitle  = $this->doorGets->Form['_search_filter']->input('','q_title','text',$valFilterTitle);
-                    $sFilterType   = $this->doorGets->Form['_search_filter']->input('','q_type','text',$valFilterType);
-                    $sFilterDate   = $this->doorGets->Form['_search_filter']->input('','q_date_creation_start','text',$valFilterDateStart,'doorGets-date-input datepicker-from');
-                    $sFilterDate  .= $this->doorGets->Form['_search_filter']->input('','q_date_creation_end','text',$valFilterDateEnd,'doorGets-date-input datepicker-to');
-                    
-                    // Search
-                    
-                    $block->addContent('active',$sFilterActive );
-                    $block->addContent('id',$sFilterId );
-                    $block->addContent('title',$sFilterTitle );
-                    $block->addContent('type',$sFilterType );
-                    $block->addContent('date_creation',$sFilterDate,'center');
-                    $block->addContent('edit','--','center');
-                    $block->addContent('delete','--','center');
+                    $block->addContent('edit','--','tb-30 text-center');
+                    $block->addContent('delete','--','tb-30 text-center');
                     
                     // end Seach
                     
                     if (empty($cAll)) {
 
-                        $block->addContent('active',''  ,'tb-30 center');
-                        $block->addContent('id',''  ,'tb-70 center');
-                        $block->addContent('title','' );
-                        $block->addContent('type','' );
-                        $block->addContent('date_creation','','center');
-                        $block->addContent('edit','','center');
-                        $block->addContent('delete','','center');
+                        foreach($isFieldArraySearchType as $nameField => $value) {
+                            $block->addContent($nameField,'' );
+                        }
+                        $block->addContent('edit','','text-center');
+                        $block->addContent('delete','','text-center');
                         
                     }
                     
                     
                     for($i=0;$i<$cAll;$i++) {
                         
-                        $ImageStatut = BASE_IMG.'puce-rouge.png';
+                        $ImageStatut = 'fa-ban red';
                         if ($all[$i]['active'] == '1') {
-                            $ImageStatut = BASE_IMG.'puce-verte.png';
-                        }
+                            $ImageStatut = 'fa-eye green-c';
+                        } 
 
-                        $urlStatut = '<img src="'.$ImageStatut.'" style="vertical-align: middle;" >';
+                        $urlStatut = '<i class="fa '.$ImageStatut.' fa-lg" ></i> ';
 
                         $urlId      = $all[$i]["id_attribute"];
-                        $urlTitle   = '<a title="'.$this->doorGets->__('Modifier').'" href="./?controller=attributes&action=edit&id='.$all[$i]['id_attribute'].'&lg='.$lgActuel.'">'.$all[$i]["title"].'</a>';
-                        $urlType    = '<a title="'.$this->doorGets->__('Modifier').'" href="./?controller=attributes&action=edit&id='.$all[$i]['id_attribute'].'&lg='.$lgActuel.'">'.$all[$i]["type"].'</a>';
+                        $urlTitle   = $all[$i]["title"];
+                        $urlType    = $all[$i]["type"];
                         $urlDelete  = '<a title="'.$this->doorGets->__('Supprimer').'" href="./?controller=attributes&action=delete&id='.$all[$i]['id_attribute'].'&lg='.$lgActuel.'"><b class="glyphicon glyphicon-remove red"></b></a>';
                         $urlEdit    = '<a title="'.$this->doorGets->__('Modifier').'" href="./?controller=attributes&action=edit&id='.$all[$i]['id_attribute'].'&lg='.$lgActuel.'"><b class="glyphicon glyphicon-pencil green-font" ></b></a>';
                         
                         $dateCreation = GetDate::in($all[$i]['date_creation'],2,$this->doorGets->myLanguage());
                         
-                        $block->addContent('active',$urlStatut ,'tb-30 center');
-                        $block->addContent('id',$urlId ,'tb-70 center');
+                        $block->addContent('id',$urlId ,'tb-70 text-center');
+                        $block->addContent('uri',$all[$i]['uri'] ,'tb-100 text-center');
                         $block->addContent('title',$urlTitle );
-                        $block->addContent('type',$urlType );
-                        $block->addContent('date_creation',$dateCreation,'center');
+                        $block->addContent('type',$urlType,'tb-50 text-center' );
+                        $block->addContent('active',$urlStatut ,'tb-30 text-center');
                         $block->addContent('edit',$urlEdit,'center');
                         $block->addContent('delete',$urlDelete,'center');
                         

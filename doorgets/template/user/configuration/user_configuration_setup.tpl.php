@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -44,7 +44,7 @@
         <div class="doorGets-rubrique-left-center-title page-header">
             <h2>
                 <span class="create" >[{!$urlTop!}]</span>
-                <b class="glyphicon glyphicon-compressed"></b> [{!$this->doorGets->__("Installer")!}]
+                <b class="glyphicon glyphicon-compressed"></b> [{!$this->doorGets->__("Système d'installation")!}]
                 <small>[{!$this->doorGets->__("Générer un système d'installation pour exporter rapidement votre doorGets sur une nouvelle machine")!}].</small>
             </h2>
 

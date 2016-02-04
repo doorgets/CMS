@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 20, February 2014
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -204,7 +204,7 @@ class Formulaire{
         $formName = $this->name;
         
         if (isset($_POST[$name])) {
-            $value = trim(htmlentities($_POST[$name],ENT_NOQUOTES));
+            $value = trim(htmlentities($_POST[$name],ENT_QUOTES));
             if (!empty($this->e[$name])) {
                 $styleLabel = 'style="color:#ff0000;"';
                 $style = 'style="border:solid 2px #ff0000;"';

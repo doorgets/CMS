@@ -2,9 +2,9 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 20, February 2014
-    doorGets it's free PHP Open Source CMS PHP & MySQL
-    Copyright (C) 2012 - 2013 By Mounir R'Quiba -> Crazy PHP Lover
+    doorGets 7.0 - 01, February 2016
+    doorgets it's free PHP Open Source CMS PHP & MySQL
+    Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
 /*******************************************************************************
 
@@ -12,7 +12,7 @@
     Contact : http://www.doorgets.com/t/en/?contact
     
 /*******************************************************************************
-    -= One life for One code =-
+    -= One life, One code =-
 /*******************************************************************************
     
     This program is free software: you can redistribute it and/or modify
@@ -31,26 +31,23 @@
 ******************************************************************************
 ******************************************************************************/
 
-
-
 class ModerationView extends doorGetsUserView{
     
     public function __construct(&$doorGets) {
         
         parent::__construct($doorGets);
-
+        
     }
     
     public function getContent() {
         
-
         $out            = '';
         $tableName      = '_moderation';
         $lgActuel       = $this->doorGets->getLangueTradution(); 
         $controllerName = $this->doorGets->controllerNameNow();
 
         $User           = $this->doorGets->user;
-
+        
         $Rubriques = array(
             
             'index'         => $this->doorGets->__('Index de la page'),
@@ -59,116 +56,195 @@ class ModerationView extends doorGetsUserView{
 
         $lgActuel   = $this->doorGets->getLangueTradution();
         $params     = $this->doorGets->Params();
-
+        
         if (array_key_exists($this->Action,$Rubriques) )
         {
             switch($this->Action) {
                 
                 case 'index':
                     
+                    
+                    $q = '';
+                    $urlSearchQuery = '';
+                    
                     $p = 1;
                     $ini = 0;
-                    $per = 25;
+                    $per = 50;
 
-                    $iPos = 0;
-                    $urlToGo = "./?controller=$controllerName";
-                    $urlPage = "./?controller=$controllerName&page=";
+                    $params = $this->doorGets->Params();
+                    $lgActuel = $this->doorGets->getLangueTradution();
 
                     $isFieldArray       = array(
-                        
-                        "id"    =>  array ( 
-                            'label'     => $this->doorGets->__('Id'),
-                            'type'      => 'text',
-                            'options'   => null,
-                            'name'      => 'Id',
-                            'sort'      => true,
-                            'search'    => true
-                        ),
-                        "id_user"    =>  array ( 
-                            'label'     => $this->doorGets->__('Id').' '.$this->doorGets->__('User'),
-                            'type'      => 'text',
-                            'options'   => null,
-                            'name'      => 'IdUser',
-                            'sort'      => true,
-                            'search'    => true
-                        ),
-                        "pseudo"    =>  array ( 
-                            'label'     => $this->doorGets->__('Pseudo'),
-                            'type'      => 'text',
-                            'options'   => null,
-                            'name'      => 'Pseudo',
-                            'sort'      => true,
-                            'search'    => true
-                        ),
-                        "id_groupe"    =>  array ( 
-                            'label'     => $this->doorGets->__('Id').' '.$this->doorGets->__('Module'),
-                            'type'      => 'text',
-                            'options'   => null,
-                            'name'      => 'IdGroupe',
-                            'sort'      => true,
-                            'search'    => true
-                        ),
-                        "type_module"    =>  array ( 
-                            'label'     => $this->doorGets->__('Type').' '.$this->doorGets->__('Module'),
-                            'type'      => 'select',
-                            'options'   => array(
-                                'blog'      => $this->doorGets->__('Blog'),
-                                'news'      => $this->doorGets->__("Fil d'actualités"),
-                                'video'     => $this->doorGets->__('Galerie vidéos'),
-                                'image'     => $this->doorGets->__("Galerie d'image"),
-                            ),
-                            'name'      => 'TypeModule',
-                            'sort'      => true,
-                            'search'    => true
-                        ),
-                        "action"    =>  array ( 
-                            'label'     => $this->doorGets->__('Action'),
-                            'type'      => 'select',
-                            'options'   => array(
-                                'add'       => $this->doorGets->__('Ajout'),
-                                'edit'      => $this->doorGets->__("Modification")
-                            ),
-                            'name'      => 'TypeModule',
-                            'sort'      => true,
-                            'search'    => true
-                        ),
-                        "date_creation"    =>  array ( 
-                            'label'     => $this->doorGets->__('Date'),
-                            'type'      => 'date',
-                            'options'   => null,
-                            'name'      => 'DateCreation',
-                            'sort'      => true,
-                            'search'    => true
-                        ),
+                        "id"=>$this->doorGets->__('id'),
+                        "pseudo"=>$this->doorGets->__('Pseudo'),
+                        "type_module"=>$this->doorGets->__('Module'),
+                        "action"=>$this->doorGets->__('Action'),
+                        "date_creation"=>$this->doorGets->__('Date')
                     );
                     
-                    $iniUrlSortBy = 'id';
-
-                    $isFieldArraySort   = array('id','id_user','id_groupe','type_module','pseudo','action','date_creation',);
-                    $isFieldArraySearch = array('id','id_user','id_groupe','id_content','type_module','pseudo','action','date_creation','date_creation_start','date_creation_end',);
+                    $isFieldArraySort   = array('id','pseudo','type_module','action','date_creation');
+                    $isFieldArraySearchInput = array('id','pseudo','type_module','action','date_creation',);
+                    $isFieldArraySearch = array('id','pseudo','type_module','action','date_creation_start','date_creation_end',);
                     $isFieldArrayDate   = array('date_creation');
-
-                    $urlOrderby         = '&orderby='.$iniUrlSortBy;
+                    
+                    $urlOrderby         = '&orderby='.$isFieldArraySort[4];
                     $urlSearchQuery     = '';
                     $urlSort            = '&desc';
                     $urlLg              = '&lg='.$lgActuel;
                     $urlCategorie       = '';
                     $urlGroupBy         = '&gby='.$per;
+                    
+                    // Init table query
+                    $tAll = " _moderation "; 
+                    
+                    // Create query search for mysql
+                    $sqlLabelSearch = '';
+                    $arrForCountSearchQuery = array();
+                    
+                    $filters  = array();
+                    $sqlLabelSearchModo = '  (';
 
+                    foreach ($this->doorGets->user['liste_enfant_modo'] as $idGroup) {
 
-                    if ( array_key_exists('gby',$_GET) && is_numeric($_GET['gby']) && $_GET['gby'] < 300) {
-                
-                        $per = $_GET['gby'];
-                    }
-
-                    if ( array_key_exists('page',$_GET) && is_numeric($_GET['page']) && $_GET['page'] > 0) {
-
-                        $p = $_GET['page'];
-                        $ini = $p * $per - $per;
+                        //$arrForCountSearchQuery[] = array('key'=>'network','type'=>'=','value'=> $idGroup);
+                        $sqlLabelSearchModo .=  "  id_groupe = $idGroup OR ";
+                        
                     }
                     
-                    $backUrl = urlencode('?controller=moderation&page='.$p);
+                    $sqlLabelSearchModo = substr($sqlLabelSearchModo,0,-3);
+                    $sqlLabelSearchModo .= ')';
 
+                    // Init Query Search
+                    $aGroupeFilter = array();
+                    if (!empty($isFieldArraySearch)) {
+                        
+                        // Récupére les paramêtres du get et post pour la recherche par filtre
+                        foreach($isFieldArraySearch as $v)
+                        {
+                            
+                            $valueQP = '';
+                            if (
+                                array_key_exists('doorGets_search_filter_q_'.$v,$params['GET'])
+                                && !empty($params['GET']['doorGets_search_filter_q_'.$v])
+                           ) {
+                                
+                                $valueQP = trim($params['GET']['doorGets_search_filter_q_'.$v]);
+                                $aGroupeFilter['doorGets_search_filter_q_'.$v] = $valueQP;
+                                
+                            }
+                            
+                            if (
+                                array_key_exists('doorGets_search_filter_q_'.$v,$params['POST'])
+                                && !array_key_exists('doorGets_search_filter_q_'.$v,$params['GET'])
+                                && !empty($params['POST']['doorGets_search_filter_q_'.$v])
+                           ) {
+                                
+                                $valueQP = trim($params['POST']['doorGets_search_filter_q_'.$v]);
+                                $aGroupeFilter['doorGets_search_filter_q_'.$v] = $valueQP;
+                                
+                            }
+                            
+                            if (
+                                ( array_key_exists('doorGets_search_filter_q_'.$v,$params['GET'])
+                                    && !empty($params['GET']['doorGets_search_filter_q_'.$v])
+                                )
+                                ||
+                                ( array_key_exists('doorGets_search_filter_q_'.$v,$params['POST'])
+                                    && !array_key_exists('doorGets_search_filter_q_'.$v,$params['GET'])
+                                    && !empty($params['POST']['doorGets_search_filter_q_'.$v])
+                                )
+                            ) {
+                                
+                                if (!empty($valueQP)) {
+                                    
+                                    $valEnd = str_replace('_start','',$v);
+                                    $valEnd = str_replace('_end','',$v);
+                                    
+                                    if (in_array($valEnd,$isFieldArrayDate)) {
+                                        if (
+                                            array_key_exists('doorGets_search_filter_q_'.$v,$params['GET'])
+                                            && !empty($params['GET']['doorGets_search_filter_q_'.$v])
+                                       ) {
+                                            $fromFormat = trim($params['GET']['doorGets_search_filter_q_'.$valEnd.'_start']);
+                                            $toFormat = trim($params['GET']['doorGets_search_filter_q_'.$valEnd.'_end']);
+                                            
+                                        }else{
+                                            $fromFormat = trim($params['POST']['doorGets_search_filter_q_'.$valEnd.'_start']);
+                                            $toFormat = trim($params['POST']['doorGets_search_filter_q_'.$valEnd.'_end']);
+                                        }
+                                        
+                                        
+                                        if (!empty($fromFormat))
+                                        { $from = strtotime($fromFormat);  }
+                                        
+                                        if (!empty($toFormat))
+                                        {  $to = strtotime($toFormat); $to = $to + ( 60 * 60 * 24 ); }
+                                        
+                                        if (strlen(str_replace('_end','',$v)) !== strlen($v)) {
+                                            
+                                            $nameTable = $valEnd;
+                                            
+                                            $sqlLabelSearch .= $nameTable." >= $from AND ";
+                                            $sqlLabelSearch .= $nameTable." <= $to AND ";
+                                            
+                                            // $arrForCountSearchQuery[] = array('key'=>$nameTable,'type'=>'>','value'=>$from);
+                                            // $arrForCountSearchQuery[] = array('key'=>$nameTable,'type'=>'<','value'=>$to);
+                                            
+                                            $urlSearchQuery .= '&doorGets_search_filter_q_'.$valEnd.'_end='.$toFormat;
+
+                                        }
+                                        
+                                    }else{
+
+                                        if (in_array($v,$isFieldArraySort)) {
+                                            
+                                            if ($v === 'active' || $v === 'network')  {
+
+                                                $sqlLabelSearch .= $v." = ".$valueQP." AND ";
+                                                //$arrForCountSearchQuery[] = array('key'=>$tableName.".".$v,'type'=>'!=!','value'=>$valueQP,'',' AND ');
+                                            
+                                            } else {
+
+                                                $sqlLabelSearch .= $v." LIKE '%".$valueQP."%' AND ";
+                                                //$arrForCountSearchQuery[] = array('key'=>$tableName.".".$v,'type'=>'like','value'=>$valueQP,'',' AND ');
+                                            
+                                            }
+
+                                        }
+                                        
+                                        $urlSearchQuery .= '&doorGets_search_filter_q_'.$valEnd.'='.$valueQP;
+                                        
+                                    }
+                                }
+                            }
+
+                        }
+                        // préparation de la requête mysql
+                        if (!empty($sqlLabelSearch)) {
+                            
+                            $sqlLabelSearch = substr($sqlLabelSearch,0,-4);
+                            $sqlLabelSearch = " AND ( $sqlLabelSearch ) ";
+                            
+                        }
+                    }
+                    
+                    // Init Group By
+                    if (
+                        array_key_exists('gby',$params['GET'])
+                        && is_numeric($params['GET']['gby'])
+                        && $params['GET']['gby'] < 300
+                    ) {
+                        
+                        $per = $params['GET']['gby'];
+                        $urlGroupBy = '&gby='.$per;
+                    }
+
+                    // Init count total fields
+                    $cResultsInt = $this->doorGets->getCountTable($tAll,$arrForCountSearchQuery,'WHERE '.$sqlLabelSearchModo.' '.$sqlLabelSearch,' OR ');
+                    
+                    // Init categorie
+                    $sqlCategorie = '';
+                    
                     // Init sort 
                     $getDesc = 'DESC';
                     $getSort = '&asc';
@@ -178,151 +254,80 @@ class ModerationView extends doorGetsUserView{
                         $getSort = '&desc';
                         $urlSort = '&asc';
                     }
-
-
-                    // Init Query
-                    $moderationQuery        = new  ModerationQuery($this->doorGets);
-                    if (!empty($User['liste_enfant'])) {
-                        foreach($User['liste_enfant'] as $id_groupe) {
-                            $moderationQuery->filterByIdGroupe($id_groupe,'OR');
-                        }
-                    }
                     
-                    $moderationCollection   = $moderationQuery
-                        ->paginate($p,$per)
-                    ;    
-
-                    // Init Filters
-
+                    // Init filter for order by 
+                    $outFilterORDER = $tableName.'.date_creation  '.$getDesc;
+                    
                     $getFilter = '';
                     if (
                         array_key_exists('orderby',$params['GET'])
                         && !empty($params['GET']['orderby'])
                         && in_array($params['GET']['orderby'],$isFieldArraySort)
-                    ) {
+                   ) {
                         
                         $getFilter      = $params['GET']['orderby'];
-                        $getFilterOrderBy = 'orderBy'.$isFieldArray[$getFilter]['name'];
+                        
+                        $outFilterORDER = $tableName.'.'.$getFilter.'  '.$getDesc;
+                        
                         $urlOrderby     = '&orderby='.$getFilter;
                         
-                        $moderationCollection->$getFilterOrderBy($getDesc);
-
-                    } else {
-
-                        $moderationCollection->orderById($getDesc);
-
                     }
-
-                    $aGroupeFilter = array();
-                    if (!empty($isFieldArraySearch)) {
+                    
+                    // Init page position
+                    if (
+                        array_key_exists('page',$params['GET'])
+                        && is_numeric($params['GET']['page'])
+                        && $params['GET']['page'] <= (ceil($cResultsInt / $per))
+                    ) {
                         
-                        // Récupére les paramêtres du get et post pour la recherche par filtre
-                        foreach($isFieldArraySearch as $fieldName)
-                        {
-                            
-                            $valueQP = '';
-                            
-                            if (
-                                array_key_exists('doorGets_search_filter_q_'.$fieldName,$params['GET'])
-                                && !empty($params['GET']['doorGets_search_filter_q_'.$fieldName])
-                            ) {
-                                
-                                $valueQP = trim($params['GET']['doorGets_search_filter_q_'.$fieldName]);
-                                $aGroupeFilter['doorGets_search_filter_q_'.$fieldName] = $valueQP;
-                                
-                            }
-
-                            if (
-                                array_key_exists('doorGets_search_filter_q_'.$fieldName,$params['POST'])
-                                && !array_key_exists('doorGets_search_filter_q_'.$fieldName,$params['GET'])
-                                && !empty($params['POST']['doorGets_search_filter_q_'.$fieldName])
-                            ) {
-                                
-                                $valueQP = trim($params['POST']['doorGets_search_filter_q_'.$fieldName]);
-                                $aGroupeFilter['doorGets_search_filter_q_'.$fieldName] = $valueQP;
-                                
-                            }
-
-                            if ((   
-                                    array_key_exists('doorGets_search_filter_q_'.$fieldName,$params['GET'])
-                                    && !empty($params['GET']['doorGets_search_filter_q_'.$fieldName])
-                                ) || (   
-                                    array_key_exists('doorGets_search_filter_q_'.$fieldName,$params['POST'])
-                                    && !array_key_exists('doorGets_search_filter_q_'.$fieldName,$params['GET'])
-                                    && !empty($params['POST']['doorGets_search_filter_q_'.$fieldName])
-                            )) {
-
-                                if (!empty($valueQP)) {
-                                    
-                                    $valEnd = str_replace('_start','',$fieldName);
-                                    $valEnd = str_replace('_end','',$fieldName);
-                                    
-                                    if (in_array($valEnd,$isFieldArrayDate)) {
-                                        
-                                        if (
-                                            array_key_exists('doorGets_search_filter_q_'.$fieldName,$params['GET'])
-                                            && !empty($params['GET']['doorGets_search_filter_q_'.$fieldName])
-                                        ) {
-                                            $fromFormat = trim($params['GET']['doorGets_search_filter_q_'.$valEnd.'_start']);
-                                            $toFormat = trim($params['GET']['doorGets_search_filter_q_'.$valEnd.'_end']);
-                                            
-                                        }else{
-
-                                            $fromFormat = trim($params['POST']['doorGets_search_filter_q_'.$valEnd.'_start']);
-                                            $toFormat = trim($params['POST']['doorGets_search_filter_q_'.$valEnd.'_end']);
-                                        }
-                                        
-                                        if (!empty($fromFormat))
-                                        { $from = strtotime($fromFormat);  }
-                                        
-                                        if (!empty($toFormat))
-                                        {  $to = strtotime($toFormat); $to = $to + ( 60 * 60 * 24 ); }
-                                        
-                                        if (strlen(str_replace('_end','',$fieldName)) !== strlen($fieldName)) {
-                                            
-                                            $filterRangeByFieldTable = 'filterRangeBy'.$isFieldArray[$valEnd]['name'];
-                                            $moderationCollection->$filterRangeByFieldTable($from,$to);
-
-                                            $urlSearchQuery .= '&doorGets_search_filter_q_'.$valEnd.'_start='.$fromFormat;
-                                            $urlSearchQuery .= '&doorGets_search_filter_q_'.$valEnd.'_end='.$toFormat;
-
-                                        }
-                                        
-                                    }else{
-
-                                        if (in_array($fieldName,$isFieldArraySort)) {
-
-                                            $nameFieldTable = 'filterBy'.$isFieldArray[$fieldName]['name'];
-                                            $moderationCollection->$nameFieldTable($valueQP);
-
-                                            $urlSearchQuery .= '&doorGets_search_filter_q_'.$valEnd.'='.$valueQP;
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        $p = $params['GET']['page'];
+                        $ini = $p * $per - $per;
                     }
+                    
+                    $backUrl        = urlencode('?controller=moderation&page='.$p);
 
-                    // Join traduction 
-                    //$moderationCollection->join('DgFilesTraduction', array('id'=>'id_file'), array('langue' => $lgActuel));
-
-                    // var_dump($moderationCollection);
-                    // exit();
-                    // Execute Query
-                    $moderationCollection->find();
-
-                    $count = $moderationCollection->count();
-                    $countTotal = $moderationCollection->countTotal();
-
-                    $moderationEntities     = $moderationCollection->_getEntities('array');
+                    $finalPer = $ini+$per;
+                    if ($finalPer >  $cResultsInt) {
+                        $finalPer = $cResultsInt;
+                    }
+                    
+                    // Create sql query for transaction
+                    $outSqlGroupe = " WHERE $sqlLabelSearchModo ".$sqlLabelSearch;
+                    $sqlLimit = " $outSqlGroupe ORDER BY $outFilterORDER  LIMIT ".$ini.",".$per;
+                    
+                    // Create url to go for pagination
+                    $urlPage = "./?controller=moderation".$urlCategorie.$urlOrderby.$urlSearchQuery.$urlSort.$urlGroupBy.$urlLg.'&page=';
+                    $urlPagePosition = "./?controller=moderation".$urlCategorie.$urlOrderby.$urlSearchQuery.$urlSort.$urlLg.'&page='.$p;
+                    // Generate the pagination system
+                    $valPage = '';
+                    if ($cResultsInt > $per) {
+                        
+                        $valPage = Pagination::page($cResultsInt,$p,$per,$urlPage);
+                        
+                    }
+                    
+                    // Select all contents / Query SQL
+                    $all = $this->doorGets->dbQA($tAll,$sqlLimit);
+                    $cAll = count($all);
+                    
+                    /**********
+                     *
+                     *  Start block creation for listing fields
+                     * 
+                     **********/
+                    
+                    $block = new BlockTable();
                     
                     $imgTop = '<div class="d-top"></div>';
                     $imgBottom= '<div class="d-bottom"></div>';
-
-                    $block = new BlockTable();
                     $block->setClassCss('doorgets-listing');
                     
-                    foreach ($isFieldArray as $fieldName=>$field) {
+                    $iPos = 0;
+                    $dgSelMass = '';
+                    $urlPage = "./?controller=moderation&page=";
+                    $urlPageGo = './?controller=moderation';
+                    
+                    foreach($isFieldArray as $fieldName=>$fieldNameLabel) {
                         
                         $_css   = '_css_'.$fieldName;
                         $_img   = '_img_'.$fieldName;
@@ -332,7 +337,7 @@ class ModerationView extends doorGetsUserView{
                         
                         if (
                             $getFilter === $fieldName
-                            || ( empty($getFilter) && $fieldName === $iniUrlSortBy )
+                            || ( empty($getFilter) && $fieldName === $isFieldArraySort[4] )
                        ) {
                             $$_css = ' class="green" ';
                             $$_img = $imgTop;
@@ -342,50 +347,47 @@ class ModerationView extends doorGetsUserView{
                                 $$_desc = '';
                             }
                         }
-
-
-                        $leftFirst = ($iPos === 0 && $fieldName !== 'id') ? 'first-title left' : '' ;
                         
-                        $dgLabel = $field['label'];
+                        if ($iPos === 0) {
+                            $leftFirst = 'first-title left';
+                        }
+                        
+                        $dgLabel = $fieldNameLabel;
                         if (in_array($fieldName,$isFieldArraySort))
                         {
-                            $dgLabel = '<a href="'.$urlToGo.'&orderby='.$fieldName.$urlSearchQuery.'&gby='.$per.$$_desc.'" '.$$_css.'  >'.$$_img.$field['label'].'</a>';
+                            $dgLabel = '<a href="'.$urlPageGo.'&orderby='.$fieldName.$urlSearchQuery.'&gby='.$per.$$_desc.'" '.$$_css.'  >'.$$_img.$fieldNameLabel.'</a>';
                         }
-
-                        $block->addTitle($dgLabel,$fieldName,"$leftFirst text-center");
+                        
+                        $block->addTitle($dgLabel,$fieldName,"$leftFirst td-title center");
                         $iPos++;
                         
                     }
                     
+                    $block->addTitle('','edit','td-title');
+                    
                     // Search field
-                    foreach ($isFieldArray as $fieldName=>$field) {
+                    foreach ($isFieldArraySearchInput as $fieldName) {
                         
                         //  Check field value
-                        $valFilter = (array_key_exists('doorGets_search_filter_q_'.$fieldName,$aGroupeFilter)) ? $aGroupeFilter['doorGets_search_filter_q_'.$fieldName] : '';
+                        $valFilter = (array_key_exists('q_'.$fieldName,$aGroupeFilter)) ? $aGroupeFilter['doorGets_search_filter_q_'.$fieldName] : '';
 
                         // Check type and put field
-                        switch ($field['type']) {
+                        switch ($fieldName) {
 
-                            case 'text':
-                                $sFilter    = $this->doorGets->Form['_search_filter']->input('','doorGets_search_filter_q_'.$fieldName,'text',$valFilter);
+                            case 'id':
+                            case 'pseudo':
+                            case 'type_module':
+                            case 'action':
+                                $sFilter    = $this->doorGets->Form['_search_filter']->input('','q_'.$fieldName,'text',$valFilter);
                                 break;
 
-                            case 'select':
+                            case 'date_creation':
 
-                                if (is_array($field['options'])) {
-                                    $field['options'] = array_merge(array(''),$field['options']);
-                                    $sFilter    = $this->doorGets->Form['_search_filter']->select('','doorGets_search_filter_q_'.$fieldName,$field['options'],$valFilter);
-                                }
+                                $valFilterStart = (array_key_exists('q_'.$fieldName.'_start',$aGroupeFilter)) ? $aGroupeFilter['doorGets_search_filter_q_'.$fieldName.'_start'] : '';
+                                $valFilterEnd = (array_key_exists('q_'.$fieldName.'_end',$aGroupeFilter)) ? $aGroupeFilter['doorGets_search_filter_q_'.$fieldName.'_end'] : '';
 
-                                break;
-
-                            case 'date':
-
-                                $valFilterStart = (array_key_exists('doorGets_search_filter_q_'.$fieldName.'_start',$aGroupeFilter)) ? $aGroupeFilter['doorGets_search_filter_q_'.$fieldName.'_start'] : '';
-                                $valFilterEnd = (array_key_exists('doorGets_search_filter_q_'.$fieldName.'_end',$aGroupeFilter)) ? $aGroupeFilter['doorGets_search_filter_q_'.$fieldName.'_end'] : '';
-
-                                $sFilter    = $this->doorGets->Form['_search_filter']->input('','doorGets_search_filter_q_'.$fieldName.'_start','text',$valFilterStart,'doorGets-date-input datepicker-from text-center');
-                                $sFilter    .= $this->doorGets->Form['_search_filter']->input('','doorGets_search_filter_q_'.$fieldName.'_end','text',$valFilter,'doorGets-date-input datepicker-to text-center');
+                                $sFilter    = $this->doorGets->Form['_search_filter']->input('','q_'.$fieldName.'_start','text',$valFilterStart,'doorGets-date-input datepicker-from text-center');
+                                $sFilter    .= $this->doorGets->Form['_search_filter']->input('','q_'.$fieldName.'_end','text',$valFilter,'doorGets-date-input datepicker-to text-center');
 
                                 break;
 
@@ -397,60 +399,48 @@ class ModerationView extends doorGetsUserView{
                         $block->addContent($fieldName,$sFilter );
                     }
 
-                    if (empty($moderationEntities)) {
+                    $block->addContent('edit','' );
+                    // end Seach
+                    
+                    if (empty($cAll)) {
+                        $block->addContent('id','' );
+                        $block->addContent('pseudo','' );
+                        $block->addContent('type_module','' );
+                        $block->addContent('action','' ,'center');
+                        $block->addContent('date_creation','tb-150 text-center');
+                        $block->addContent('edit','','center');
+                    }
+                    
+                    for($i=0;$i<$cAll;$i++) {
+                        $urlToGoNext = '<a href="?controller=module'.strtolower($all[$i]['type_module']).'&uri='.$all[$i]['uri_module'].'&action=edit&id='.$all[$i]['id_content'].'&lg='.$all[$i]['langue'].'&back='.$backUrl.'"><i class="glyphicon glyphicon-pencil green-font"></i></a>';
+                        $dateCreation = GetDate::in($all[$i]['date_creation'],2,$this->doorGets->myLanguage());
                         
-                        foreach($isFieldArray as $fieldName=>$field) {
-
-                            $block->addContent($fieldName,'' );
-                        }
-
-                    } else {
-                    
-                        for($i=0;$i<$count;$i++) {
-
-                            foreach($isFieldArray as $fieldName=>$field) {
-
-                                if (is_array($field['options']) && array_key_exists($moderationEntities[$i][$fieldName], $field['options'])) {
-                                    
-                                    $moderationEntities[$i][$fieldName] = $field['options'][$moderationEntities[$i][$fieldName]];
-                                }
-
-                                $id = $moderationEntities[$i]['id'];
-                                $cssClass  = 'text-center';
-                                switch ($fieldName) {
-
-                                    case 'date_creation':
-                                        $moderationEntities[$i][$fieldName] = GetDate::in($moderationEntities[$i]['date_creation'],1,$this->doorGets->myLanguage());
-                                        break;
-                                }
-                                
-                                $urlToGoNext = '?controller=module'.strtolower($moderationEntities[$i]['type_module']).'&uri='.$moderationEntities[$i]['uri_module'].'&action=edit&id='.$moderationEntities[$i]['id_content'].'&lg='.$moderationEntities[$i]['langue'].'&back='.$backUrl;
-                                $content = '<a href="'.$urlToGoNext.'" class="td-block">'.$moderationEntities[$i][$fieldName].'</a>';
-                                $block->addContent($fieldName,$content ,$cssClass);
-                            }
-                        }
+                        $block->addContent('id',$all[$i]['id'],'tb-30 text-center');
+                        $block->addContent('pseudo',$all[$i]['pseudo'],'tb-300 text-center');
+                        $block->addContent('type_module',$all[$i]['type_module'],'tb-150 text-center');
+                        $block->addContent('action',$all[$i]['action'],'tb-150 text-center');
+                        $block->addContent('date_creation',$dateCreation,'tb-150 text-center');
+                        $block->addContent('edit',$urlToGoNext,'tb-30 text-center');
                     }
-
-                    $finalPer = $ini+$per;
-                    if ($finalPer >  $countTotal) {
-                        $finalPer = $countTotal;
-                    }
-
-                    $urlPage = "./?controller=$controllerName".$urlCategorie.$urlOrderby.$urlSearchQuery.$urlSort.$urlGroupBy.$urlLg.'&page=';
-                    $urlPagePosition = "./?controller=$controllerName".$urlCategorie.$urlOrderby.$urlSearchQuery.$urlSort.$urlLg.'&page='.$p;
                     
-                    $valPage = ($countTotal > $per) ? Pagination::page($countTotal,$p,$per,$urlPage) : '';
-
+                    
+                    /**********
+                     *
+                     *  End block creation for listing fields
+                     * 
+                     */
+                    
                     break;
             }
             
-            $ActionFile = 'user/'.$controllerName.'/user_'.$controllerName.'_'.$this->Action;
-            
+            $ActionFile = 'user/moderation/user_moderation_'.$this->Action;
             $tpl = Template::getView($ActionFile);
             ob_start(); if (is_file($tpl)) { include $tpl; } $out .= ob_get_clean();
             
         }
         
         return $out;
+        
     }
+    
 }

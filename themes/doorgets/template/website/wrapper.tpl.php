@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -46,7 +46,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a href="[{!BASE_URL!}]" class="navbar-brand" title="[{!$title!}]">[{!$title!}]</a>  
+            <a href="[{!BASE_URL!}]" class="navbar-brand" title="[{!$title!}]"><img src="[{!URL!}]skin/img/logo.png"/> [{!$title!}]</a>  
         </div>
         [{!$this->getHtmlNavigation()!}]
     </div>   
@@ -72,20 +72,20 @@
                 </div>
             [?]
             [{?($countComments != 0):}]
-            <div class="col-md-4">     
+            <div class="col-md-[{?(empty($this->configWeb['m_newsletter'])):}]8[??]4[?]">     
                 <h2 class="h2-b">[{!$this->__("Derniers commentaires")!}]</h2>        
                 <blockquote>       
                     <p>[{!$this->getLastComments()!}]</p>     
                 </blockquote>      
             </div>
             [?]
-            [{?(!empty($this->configWeb['m_newsletter'])):}]
-            <div class="col-md-4">
-            [??]
+            [{?(empty($this->configWeb['m_newsletter']) && $countComments == 0):}]
             <div class="col-md-12 text-center">
+            [??]
+            <div class="col-md-4 text-right">
             [?]
                 <h2 class="h2-b">[{!$this->__('Nous suivre')!}]</h2>
-                <p>[{!$this->getHtmlNetwork()!}]</p>
+                [{!$this->getHtmlNetwork()!}]
                 <p>[{!$dateWesbsite!}] © [{!$copyright!}]</p>
             </div>
         </div>
@@ -93,11 +93,10 @@
 </div>
 <div>
     <footer>
-    <p>
       <a href="http://www.doorgets.com" title="http://www.doorgets.com" target="blank" rel="nofollow">
           [{!$this->__('Propulsé avec')!}] doorGets ™
       </a>
-    </p>
+      [{!$this->getHtmlChangeTemplate()!}]
   </footer>
 </div>
 [{!$this->getHtmlAnalytics()!}]

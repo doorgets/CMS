@@ -37,10 +37,12 @@ class AuthUser extends Langue{
     
     private $isConnected = array();
     
-    public function __construct($resetToken = true) {
+    public $doorGets;
+
+    public function __construct($resetToken = true,$verifPayment = true) {
         
         parent::__construct('fr');
-        
+
         if (
             isset($_SESSION['doorgets_user']) 
             && isset($_SESSION['doorgets_user']['login'])
@@ -87,6 +89,8 @@ class AuthUser extends Langue{
                         $this->isConnected['id_linkedin']                   =  $userExistInfo['id_linkedin'];
                         $this->isConnected['id_myspace']                    =  $userExistInfo['id_myspace'];
                         
+                        $this->isConnected['company']                       =  $userExistInfo['company'];
+
                         $this->isConnected['country']                       =  $userExistInfo['country'];
                         $this->isConnected['city']                          =  $userExistInfo['city'];
                         $this->isConnected['zipcode']                       =  $userExistInfo['zipcode'];
@@ -94,6 +98,7 @@ class AuthUser extends Langue{
                         $this->isConnected['tel_fix']                       =  $userExistInfo['tel_fix'];
                         $this->isConnected['tel_mobil']                     =  $userExistInfo['tel_mobil'];
                         $this->isConnected['tel_fax']                       =  $userExistInfo['tel_fax'];
+                        $this->isConnected['region']                        =  $userExistInfo['region'];
                         
                         $this->isConnected['avatar']                        =  $userExistInfo['avatar'];
                         
@@ -123,31 +128,58 @@ class AuthUser extends Langue{
                         
                         $this->isConnected['liste_enfant']                  =  $this->_toArray($userExistInfoGroupe['liste_enfant']);
                         
-                        $this->isConnected['attributes']                    =  @unserialize($userExistInfoGroupe['attributes']);
+                        $this->isConnected['attributes']                    =  unserialize(base64_decode($userExistInfoGroupe['attributes']));
 
                         
                         $this->isConnected['editor_group']                  = array('-- '.$this->__('Aucun').' --');
                         
                         $this->isConnected['editor_html']                   = $userExistInfo['editor_html'];
+                        $this->isConnected['fileman']                       = $userExistInfoGroupe['fileman'];
+
+                        // $this->isConnected['payment']                       = ($userExistInfoGroupe['payment'] == '1')?true:false;
+                        // $this->isConnected['payment_currency']              = $userExistInfoGroupe['payment_currency'];
+                        // $this->isConnected['payment_amount_month']          = $userExistInfoGroupe['payment_amount_month'];
+                        // $this->isConnected['payment_group_expired']         = $userExistInfoGroupe['payment_group_expired'];
+                        // $this->isConnected['payment_tranche']               = $userExistInfoGroupe['payment_tranche'];
+                        // $this->isConnected['payment_group_upgrade']         = $userExistInfoGroupe['payment_group_upgrade'];
 
                         if (!empty($userExistInfoGroupe['editor_ckeditor'])) {
-
                             $this->isConnected['editor_group']['editor_ckeditor']   = 'editor_ckeditor';
                         }
 
                         if (!empty($userExistInfoGroupe['editor_tinymce'])) {
-
                             $this->isConnected['editor_group']['editor_tinymce']    = 'editor_tinymce';
                         }
 
-                        // Users tracking
-                        $this->_trackMe($userExist['id']);
+                        
                         
                         if (array_key_exists('langue_temp',$_SESSION['doorgets_user'])) {
-                        
                             $this->isConnected['langue']    =  $_SESSION['doorgets_user']['langue_temp'];
                         }
 
+                        if (empty($userExistInfoGroupe['saas_options'])) {
+                            $this->isConnected['saas_options'] = array(
+                                'saas_add' => false,
+                                'saas_delete' => false,
+                                'saas_limit' => 0,
+                                'saas_date_end' => 0,
+                            );
+                        } else {
+                            $this->isConnected['saas_options'] = unserialize(base64_decode($userExistInfoGroupe['saas_options']));
+                        }
+                        
+                        $sesssionId = session_id();
+                        $surveryData = array(
+                            'pseudo' => $this->isConnected['pseudo'],
+                            'id_user' => $this->isConnected['id'],
+                            'id_groupe' => $this->isConnected['groupe']
+                        );
+
+                        $this->dbQU($sesssionId,$surveryData,'_dg_survey_response','id_session','');
+
+                        // echo '<pre>';
+                        // var_dump($this->isConnected['liste_module_interne']);
+                        // exit;
                         // reset token
                         // if ($resetToken) {
                         //     $_token = $_SESSION['doorgets_user']['token'] = md5(uniqid(mt_rand(), true));

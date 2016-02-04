@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -35,7 +35,7 @@
 
 class doorgetsInstallerIO extends Langue{
     
-    use TraitDatabaseInstaller;
+    public $installDB;
     
     protected $doorGets;
 
@@ -45,6 +45,7 @@ class doorgetsInstallerIO extends Langue{
         
         $this->dataInfo = $dataInfo; 
         $this->doorGets = $doorGets;    
+        $this->installDB = new DoDatabaseInstaller($doorGets);
         parent::__construct($doorGets->myLanguage);
     }
     
@@ -54,13 +55,14 @@ class doorgetsInstallerIO extends Langue{
     
     private function genExportMatrice() {
         
-        $arrayCatInc = array('blog','news','multipage','video','image','faq','partner','genform','sharedlinks');
+        $arrayCatInc = array('blog','news','multipage','video','image','faq','partner','shop','genform','sharedlinks');
         $arrayExclude = array('_dg_translator','_dg_translator_traduction','_dg_translator_version');
 
         include CONFIGURATION.'tables.php';
         
-        $isAllModule = $this->dbQ("SELECT id,uri,type,extras FROM _modules ORDER BY id DESC LIMIT 200");
+        $isAllModule = $this->dbQ("SELECT id,uri,type,extras FROM _modules ORDER BY id DESC LIMIT 1000");
         $cAllModule = count($isAllModule);
+
         if (!empty($isAllModule)) {
             for($i=0;$i<$cAllModule;$i++) {
                 if (in_array($isAllModule[$i]['type'],$arrayCatInc)) {
@@ -72,31 +74,34 @@ class doorgetsInstallerIO extends Langue{
                     switch($isAllModule[$i]['type']) {
                     
                         case 'faq':
-                            $table['_m_'.$isAllModule[$i]['uri']]['sql_create_table'] = $this->createSqlFaq($isAllModule[$i]['uri']);
+                            $table['_m_'.$isAllModule[$i]['uri']]['sql_create_table'] = $this->installDB->createSqlFaq($isAllModule[$i]['uri']);
                             break;
                         case 'partner':
-                            $table['_m_'.$isAllModule[$i]['uri']]['sql_create_table'] = $this->createSqlPartner($isAllModule[$i]['uri']);
+                            $table['_m_'.$isAllModule[$i]['uri']]['sql_create_table'] = $this->installDB->createSqlPartner($isAllModule[$i]['uri']);
                             break;
                         case 'image':
-                            $table['_m_'.$isAllModule[$i]['uri']]['sql_create_table'] = $this->createSqlImage($isAllModule[$i]['uri']);
+                            $table['_m_'.$isAllModule[$i]['uri']]['sql_create_table'] = $this->installDB->createSqlImage($isAllModule[$i]['uri']);
                             break;
                         case 'video':
-                            $table['_m_'.$isAllModule[$i]['uri']]['sql_create_table'] = $this->createSqlVideo($isAllModule[$i]['uri']);
+                            $table['_m_'.$isAllModule[$i]['uri']]['sql_create_table'] = $this->installDB->createSqlVideo($isAllModule[$i]['uri']);
                             break;
                         case 'multipage':
-                            $table['_m_'.$isAllModule[$i]['uri']]['sql_create_table'] = $this->createSqlMultipage($isAllModule[$i]['uri']);
+                            $table['_m_'.$isAllModule[$i]['uri']]['sql_create_table'] = $this->installDB->createSqlMultipage($isAllModule[$i]['uri']);
                             break;
                         case 'news':
-                            $table['_m_'.$isAllModule[$i]['uri']]['sql_create_table'] = $this->createSqlNews($isAllModule[$i]['uri']);
+                            $table['_m_'.$isAllModule[$i]['uri']]['sql_create_table'] = $this->installDB->createSqlNews($isAllModule[$i]['uri']);
                             break;
                         case 'sharedlinks':
-                            $table['_m_'.$isAllModule[$i]['uri']]['sql_create_table'] = $this->createSqlSharedlinks($isAllModule[$i]['uri']);
+                            $table['_m_'.$isAllModule[$i]['uri']]['sql_create_table'] = $this->installDB->createSqlSharedlinks($isAllModule[$i]['uri']);
                             break;
                         case 'blog':
-                            $table['_m_'.$isAllModule[$i]['uri']]['sql_create_table'] = $this->createSqlBlog($isAllModule[$i]['uri']);
+                            $table['_m_'.$isAllModule[$i]['uri']]['sql_create_table'] = $this->installDB->createSqlBlog($isAllModule[$i]['uri']);
+                            break;
+                        case 'shop':
+                            $table['_m_'.$isAllModule[$i]['uri']]['sql_create_table'] = $this->installDB->createSqlShop($isAllModule[$i]['uri']);
                             break;
                         case 'genform':
-                            $table['_m_'.$isAllModule[$i]['uri']]['sql_create_table'] = $this->createSqlGenform($isAllModule[$i]['uri'],unserialize($isAllModule[$i]['extras']));
+                            $table['_m_'.$isAllModule[$i]['uri']]['sql_create_table'] = $this->installDB->createSqlGenform($isAllModule[$i]['uri'],unserialize(base64_decode($isAllModule[$i]['extras'])));
                             break;
                         
                     }
@@ -125,6 +130,11 @@ class doorgetsInstallerIO extends Langue{
         $zip_file_doorgets = BASE."installer/doorgets.zip.$tmpCode";
         $zip_file_database = BASE."installer/database.zip.$tmpCode";
         
+        $dirCache = BASE."cache/_tempDatabase/";
+        if (!is_dir($dirCache)) {
+            @mkdir($dirCache,0777,true);
+        }
+
         $zipdoorGets = new ZipDir();
         $resdoorGets = $zipdoorGets->open($zip_file_doorgets, ZipArchive::CREATE);
         
@@ -132,15 +142,15 @@ class doorgetsInstallerIO extends Langue{
 
             $zipdoorGets->addDir(BASE.'api', 'api');
             $zipdoorGets->addDir(BASE.'ajax', 'ajax');
-            $zipdoorGets->addDir(BASE.'cache', 'cache');
             $zipdoorGets->addDir(BASE.'config', 'config');
             $zipdoorGets->addDir(BASE.'data', 'data');
+            //$zipdoorGets->addDir(BASE.'checkout', 'checkout');
+            //$zipdoorGets->addDir(BASE.'payment', 'payment');
             $zipdoorGets->addDir(BASE.'dg-user', 'dg-user');
             $zipdoorGets->addDir(BASE.'doorgets', 'doorgets');
-            $zipdoorGets->addDir(BASE.'installer', 'installer');
-            $zipdoorGets->addDir(BASE.'io', 'io');
             $zipdoorGets->addDir(BASE.'rss', 'rss');
             $zipdoorGets->addDir(BASE.'skin', 'skin');
+            $zipdoorGets->addDir(BASE.'fileman', 'fileman');
             $zipdoorGets->addDir(BASE.'t', 't');
             $zipdoorGets->addDir(BASE.'oauth2', 'oauth2');
             $zipdoorGets->addDir(BASE.'themes', 'themes');
@@ -151,12 +161,32 @@ class doorgetsInstallerIO extends Langue{
             //$zipdoorGets->addFile(BASE.'cmd.php', 'cmd.php');
             $zipdoorGets->addFile(BASE.'404.php', '404.php');
             $zipdoorGets->addFile(BASE.'index.php', 'index.php');
-            $zipdoorGets->addFile(BASE.'.htaccess', '.htaccess');
+            //$zipdoorGets->addFile(BASE.'.htaccess', '.htaccess');
             $zipdoorGets->addFile(BASE.'favicon.ico', 'favicon.ico');
-
-            $zipdoorGets->close();
+            
+            $zipdoorGets->addEmptyDir('cache');
+            $zipdoorGets->addFile(BASE.'cache/.htaccess', 'cache/.htaccess');
+            $zipdoorGets->addFile(BASE.'data/index.php', 'cache/index.php' );
+            
+            $zipdoorGets->addEmptyDir('installer');
+            $zipdoorGets->addFile(BASE.'installer/.htaccess', 'installer/.htaccess');
+            $zipdoorGets->addFile(BASE.'data/index.php', 'installer/index.php' );
+            
+            $zipdoorGets->addEmptyDir('io');
+            $zipdoorGets->addFile(BASE.'io/.htaccess', 'io/.htaccess');
+            $zipdoorGets->addFile(BASE.'data/index.php', 'io/index.php');
+            
+            if (!empty($this->doorGets->configWeb['saas_position'])) {
+                $zipdoorGets->addEmptyDir($this->doorGets->configWeb['saas_position']);
+                $zipdoorGets->addFile(BASE.'io/index.php', $this->doorGets->configWeb['saas_position'].'index.php');   
+            } else {
+                $zipdoorGets->addEmptyDir('cloud');
+                $zipdoorGets->addFile(BASE.'data/index.php', 'cloud/index.php');
+            }
 
         }
+
+        $zipdoorGets->close();
 
         $zipDatabase = new ZipDir();
         $resDatabase = $zipDatabase->open($zip_file_database, ZipArchive::CREATE);
@@ -166,6 +196,7 @@ class doorgetsInstallerIO extends Langue{
             $zipDatabase->addEmptyDir('database/');
             
             $groupBy = 1000; 
+
             // Création des fichiers d'éxportation de la base
             foreach($table as $name_table=>$v) {
                
@@ -188,26 +219,26 @@ class doorgetsInstallerIO extends Langue{
                         $initPos = ($i) ? ($groupBy * $i) : 0;
                         $valContent = $this->dbQA($name_table," LIMIT $initPos, $groupBy");
                         $sqlToSave = '';
+
                         $fileNameSaved = $dirIoFile.$name_table.'-'.$i.'.php';
-
+                        $fileCache = $dirCache.$name_table.'-'.$i.'.php';
                         if (!empty($valContent)) {
+                            $fp = fopen($fileCache, 'w');
                             $cValContentcount = count($valContent);
-                            
                             for ($j=0; $j < $cValContentcount; $j++) { 
-                                
-                                $sqlToSave .= $this->dbVQI($valContent[$j],$name_table);
-                            }
-
-                            $sqlToSaveSerialized = serialize($sqlToSave);
-                            $zipDatabase->addFromString( $fileNameSaved,$sqlToSaveSerialized );   
+                                //fwrite($fp, base64_encode(serialize($this->dbVQI($valContent[$j],$name_table))));
+                                fwrite($fp, $this->dbVQI($valContent[$j],$name_table));
+                            }  
+                            $zipDatabase->addFile($fileCache,$fileNameSaved);
+                            fclose($fp);
                         }
                     }
                 }
             }
 
             $tableInfo = serialize($table);
-            $zipDatabase->addFromString( 'database/doorgets.php',$tableInfo );
-
+            file_put_contents($dirCache.'doorgets.php',$tableInfo);
+            $zipDatabase->addFile($dirCache.'doorgets.php','database/doorgets.php' );
             $zipDatabase->close();
         }
 
@@ -242,8 +273,9 @@ class doorgetsInstallerIO extends Langue{
 
         // Create json file for infos
         $this->dataInfo['file'] = $filename;
-
-        if (file_put_contents($json_file,json_encode($this->dataInfo,JSON_PRETTY_PRINT))){
+        
+        $fileJson = json_encode($this->dataInfo);
+        if (file_put_contents($json_file,$fileJson)){
             return true;
         }
 
@@ -283,7 +315,7 @@ class doorgetsInstallerIO extends Langue{
         foreach (scandir($dir) as $item) { 
             if ($item == '.' || $item == '..') continue; 
             if (!$this->destroy_dir($dir . "/" . $item)) { 
-                chmod($dir . "/" . $item, 0777); 
+                @chmod($dir . "/" . $item, 0777); 
                 if (!$this->destroy_dir($dir . "/" . $item)) return false; 
             }; 
         } 

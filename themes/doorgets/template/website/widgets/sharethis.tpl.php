@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -43,6 +43,7 @@
 <!-- doorGets:start:widgets/sharethis -->
 [{?(!empty($this->configWeb['m_sharethis'])):}]
     <div class="doorGets-sharethis text-center">
+        <h4>[{!$this->__("Partager cette page")!}]</h4>
         <span class='st_googleplus_large' displayText='Google +'></span>
         <span class='st_facebook_large' displayText='Facebook'></span>
         <span class='st_twitter_large' st_via='doorgets' displayText='Tweet'></span>

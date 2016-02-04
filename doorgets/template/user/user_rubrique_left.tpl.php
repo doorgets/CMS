@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 20, February 2014
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2013 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -38,13 +38,17 @@
     // Init rubrique for module
     $isModuleRubriques  = array('modulenews','modulepage','modulemultipage');
     
-    $isModuleRubriques      = array('modules','modulenews','modulecategory','modulepage','modulemultipage','moduleblock',
-                                    'modulelink','moduleimage','modulevideo','modulefaq','modulepartner');
+    $isModuleRubriques      = array('modules','modulenews','modulecategory','modulepage','modulemultipage',
+                                    'modulelink','moduleimage','modulevideo','modulefaq','modulepartner','modulesharedlinks','moduleblog');
+    $isWidgetsRubriques      = array('widgets','modulecarousel','modulegenform','modulesurvey','moduleblock');
     $isRubriquesRubriques   = array('rubriques');
     $isEmailingRubriques    = array('emailing');
+    $isSaasRubriques        = array('saas');
     $isDashboardRubriques   = array('dashboard');
     $isDashboardTheme       = array('theme');
-    $isUsersRubriques       = array('users','groupes','attributes');
+    $isUsersRubriques       = array('users');
+    $isGroupesRubriques       = array('groupes','attributes');
+    $isOrderRubriques       = array('order','taxes','promotion','orderstatus','orderstatusback','ordermessage');
     
     $iCommentNotRead    = $doorGets->getCountCommentNotRead();
 
@@ -149,8 +153,9 @@
                 [{!$doorGets->__('Tableau de bord')!}]
             </a>
         </li>
-        [{?(in_array('users', $doorGets->user['liste_module_interne'])):}]
-            <li class="list-group-item <?php if ($menu === 'users') { echo 'active'; } ?>">
+        [{?((in_array('users', $doorGets->user['liste_module_interne']) && !SAAS_ENV)
+            || (in_array('users', $doorGets->user['liste_module_interne']) && SAAS_ENV && SAAS_USERS)):}]
+            <li class="list-group-item <?php if (in_array($menu,$isUsersRubriques)) { echo 'active'; } ?>">
                 <a href="?controller=users"><b class="glyphicon glyphicon-user"></b>
                     [{!$doorGets->__('Utilisateurs')!}]
                 </a>
@@ -158,29 +163,29 @@
         [?]
         [{?((in_array('groupes', $doorGets->user['liste_module_interne']) && !SAAS_ENV)
             || (in_array('groupes', $doorGets->user['liste_module_interne']) && SAAS_ENV && SAAS_GROUPES) ):}]
-            <li class="list-group-item <?php if ($menu === 'groupes') { echo 'active'; } ?>">
+            <li class="list-group-item <?php if (in_array($menu,$isGroupesRubriques)) { echo 'active'; } ?>">
                 <a href="?controller=groupes"><b class="glyphicon glyphicon-cloud"></b>
                     [{!$doorGets->__('Groupes')!}]
                 </a>
             </li>
         [?]
-        [{?((in_array('attributes', $doorGets->user['liste_module_interne']) && !SAAS_ENV)
-            || (in_array('attributes', $doorGets->user['liste_module_interne']) && SAAS_ENV && SAAS_TRADUCTION) ):}]
-            <li class="list-group-item <?php if ($menu === 'attributes' ) { echo 'active'; } ?>">
-                <a href="?controller=attributes"><b class="glyphicon glyphicon-pushpin"></b>
-                    [{!$doorGets->__('Attributs')!}]
-                </a>
-            </li>
-        [?]
-        [{?(in_array('module', $doorGets->user['liste_module_interne'])):}]
+        [{?((in_array('module', $doorGets->user['liste_module_interne']) && !SAAS_ENV)
+            || (in_array('module', $doorGets->user['liste_module_interne']) && SAAS_ENV && SAAS_MODULES)):}]
         <li class="list-group-item <?php if (in_array($menu,$isModuleRubriques)) { echo 'active'; } ?>">
-            <a href="?controller=modules"  title="[{!$doorGets->__('Module')!}]" >
+            <a href="?controller=modules"  title="[{!$doorGets->__('Modules')!}]" >
                 <b class="glyphicon glyphicon-asterisk"></b>
                 [{!$doorGets->__('Modules')!}]
             </a>
         </li>
+        <li class="list-group-item <?php if (in_array($menu,$isWidgetsRubriques)) { echo 'active'; } ?>">
+            <a href="?controller=widgets"  title="[{!$doorGets->__('Widgets')!}]" >
+                <b class="glyphicon glyphicon-magnet"></b>
+                [{!$doorGets->__('Widgets')!}]
+            </a>
+        </li>
         [?]
-        [{?(in_array('menu', $doorGets->user['liste_module_interne'])):}]
+        [{?((in_array('menu', $doorGets->user['liste_module_interne']) && !SAAS_ENV)
+            || (in_array('menu', $doorGets->user['liste_module_interne']) && SAAS_ENV && SAAS_MENU)):}]
         <li class="list-group-item <?php if (in_array($menu,$isRubriquesRubriques)) { echo 'active'; } ?>">
             <a href="?controller=rubriques"  title="[{!$doorGets->__('Menu')!}]">
                 <b class="glyphicon glyphicon-align-justify"></b>
@@ -201,14 +206,15 @@
             (in_array('traduction', $doorGets->user['liste_module_interne']) && !SAAS_ENV)
             || (in_array('traduction', $doorGets->user['liste_module_interne']) && SAAS_ENV && SAAS_TRADUCTION) 
         ):}]  
-        <li class="list-group-item <?php if ($menu === 'translator') { echo 'active'; } ?>">
-            <a href="?controller=translator" title="[{!$doorGets->__('Traductions')!}]">
+        <li class="list-group-item <?php if ($menu === 'traductions') { echo 'active'; } ?>">
+            <a href="?controller=traductions" title="[{!$doorGets->__('Traductions')!}]">
                 <b class="glyphicon glyphicon-flag "></b>
                 [{!$doorGets->__('Traduction')!}]
             </a>
         </li>
         [?]
-        [{?(in_array('themes', $doorGets->user['liste_module_interne'])):}]  
+        [{?((in_array('themes', $doorGets->user['liste_module_interne']) && !SAAS_ENV)
+            || (in_array('themes', $doorGets->user['liste_module_interne']) && SAAS_ENV && SAAS_THEME)):}]  
         <li class="list-group-item <?php if ($menu === 'theme') { echo 'active'; } ?>">
             <a href="?controller=theme" title="[{!$doorGets->__('Thème')!}]">
                 <b class="glyphicon glyphicon-tint "></b>
@@ -236,6 +242,14 @@
             </a>
         </li>
         [?]
+        [{?((in_array('saas', $doorGets->user['liste_module_interne']) && !SAAS_ENV)
+            || (in_array('saas', $doorGets->user['liste_module_interne']) && SAAS_ENV && SAAS_CLOUD) ):}]
+        <li class="list-group-item <?php if (in_array($menu,$isSaasRubriques)) { echo 'active'; } ?>">
+            <a href="?controller=saas"><b class="glyphicon glyphicon-cloud-upload"></b>
+                [{!$doorGets->__('Cloud')!}]
+            </a>
+        </li>
+        [?]
         [{?(!empty($Rubriques)):}]
         <li class="list-group-item  <?php if ($menu === 'configuration') { echo 'active'; } ?>">
             <a  title="[{!$doorGets->__('Configuration')!}]" href="?controller=configuration">
@@ -244,5 +258,11 @@
             </a>
         </li>
         [?]
+        <li class="list-group-item" style="position: fixed;bottom: 0;">
+            <a  title="[{!$doorGets->__('Par')!}] doorGets™" href="http://www.doorgets.com/t/[{!$User['langue']!}]/" target="self" style="font-size: 11px;text-align: right;display: block;">
+                <b class="glyphicon glyphicon-gift"></b>
+                [{!$doorGets->__('Par')!}] doorGets™
+            </a>
+        </li>
     </ul>
 </div>

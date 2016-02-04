@@ -1,4 +1,35 @@
-<?php
+<?php 
+
+/*******************************************************************************
+/*******************************************************************************
+    doorGets 7.0 - 01, February 2016
+    doorGets it's free PHP Open Source CMS PHP & MySQL
+    Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
+    
+/*******************************************************************************
+
+    Website : http://www.doorgets.com
+    Contact : http://www.doorgets.com/t/en/?contact
+    
+/*******************************************************************************
+    -= One life, One code =-
+/*******************************************************************************
+    
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    
+******************************************************************************
+******************************************************************************/
 
 class UsersGroupesEntity extends AbstractEntity
 {
@@ -148,6 +179,13 @@ class UsersGroupesEntity extends AbstractEntity
 	
 
 	/**
+	* @type  : varchar
+	* @size  : 255  
+	*/
+	protected $Fileman; 
+	
+
+	/**
 	* @type  : int
 	* @size  : 255  
 	*/
@@ -172,12 +210,33 @@ class UsersGroupesEntity extends AbstractEntity
 	* @type  : int
 	* @size  : 11  
 	*/
-	protected $Payment; 
+	protected $RegisterVerification; 
+	
+
+	/**
+	* @type  : text
+	* @size  : 0  
+	*/
+	protected $SaasOptions; 
 	
 
 	/**
 	* @type  : int
 	* @size  : 11  
+	*/
+	protected $Payment; 
+	
+
+	/**
+	* @type  : varchar
+	* @size  : 255  
+	*/
+	protected $PaymentCurrency; 
+	
+
+	/**
+	* @type  : decimal
+	* @size  : 7  
 	*/
 	protected $PaymentAmountMonth; 
 	
@@ -204,401 +263,328 @@ class UsersGroupesEntity extends AbstractEntity
  
 	
 
-	public function setId($Id)
-	{
-		
+	public function setId($Id) {
 		$this->Id = $Id;
-
 		return $this;
 	} 
 	
 
-	public function setUri($Uri)
-	{
-		
+	public function setUri($Uri) {
 		$this->Uri = $Uri;
-
 		return $this;
 	} 
 	
 
-	public function setListeWidget($ListeWidget)
-	{
-		
+	public function setListeWidget($ListeWidget) {
 		$this->ListeWidget = $ListeWidget;
-
 		return $this;
 	} 
 	
 
-	public function setListeModule($ListeModule)
-	{
-		
+	public function setListeModule($ListeModule) {
 		$this->ListeModule = $ListeModule;
-
 		return $this;
 	} 
 	
 
-	public function setListeModuleLimit($ListeModuleLimit)
-	{
-		
+	public function setListeModuleLimit($ListeModuleLimit) {
 		$this->ListeModuleLimit = $ListeModuleLimit;
-
 		return $this;
 	} 
 	
 
-	public function setListeModuleList($ListeModuleList)
-	{
-		
+	public function setListeModuleList($ListeModuleList) {
 		$this->ListeModuleList = $ListeModuleList;
-
 		return $this;
 	} 
 	
 
-	public function setListeModuleShow($ListeModuleShow)
-	{
-		
+	public function setListeModuleShow($ListeModuleShow) {
 		$this->ListeModuleShow = $ListeModuleShow;
-
 		return $this;
 	} 
 	
 
-	public function setListeModuleAdd($ListeModuleAdd)
-	{
-		
+	public function setListeModuleAdd($ListeModuleAdd) {
 		$this->ListeModuleAdd = $ListeModuleAdd;
-
 		return $this;
 	} 
 	
 
-	public function setListeModuleEdit($ListeModuleEdit)
-	{
-		
+	public function setListeModuleEdit($ListeModuleEdit) {
 		$this->ListeModuleEdit = $ListeModuleEdit;
-
 		return $this;
 	} 
 	
 
-	public function setListeModuleDelete($ListeModuleDelete)
-	{
-		
+	public function setListeModuleDelete($ListeModuleDelete) {
 		$this->ListeModuleDelete = $ListeModuleDelete;
-
 		return $this;
 	} 
 	
 
-	public function setListeModuleModo($ListeModuleModo)
-	{
-		
+	public function setListeModuleModo($ListeModuleModo) {
 		$this->ListeModuleModo = $ListeModuleModo;
-
 		return $this;
 	} 
 	
 
-	public function setListeModuleAdmin($ListeModuleAdmin)
-	{
-		
+	public function setListeModuleAdmin($ListeModuleAdmin) {
 		$this->ListeModuleAdmin = $ListeModuleAdmin;
-
 		return $this;
 	} 
 	
 
-	public function setListeModuleInterne($ListeModuleInterne)
-	{
-		
+	public function setListeModuleInterne($ListeModuleInterne) {
 		$this->ListeModuleInterne = $ListeModuleInterne;
-
 		return $this;
 	} 
 	
 
-	public function setListeModuleInterneModo($ListeModuleInterneModo)
-	{
-		
+	public function setListeModuleInterneModo($ListeModuleInterneModo) {
 		$this->ListeModuleInterneModo = $ListeModuleInterneModo;
-
 		return $this;
 	} 
 	
 
-	public function setListeEnfant($ListeEnfant)
-	{
-		
+	public function setListeEnfant($ListeEnfant) {
 		$this->ListeEnfant = $ListeEnfant;
-
 		return $this;
 	} 
 	
 
-	public function setListeEnfantModo($ListeEnfantModo)
-	{
-		
+	public function setListeEnfantModo($ListeEnfantModo) {
 		$this->ListeEnfantModo = $ListeEnfantModo;
-
 		return $this;
 	} 
 	
 
-	public function setListeParent($ListeParent)
-	{
-		
+	public function setListeParent($ListeParent) {
 		$this->ListeParent = $ListeParent;
-
 		return $this;
 	} 
 	
 
-	public function setCanSubscribe($CanSubscribe)
-	{
-		
+	public function setCanSubscribe($CanSubscribe) {
 		$this->CanSubscribe = $CanSubscribe;
-
 		return $this;
 	} 
 	
 
-	public function setEditorCkeditor($EditorCkeditor)
-	{
-		
+	public function setEditorCkeditor($EditorCkeditor) {
 		$this->EditorCkeditor = $EditorCkeditor;
-
 		return $this;
 	} 
 	
 
-	public function setEditorTinymce($EditorTinymce)
-	{
-		
+	public function setEditorTinymce($EditorTinymce) {
 		$this->EditorTinymce = $EditorTinymce;
-
 		return $this;
 	} 
 	
 
-	public function setDateCreation($DateCreation)
-	{
-		
+	public function setFileman($Fileman) {
+		$this->Fileman = $Fileman;
+		return $this;
+	} 
+	
+
+	public function setDateCreation($DateCreation) {
 		$this->DateCreation = $DateCreation;
-
 		return $this;
 	} 
 	
 
-	public function setGroupeTraduction($GroupeTraduction)
-	{
-		
+	public function setGroupeTraduction($GroupeTraduction) {
 		$this->GroupeTraduction = $GroupeTraduction;
-
 		return $this;
 	} 
 	
 
-	public function setAttributes($Attributes)
-	{
-		
+	public function setAttributes($Attributes) {
 		$this->Attributes = $Attributes;
-
 		return $this;
 	} 
 	
 
-	public function setPayment($Payment)
-	{
-		
+	public function setRegisterVerification($RegisterVerification) {
+		$this->RegisterVerification = $RegisterVerification;
+		return $this;
+	} 
+	
+
+	public function setSaasOptions($SaasOptions) {
+		$this->SaasOptions = $SaasOptions;
+		return $this;
+	} 
+	
+
+	public function setPayment($Payment) {
 		$this->Payment = $Payment;
-
 		return $this;
 	} 
 	
 
-	public function setPaymentAmountMonth($PaymentAmountMonth)
-	{
-		
+	public function setPaymentCurrency($PaymentCurrency) {
+		$this->PaymentCurrency = $PaymentCurrency;
+		return $this;
+	} 
+	
+
+	public function setPaymentAmountMonth($PaymentAmountMonth) {
 		$this->PaymentAmountMonth = $PaymentAmountMonth;
-
 		return $this;
 	} 
 	
 
-	public function setPaymentGroupExpired($PaymentGroupExpired)
-	{
-		
+	public function setPaymentGroupExpired($PaymentGroupExpired) {
 		$this->PaymentGroupExpired = $PaymentGroupExpired;
-
 		return $this;
 	} 
 	
 
-	public function setPaymentTranche($PaymentTranche)
-	{
-		
+	public function setPaymentTranche($PaymentTranche) {
 		$this->PaymentTranche = $PaymentTranche;
-
 		return $this;
 	} 
 	
 
-	public function setPaymentGroupUpgrade($PaymentGroupUpgrade)
-	{
-		
+	public function setPaymentGroupUpgrade($PaymentGroupUpgrade) {
 		$this->PaymentGroupUpgrade = $PaymentGroupUpgrade;
-
 		return $this;
 	} 
 
-		
-	public function getId()
-	{
+
+	public function getId() {
 		return $this->Id ;
 	} 
-		
-	public function getUri()
-	{
+
+	public function getUri() {
 		return $this->Uri ;
 	} 
-		
-	public function getListeWidget()
-	{
+
+	public function getListeWidget() {
 		return $this->ListeWidget ;
 	} 
-		
-	public function getListeModule()
-	{
+
+	public function getListeModule() {
 		return $this->ListeModule ;
 	} 
-		
-	public function getListeModuleLimit()
-	{
+
+	public function getListeModuleLimit() {
 		return $this->ListeModuleLimit ;
 	} 
-		
-	public function getListeModuleList()
-	{
+
+	public function getListeModuleList() {
 		return $this->ListeModuleList ;
 	} 
-		
-	public function getListeModuleShow()
-	{
+
+	public function getListeModuleShow() {
 		return $this->ListeModuleShow ;
 	} 
-		
-	public function getListeModuleAdd()
-	{
+
+	public function getListeModuleAdd() {
 		return $this->ListeModuleAdd ;
 	} 
-		
-	public function getListeModuleEdit()
-	{
+
+	public function getListeModuleEdit() {
 		return $this->ListeModuleEdit ;
 	} 
-		
-	public function getListeModuleDelete()
-	{
+
+	public function getListeModuleDelete() {
 		return $this->ListeModuleDelete ;
 	} 
-		
-	public function getListeModuleModo()
-	{
+
+	public function getListeModuleModo() {
 		return $this->ListeModuleModo ;
 	} 
-		
-	public function getListeModuleAdmin()
-	{
+
+	public function getListeModuleAdmin() {
 		return $this->ListeModuleAdmin ;
 	} 
-		
-	public function getListeModuleInterne()
-	{
+
+	public function getListeModuleInterne() {
 		return $this->ListeModuleInterne ;
 	} 
-		
-	public function getListeModuleInterneModo()
-	{
+
+	public function getListeModuleInterneModo() {
 		return $this->ListeModuleInterneModo ;
 	} 
-		
-	public function getListeEnfant()
-	{
+
+	public function getListeEnfant() {
 		return $this->ListeEnfant ;
 	} 
-		
-	public function getListeEnfantModo()
-	{
+
+	public function getListeEnfantModo() {
 		return $this->ListeEnfantModo ;
 	} 
-		
-	public function getListeParent()
-	{
+
+	public function getListeParent() {
 		return $this->ListeParent ;
 	} 
-		
-	public function getCanSubscribe()
-	{
+
+	public function getCanSubscribe() {
 		return $this->CanSubscribe ;
 	} 
-		
-	public function getEditorCkeditor()
-	{
+
+	public function getEditorCkeditor() {
 		return $this->EditorCkeditor ;
 	} 
-		
-	public function getEditorTinymce()
-	{
+
+	public function getEditorTinymce() {
 		return $this->EditorTinymce ;
 	} 
-		
-	public function getDateCreation()
-	{
+
+	public function getFileman() {
+		return $this->Fileman ;
+	} 
+
+	public function getDateCreation() {
 		return $this->DateCreation ;
 	} 
-		
-	public function getGroupeTraduction()
-	{
+
+	public function getGroupeTraduction() {
 		return $this->GroupeTraduction ;
 	} 
-		
-	public function getAttributes()
-	{
+
+	public function getAttributes() {
 		return $this->Attributes ;
 	} 
-		
-	public function getPayment()
-	{
+
+	public function getRegisterVerification() {
+		return $this->RegisterVerification ;
+	} 
+
+	public function getSaasOptions() {
+		return $this->SaasOptions ;
+	} 
+
+	public function getPayment() {
 		return $this->Payment ;
 	} 
-		
-	public function getPaymentAmountMonth()
-	{
+
+	public function getPaymentCurrency() {
+		return $this->PaymentCurrency ;
+	} 
+
+	public function getPaymentAmountMonth() {
 		return $this->PaymentAmountMonth ;
 	} 
-		
-	public function getPaymentGroupExpired()
-	{
+
+	public function getPaymentGroupExpired() {
 		return $this->PaymentGroupExpired ;
 	} 
-		
-	public function getPaymentTranche()
-	{
+
+	public function getPaymentTranche() {
 		return $this->PaymentTranche ;
 	} 
-		
-	public function getPaymentGroupUpgrade()
-	{
+
+	public function getPaymentGroupUpgrade() {
 		return $this->PaymentGroupUpgrade ;
 	} 
 
 		
-	public function getValidationId()
-	{
+	public function getValidationId() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 11, 
@@ -609,8 +595,7 @@ class UsersGroupesEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationUri()
-	{
+	public function getValidationUri() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -621,8 +606,7 @@ class UsersGroupesEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationListeWidget()
-	{
+	public function getValidationListeWidget() {
 		return array(
 			'type'	         => 'text', 
 			'size'			 => 0, 
@@ -633,8 +617,7 @@ class UsersGroupesEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationListeModule()
-	{
+	public function getValidationListeModule() {
 		return array(
 			'type'	         => 'text', 
 			'size'			 => 0, 
@@ -645,8 +628,7 @@ class UsersGroupesEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationListeModuleLimit()
-	{
+	public function getValidationListeModuleLimit() {
 		return array(
 			'type'	         => 'text', 
 			'size'			 => 0, 
@@ -657,8 +639,7 @@ class UsersGroupesEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationListeModuleList()
-	{
+	public function getValidationListeModuleList() {
 		return array(
 			'type'	         => 'text', 
 			'size'			 => 0, 
@@ -669,8 +650,7 @@ class UsersGroupesEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationListeModuleShow()
-	{
+	public function getValidationListeModuleShow() {
 		return array(
 			'type'	         => 'text', 
 			'size'			 => 0, 
@@ -681,8 +661,7 @@ class UsersGroupesEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationListeModuleAdd()
-	{
+	public function getValidationListeModuleAdd() {
 		return array(
 			'type'	         => 'text', 
 			'size'			 => 0, 
@@ -693,8 +672,7 @@ class UsersGroupesEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationListeModuleEdit()
-	{
+	public function getValidationListeModuleEdit() {
 		return array(
 			'type'	         => 'text', 
 			'size'			 => 0, 
@@ -705,8 +683,7 @@ class UsersGroupesEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationListeModuleDelete()
-	{
+	public function getValidationListeModuleDelete() {
 		return array(
 			'type'	         => 'text', 
 			'size'			 => 0, 
@@ -717,8 +694,7 @@ class UsersGroupesEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationListeModuleModo()
-	{
+	public function getValidationListeModuleModo() {
 		return array(
 			'type'	         => 'text', 
 			'size'			 => 0, 
@@ -729,8 +705,7 @@ class UsersGroupesEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationListeModuleAdmin()
-	{
+	public function getValidationListeModuleAdmin() {
 		return array(
 			'type'	         => 'text', 
 			'size'			 => 0, 
@@ -741,8 +716,7 @@ class UsersGroupesEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationListeModuleInterne()
-	{
+	public function getValidationListeModuleInterne() {
 		return array(
 			'type'	         => 'text', 
 			'size'			 => 0, 
@@ -753,8 +727,7 @@ class UsersGroupesEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationListeModuleInterneModo()
-	{
+	public function getValidationListeModuleInterneModo() {
 		return array(
 			'type'	         => 'text', 
 			'size'			 => 0, 
@@ -765,8 +738,7 @@ class UsersGroupesEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationListeEnfant()
-	{
+	public function getValidationListeEnfant() {
 		return array(
 			'type'	         => 'text', 
 			'size'			 => 0, 
@@ -777,8 +749,7 @@ class UsersGroupesEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationListeEnfantModo()
-	{
+	public function getValidationListeEnfantModo() {
 		return array(
 			'type'	         => 'text', 
 			'size'			 => 0, 
@@ -789,8 +760,7 @@ class UsersGroupesEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationListeParent()
-	{
+	public function getValidationListeParent() {
 		return array(
 			'type'	         => 'text', 
 			'size'			 => 0, 
@@ -801,8 +771,7 @@ class UsersGroupesEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationCanSubscribe()
-	{
+	public function getValidationCanSubscribe() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 11, 
@@ -813,8 +782,7 @@ class UsersGroupesEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationEditorCkeditor()
-	{
+	public function getValidationEditorCkeditor() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 1, 
@@ -825,8 +793,7 @@ class UsersGroupesEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationEditorTinymce()
-	{
+	public function getValidationEditorTinymce() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 1, 
@@ -837,8 +804,18 @@ class UsersGroupesEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationDateCreation()
-	{
+	public function getValidationFileman() {
+		return array(
+			'type'	         => 'varchar', 
+			'size'			 => 255, 
+			'unique' 		 => false,
+			'required' 		 => false,
+			'primary_key' 	 => false,
+			'auto_increment' => false
+		);
+	} 
+		
+	public function getValidationDateCreation() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 255, 
@@ -849,8 +826,7 @@ class UsersGroupesEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationGroupeTraduction()
-	{
+	public function getValidationGroupeTraduction() {
 		return array(
 			'type'	         => 'text', 
 			'size'			 => 0, 
@@ -861,8 +837,7 @@ class UsersGroupesEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationAttributes()
-	{
+	public function getValidationAttributes() {
 		return array(
 			'type'	         => 'text', 
 			'size'			 => 0, 
@@ -873,8 +848,7 @@ class UsersGroupesEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationPayment()
-	{
+	public function getValidationRegisterVerification() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 11, 
@@ -885,8 +859,18 @@ class UsersGroupesEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationPaymentAmountMonth()
-	{
+	public function getValidationSaasOptions() {
+		return array(
+			'type'	         => 'text', 
+			'size'			 => 0, 
+			'unique' 		 => false,
+			'required' 		 => false,
+			'primary_key' 	 => false,
+			'auto_increment' => false
+		);
+	} 
+		
+	public function getValidationPayment() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 11, 
@@ -897,8 +881,29 @@ class UsersGroupesEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationPaymentGroupExpired()
-	{
+	public function getValidationPaymentCurrency() {
+		return array(
+			'type'	         => 'varchar', 
+			'size'			 => 255, 
+			'unique' 		 => false,
+			'required' 		 => false,
+			'primary_key' 	 => false,
+			'auto_increment' => false
+		);
+	} 
+		
+	public function getValidationPaymentAmountMonth() {
+		return array(
+			'type'	         => 'decimal', 
+			'size'			 => 7, 
+			'unique' 		 => false,
+			'required' 		 => false,
+			'primary_key' 	 => false,
+			'auto_increment' => false
+		);
+	} 
+		
+	public function getValidationPaymentGroupExpired() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 11, 
@@ -909,8 +914,7 @@ class UsersGroupesEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationPaymentTranche()
-	{
+	public function getValidationPaymentTranche() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 11, 
@@ -921,8 +925,7 @@ class UsersGroupesEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationPaymentGroupUpgrade()
-	{
+	public function getValidationPaymentGroupUpgrade() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 11, 
@@ -933,13 +936,9 @@ class UsersGroupesEntity extends AbstractEntity
 		);
 	} 
 
-	
 
 	public function _getMap() { 
-
-		
 		$parentMap = parent::_getMap();
-
 		return array_merge($parentMap, array(            
 		    'Id' =>  'id',            
 		    'Uri' =>  'uri',            
@@ -961,16 +960,19 @@ class UsersGroupesEntity extends AbstractEntity
 		    'CanSubscribe' =>  'can_subscribe',            
 		    'EditorCkeditor' =>  'editor_ckeditor',            
 		    'EditorTinymce' =>  'editor_tinymce',            
+		    'Fileman' =>  'fileman',            
 		    'DateCreation' =>  'date_creation',            
 		    'GroupeTraduction' =>  'groupe_traduction',            
 		    'Attributes' =>  'attributes',            
+		    'RegisterVerification' =>  'register_verification',            
+		    'SaasOptions' =>  'saas_options',            
 		    'Payment' =>  'payment',            
+		    'PaymentCurrency' =>  'payment_currency',            
 		    'PaymentAmountMonth' =>  'payment_amount_month',            
 		    'PaymentGroupExpired' =>  'payment_group_expired',            
 		    'PaymentTranche' =>  'payment_tranche',            
 		    'PaymentGroupUpgrade' =>  'payment_group_upgrade',		
-		)); 
-
+		));
 	} 
 
 

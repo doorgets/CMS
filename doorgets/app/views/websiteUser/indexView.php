@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -48,7 +48,7 @@ class indexView extends doorgetsWebsiteUserView{
 
         $Website = $this->Website;
         $Module = $Website->getModule();
-        $moduleInfo = $Website->getActiveModules();
+        $moduleInfo = $Website->activeModules;
 
         $type = array('blog','news','image','video','sharedlinks');
 
@@ -58,8 +58,7 @@ class indexView extends doorgetsWebsiteUserView{
             }
            
         }
-
-
+        
         $tplModulePage = Template::getWebsiteUserView('index/home',$Website->getTheme());
         ob_start(); if (is_file($tplModulePage)) { include $tplModulePage; }  $out = ob_get_clean();
         

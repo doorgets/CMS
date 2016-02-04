@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 20, February 2014
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2013 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -47,7 +47,7 @@ class AccountRequest extends doorGetsUserRequest{
         $cName = $this->doorGets->controllerNameNow();
         
         $exludeFields = array('website','notification_newsletter','notification_mail','gender','avatar','birthday','id_facebook','id_twitter','id_youtube','id_google','id_pinterest','id_linkedin','id_myspace',
-                              'country','city','zipcode','adresse','tel_fix','tel_mobil','tel_fax','last_name','first_name','description','editor_html');
+                              'country','city','zipcode','adresse','tel_fix','tel_mobil','tel_fax','last_name','first_name','description','editor_html','region');
         
         switch($this->Action) {
             
@@ -126,7 +126,7 @@ class AccountRequest extends doorGetsUserRequest{
                 
                         $uni = time().'-'.uniqid('doorgets').'';
                         
-                        $nameFileAvatar = $uni.'-user.'.$extension;
+                        $nameFileAvatar = $uni.'-user'.$extension;
                         
                         $this->doorGets->Form->i['avatar'] = $nameFileAvatar;
                         
@@ -234,12 +234,10 @@ class AccountRequest extends doorGetsUserRequest{
                                         }
                                     }
 
-
-
                                     if ( isset($_FILES[$strAttribute]) && empty($this->doorGets->Form->e) ) {
 
                                         $uni = time().'-'.uniqid('doorgets').'';
-                                        $nameFile = $uni.'-user.'.$extension;
+                                        $nameFile = $uni.'-user'.$extension;
                                         $this->doorGets->Form->i['attribute_'.$idAttribute] = $nameFile;
                                         if ( move_uploaded_file(  $_FILES[$strAttribute]['tmp_name'] ,  BASE_DATA.'users/'.$nameFile )) {
                                     
@@ -309,6 +307,7 @@ class AccountRequest extends doorGetsUserRequest{
                             'id_linkedin'               => $this->doorGets->Form->i['id_linkedin'],
                             'id_myspace'                => $this->doorGets->Form->i['id_myspace'],
                             'country'                   => $this->doorGets->Form->i['country'],
+                            'region'                    => $this->doorGets->Form->i['region'],
                             'city'                      => $this->doorGets->Form->i['city'],
                             'zipcode'                   => $this->doorGets->Form->i['zipcode'],
                             'adresse'                   => $this->doorGets->Form->i['adresse'],

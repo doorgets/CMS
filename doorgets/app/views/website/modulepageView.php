@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -44,7 +44,7 @@ class modulePageView extends doorgetsWebsiteView{
         
         $Website = $this->Website;
         $Module = $Website->getModule();
-        $moduleInfo = $Website->getActiveModules();
+        $moduleInfo = $Website->activeModules;
         
 
         $tplPassword = $this->checkModulePassword(
@@ -105,10 +105,10 @@ class modulePageView extends doorgetsWebsiteView{
         
         $content['date_creation'] = GetDate::in($content['date_creation'],1,$Website->myLanguage);
         
-        $labelModuleGroup = $Website->getActiveModules();
+        $labelModuleGroup = $Website->activeModules;
         $labelModule = $labelModuleGroup[$Website->getModule()]['all']['nom'];
 
-        $allModules  = $Website->getActiveModules();    
+        $allModules  = $Website->activeModules;    
     
         $urlAfterAction     = urlencode($Website->getCurrentUrl());
         $urlEdition         = URL_USER.$Website->_lgUrl.'?controller=modulepage&uri='.$Website->getModule().'&lg='.$Website->getLangueTradution().'&back='.$urlAfterAction;

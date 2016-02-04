@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -39,7 +39,7 @@
 
         </div>
         <legend>
-            <span class="create" ><a class="doorGets-comebackform" href="?controller=translator&lg=[{!$lgActuel!}]"><img src="[{!BASE_IMG!}]retour.png" class="Retour-img"> [{!$this->doorGets->__('Retour')!}]</a></span>
+            <span class="create" ><a class="doorGets-comebackform" href="?controller=translator&lg=[{!$lgActuel!}]"><i class="fa fa-undo fa-lg green-c"></i> [{!$this->doorGets->__('Retour')!}]</a></span>
             <b class="glyphicon glyphicon-flag"></b> <a href="?controller=translator&lg=[{!$lgActuel!}]">[{!$this->doorGets->__('Traduction')!}]</a> 
              / [{!$this->doorGets->__('Ajouter une phrase')!}] 
         </legend>
@@ -72,7 +72,7 @@
                         [{!$this->doorGets->__('Vous ne pouvez pas ajouter de phrase')!}].
                     </div>
                     <div class="text-center">
-                        <a class="btn btn-default" href="?controller=translator&lg=[{!$lgActuel!}]"><img src="[{!BASE_IMG!}]retour.png" class="Retour-img"> [{!$this->doorGets->__("Retour")!}]</a>
+                        <a class="btn btn-default" href="?controller=translator&lg=[{!$lgActuel!}]"><i class="fa fa-undo fa-lg green-c"></i> [{!$this->doorGets->__("Retour")!}]</a>
                     </div>      
                 </div>
             </div>

@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 20, February 2014
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -34,7 +34,7 @@
 define('KEY_SECRET','hlHftNZYjunk1UfKyiju');
 define('KEY_DOORGETS','10yFCJmUPsAuFKRwKGSt');
 
-define('SAAS_ENV',true);
+define('SAAS_ENV',false);
 
 define('APP',BASE.'doorgets/app/');
 define('CORE',BASE.'doorgets/core/');
@@ -59,6 +59,6 @@ define('BASE_IMG',BASE.'skin/img/');
 define('BASE_CSS',BASE.'skin/css/');
 define('BASE_JS',BASE.'skin/js/');
 
-require_once CORE.'doorgetsInstaller.php';
+include CORE.'doorgetsInstaller.php';
 
-function __autoload($name) { $file = CORE.$name.'.php'; if (is_file($file)) { require_once $file; } }
+function __autoload($name) { $file = CORE.$name.'.php'; if (is_file($file)) { include $file; } }

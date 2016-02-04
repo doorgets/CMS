@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -40,7 +40,7 @@
         $article
         $date_creation
  */
- 
+
 ?>
 <!-- doorGets:start:modules/inbox/inbox_form -->
 <div class="doorGets-contact-content doorGets-module-[{!$Website->getModule()!}]">
@@ -82,13 +82,12 @@
                 [{!$Website->form['contact_inbox']->captcha()!}]
             </div>
             [?]
-            <div class="input-group text-center">
+            <div class="input-group text-center btn-form-contact">
                 [{!$Website->form['contact_inbox']->submit($Website->__('Envoyer le message'),'','btn btn-success')!}]
-                <div class="right"><span class="color-red">*</span> [{!$Website->__('Champ obligatoire')!}]</div>
+                <div><span class="color-red">*</span> [{!$Website->__('Champ obligatoire')!}]</div>
             </div>
-
-            
         [{!$Website->form['contact_inbox']->close()!}]
+        [{!$Website->getHtmlAddresses()!}]
     [{???(empty($Website->isUser)):}]
         <div class="alert alert-danger">
             [{!$Website->__('Vous devez vous connecter pour afficher ce contenu')!}] : <a href="[{!$this->loginUrl!}]&back=[{!urlencode($Website->getCurrentUrl())!}]">Se connecter</a> ou <a href="[{!$this->registerUrl!}]&back=[{!urlencode($Website->getCurrentUrl())!}]">S'inscrire</a>

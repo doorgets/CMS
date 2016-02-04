@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -31,7 +31,9 @@
 ******************************************************************************
 ******************************************************************************/
 
- 
+ $yn = $this->doorGets->getArrayForms('yn');
+ // $devise = $this->doorGets->configWeb['currency'];
+ // $currencyIco = Constant::$currencyIcon[$devise];
 ?>
 <div class="doorGets-rubrique-center">
     <div class="doorGets-rubrique-center-title-breadcrumb page-header">
@@ -47,8 +49,6 @@
                 <b class="glyphicon glyphicon-home"></b> [{!$this->doorGets->__('Site internet')!}]
                 <small>[{!$this->doorGets->__('Configurer les informations globales de votre site')!}].</small>
             </h2>
-
-            
         </div>
         
         [{!$this->doorGets->Form->open('post')!}]
@@ -57,7 +57,7 @@
             <div class="separateur-tb"></div>
             [{!$this->doorGets->Form->input($this->doorGets->__('Adresses IP autorisé lors de la désactivation, séparer par ')."','",'statut_ip','text',$this->doorGets->configWeb['statut_ip'])!}]
             <div class="separateur-tb"></div>
-            [{!$this->doorGets->Form->textarea($this->doorGets->__('Message lors de la désactivation du site'),'statut_tinymce',$this->doorGets->configWeb['statut_tinymce'],'tinymce ckeditor')!}]   
+            [{!$this->doorGets->Form->textarea($this->doorGets->__('Message lors de la désactivation du site'),'statut_tinymce',$this->doorGets->configWeb['statut_tinymce_edit'],'tinymce ckeditor')!}]   
         </div>
         <script type="text/javascript">
             if ($('#configuration_siteweb_statut').val() == 1) {
@@ -73,6 +73,8 @@
             });
         </script>
         <div class="separateur-tb"></div>
+        <h3>[{!$this->doorGets->__('Informations')!}]</h3>
+        <div class="separateur-tb"></div>
         <div class="row">
             <div class="col-md-6">
                 [{!$this->doorGets->Form->input($this->doorGets->__('Titre'),'title','text',$this->doorGets->configWeb['title'])!}]
@@ -81,28 +83,46 @@
                 <div class="separateur-tb"></div>
                 [{!$this->doorGets->Form->input($this->doorGets->__('Description'),'description','text',$this->doorGets->configWeb['description'])!}]
                 <div class="separateur-tb"></div>
-                [{!$this->doorGets->Form->select($this->doorGets->__('Année de création'),'year',$dateCreation,$this->doorGets->configWeb['year'])!}]
-                <div class="separateur-tb"></div>
             </div>
             <div class="col-md-6">
                 [{!$this->doorGets->Form->input($this->doorGets->__('Copyright'),'copyright','text',$this->doorGets->configWeb['copyright'])!}]
                 <div class="separateur-tb"></div>
                 [{!$this->doorGets->Form->input($this->doorGets->__('Mots clés'),'keywords','text',$this->doorGets->configWeb['keywords'])!}]
                 <div class="separateur-tb"></div>
-                [{?(!SAAS_ENV || (SAAS_ENV && SAAS_CONFIG_SOCIAL)):}]
-                    <div class="row">
-                        <div class="col-md-6">
-                            [{!$this->doorGets->Form->input($this->doorGets->__('Id Facebook'),'id_facebook','text',$this->doorGets->configWeb['id_facebook'])!}]
-                            <div class="separateur-tb"></div>
-                        </div>
-                        <div class="col-md-6">
-                            [{!$this->doorGets->Form->input($this->doorGets->__('Id Disqus'),'id_disqus','text',$this->doorGets->configWeb['id_disqus'])!}]
-                            <div class="separateur-tb"></div>
-                        </div>
-                    </div>
-                [?]
+                [{!$this->doorGets->Form->select($this->doorGets->__('Année de création'),'year',$dateCreation,$this->doorGets->configWeb['year'])!}]
+                <div class="separateur-tb"></div>
             </div>
         </div>
+        [{?(!SAAS_ENV || (SAAS_ENV && SAAS_CONFIG_SOCIAL)):}]
+        <h3>[{!$this->doorGets->__('Commentaires')!}]</h3>
+        <div class="separateur-tb"></div>
+        <div class="row">
+            <div class="col-md-6">
+                [{!$this->doorGets->Form->input($this->doorGets->__('Id Facebook'),'id_facebook','text',$this->doorGets->configWeb['id_facebook'])!}]
+                <div class="separateur-tb"></div>
+            </div>
+            <div class="col-md-6">
+                [{!$this->doorGets->Form->input($this->doorGets->__('Id Disqus'),'id_disqus','text',$this->doorGets->configWeb['id_disqus'])!}]
+                <div class="separateur-tb"></div>
+            </div>
+        </div>
+        [?]
+        <div class="separateur-tb"></div>
+        <h3>[{!$this->doorGets->__("Signature")!}]</h3>
+        <div class="separateur-tb"></div>
+        [{!$this->doorGets->Form->textarea('','signature_tinymce',$this->doorGets->configWeb['signature_tinymce_edit'],'tinymce ckeditor')!}]   
+        <div class="separateur-tb"></div>
+        <h3>[{!$this->doorGets->__("Conditions générales d'utilisation")!}]</h3>
+        <div class="separateur-tb"></div>
+        [{!$this->doorGets->Form->textarea('','cgu_tinymce',$this->doorGets->configWeb['cgu_tinymce_edit'],'tinymce ckeditor')!}]   
+        <div class="separateur-tb"></div>
+        <h3>[{!$this->doorGets->__("Conditions générales de vente")!}]</h3>
+        <div class="separateur-tb"></div>
+        [{!$this->doorGets->Form->textarea('','terms_tinymce',$this->doorGets->configWeb['terms_tinymce_edit'],'tinymce ckeditor')!}]   
+        <div class="separateur-tb"></div>
+        <h3>[{!$this->doorGets->__("Politique de confidentialité")!}]</h3>
+        <div class="separateur-tb"></div>
+        [{!$this->doorGets->Form->textarea('','privacy_tinymce',$this->doorGets->configWeb['privacy_tinymce_edit'],'tinymce ckeditor')!}]   
         <div class="separateur-tb"></div>
         <div class="text-center">
             [{! $this->doorGets->Form->submit($this->doorGets->__('Sauvegarder'))!}]

@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -49,7 +49,7 @@
 <!-- doorGets:start:modules/news/news_listing -->
 <div class="doorGets-news-listing doorGets-module-[{!$Website->getModule()!}]">
     <div class="row">
-        <div class="col-md-9">
+        [{?($Website->hasCategories):}]<div class="col-md-9">[??]<div class="col-md-12">[?]
             [{?($this->userPrivilege['add']):}]
             <div class="btn-group pull-right btn-add-content">
                 <a href="[{!$urlAdd!}]" class="btn btn-success btn-large">
@@ -58,13 +58,17 @@
                 </a>
             </div>
             [?]
+
+            [{?(!$Website->hasCategories):}]
+                <span class="pull-right">[{!$Website->getHtmlModuleSearch($q)!}]</span>
+            [?]
             <ol class="breadcrumb">
                 
-                <li><a href="[{!BASE_URL!}]?[{!$Website->getModule()!}]">[{!$labelModule!}]</a></li>
+                <li><a href="[{!$Website->getBaseUrl()!}]?[{!$Website->getModule()!}]">[{!$labelModule!}]</a></li>
                 [{?(!empty($parentCategories)):}]
                     [{/($parentCategories as $Categorie):}]
                         <li [{?($Categorie['position'] === 1):}]class="active"[?]>
-                            [{?($Categorie['position'] !== 1):}]<a href="[{!BASE_URL!}]?doorgets=[{!$Categorie['uri']!}]">[?]
+                            [{?($Categorie['position'] !== 1):}]<a href="[{!$Website->getBaseUrl()!}]?doorgets=[{!$Categorie['uri']!}]">[?]
                             [{!$Categorie['nom']!}]
                             [{?($Categorie['position'] !== 1):}]</a>[?]
                         </li>
@@ -90,15 +94,15 @@
                         <div class="row content-listing-news">    
                             <div class="col-md-3  left-date-news">
                                 <h3 class="visible-xs">
-                                    <a href="[{!BASE_URL!}]?[{!$Website->getModule()!}]=[{!$content['uri']!}]">[{!$content['title']!}]</a>
+                                    <a href="[{!$Website->getBaseUrl()!}]?[{!$Website->getModule()!}]=[{!$content['uri']!}]">[{!$content['title']!}]</a>
                                 </h3>
-                                <a href="[{!BASE_URL!}]?[{!$Website->getModule()!}]=[{!$content['uri']!}]">
-                                    <img src="[{!BASE!}]data/[{!$Website->getRealUri($Website->getModule())!}]//[{!$content['image']!}]" class="img-thumbnail img-responsive hover-t img-blog-listing" />
+                                <a href="[{!$Website->getBaseUrl()!}]?[{!$Website->getModule()!}]=[{!$content['uri']!}]">
+                                    <img src="[{!URL!}]data/[{!$Website->getModule()!}]//[{!$content['image']!}]" class="img-thumbnail img-responsive hover-t img-blog-listing" />
                                 </a>
                             </div>
                             <div class="col-md-9  ">
                                 <h3 class="hidden-xs">
-                                    <a href="[{!BASE_URL!}]?[{!$Website->getModule()!}]=[{!$content['uri']!}]">[{!$content['title']!}]</a>
+                                    <a href="[{!$Website->getBaseUrl()!}]?[{!$Website->getModule()!}]=[{!$content['uri']!}]">[{!$content['title']!}]</a>
                                 </h3>
                                 <div>
                                     [{!$content['article']!}]
@@ -127,17 +131,19 @@
                 </div>
             [?]
         </div>
-        <div class="col-md-3">
-            [{!$Website->getHtmlModuleSearch($q)!}]
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                  <a href="[{!BASE_URL.'?'.$Website->getModule()!}]"><h3 class="panel-title">[{!$Website->__('Catégories')!}]</h3></a>
-                </div>
-                <div class="panel-body">
-                  [{!$Website->getHtmlModuleCategories()!}]
+        [{?($Website->hasCategories):}]
+            <div class="col-md-3">
+                [{!$Website->getHtmlModuleSearch($q)!}]
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <a href="[{!BASE_URL.'?'.$Website->getModule()!}]"><h3 class="panel-title">[{!$Website->__('Catégories')!}]</h3></a>
+                    </div>
+                    <div class="panel-body">
+                      [{!$Website->getHtmlModuleCategories()!}]
+                    </div>
                 </div>
             </div>
-        </div>
+        [?]
     </div>
 </div>
 <!-- doorGets:end:modules/news/news_listing -->

@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -50,7 +50,8 @@ class ConfigurationView extends doorGetsUserView{
             'langue'        => $this->doorGets->__('Langue').' / '.$this->doorGets->__('Heure'),
             'media'         => $this->doorGets->__('Logo').' & '.$this->doorGets->__('Icône'),
             'modules'       => $this->doorGets->__('Modules internes'),
-            'adresse'       => $this->doorGets->__('Addresse').' & '.$this->doorGets->__('Contact'),
+            'adresse'       => $this->doorGets->__('Adresses'), 
+            'email'         => $this->doorGets->__('Adresses e-mail de notifications'),
             'network'       => $this->doorGets->__('Réseaux sociaux'),
             'analytics'     => $this->doorGets->__('Google analytics'),
             'sitemap'       => $this->doorGets->__('Plan du site'),
@@ -59,7 +60,13 @@ class ConfigurationView extends doorGetsUserView{
             'cache'         => $this->doorGets->__('Cache'),
             'oauth'         => 'OAuth2',
             'smtp'          => 'SMTP',
-            'setup'         => $this->doorGets->__('Installer'),
+            // 'stripe'        => $this->doorGets->__('Paiement avec Stripe'), 
+            // 'paypal'        => $this->doorGets->__('Paiement avec Paypal'), 
+            // 'transfer'      => $this->doorGets->__('Paiement par virement bancaire'),
+            // 'check'         => $this->doorGets->__('Paiement par chèque'),
+            // 'cash'          => $this->doorGets->__('Paiement en liquide'),
+            'saas'          => $this->doorGets->__('Cloud'),
+            'setup'         => $this->doorGets->__("Système d'installation"),
             'params'        => $this->doorGets->__('Paramètres'),
             
         );
@@ -70,16 +77,23 @@ class ConfigurationView extends doorGetsUserView{
             'langue'        => '<b class="glyphicon glyphicon-globe"></b>',
             'media'         => '<b class="glyphicon glyphicon-picture"></b>',
             'modules'       => '<b class="glyphicon glyphicon-asterisk"></b>',
-            'adresse'       => '<b class="glyphicon glyphicon-envelope"></b>',
+            'adresse'       => '<i class="fa fa-map-marker"></i>',
+            'email'         => '<b class="glyphicon glyphicon-bullhorn"></b>',
             'network'       => '<b class="glyphicon glyphicon-link"></b>',
             'analytics'     => '<b class="glyphicon glyphicon-stats"></b>',
             'sitemap'       => '<b class="glyphicon glyphicon-tree-deciduous"></b>',
             //'backups'       => '<b class="glyphicon glyphicon-floppy-disk"></b>',
             'updater'       => '<b class="glyphicon glyphicon-open"></b>',
             'cache'         => '<b class="glyphicon glyphicon-refresh"></b>',
-            'setup'         => '<b class="glyphicon glyphicon-compressed"></b>',
             'oauth'         => '<b class="glyphicon glyphicon-magnet"></b>',
             'smtp'          => '<b class="glyphicon glyphicon-road"></b>',
+            // 'stripe'        => '<i class="fa fa-cc-stripe"></i>',
+            // 'paypal'        => '<i class="fa fa-cc-paypal"></i>',
+            // 'transfer'      => '<i class="fa fa-exchange"></i>',
+            // 'check'         => '<i class="fa fa-paper-plane"></i>',
+            // 'cash'          => '<i class="fa fa-money"></i>',
+            'saas'          => '<b class="glyphicon glyphicon-cloud-upload"></b>',
+            'setup'         => '<b class="glyphicon glyphicon-compressed"></b>',
             'params'        => '<b class="glyphicon glyphicon-cog"></b>',
             
         );
@@ -97,6 +111,14 @@ class ConfigurationView extends doorGetsUserView{
         if (SAAS_ENV && !SAAS_CONFIG_SMTP) { unset($Rubriques['smtp']); }
         if (SAAS_ENV && !SAAS_CONFIG_NETWORK) { unset($Rubriques['network']); }
 
+        if (SAAS_ENV && !SAAS_CONFIG_CLOUD) { unset($Rubriques['saas']); }
+
+        // if (SAAS_ENV && !SAAS_CONFIG_STRIPE) { unset($Rubriques['stripe']); }
+        // if (SAAS_ENV && !SAAS_CONFIG_PAYPAL) { unset($Rubriques['paypal']); }
+        // if (SAAS_ENV && !SAAS_CONFIG_TRANSFER) { unset($Rubriques['transfer']); }
+        // if (SAAS_ENV && !SAAS_CONFIG_CHECK) { unset($Rubriques['check']); }
+        // if (SAAS_ENV && !SAAS_CONFIG_CASH) { unset($Rubriques['cash']); }
+
         $params = $this->doorGets->Params();
 
         $tplSelect = Template::getView('user/configuration/user_configuration_oauth_select');
@@ -109,6 +131,7 @@ class ConfigurationView extends doorGetsUserView{
                 case 'smtp':
                     
                     $isMandrillActive = ($this->doorGets->configWeb['smtp_mandrill_active']) ? 'checked' : '';
+                    $isMandrillSSL= ($this->doorGets->configWeb['smtp_mandrill_ssl']) ? 'checked' : '';
                     break;
 
                 case 'oauth':
@@ -134,9 +157,25 @@ class ConfigurationView extends doorGetsUserView{
                 case 'langue':
                     
                     $arrLangue = $this->doorGets->getAllLanguages();
-                    
                     break;
                 
+                // case 'stripe':
+                //     $isStripeActive = ($this->doorGets->configWeb['stripe_active']) ? 'checked' : '';
+                //     break;
+                // case 'paypal':
+                //     $isPaypalActive = ($this->doorGets->configWeb['paypal_active']) ? 'checked' : '';
+                //     $isPaypalDemo = ($this->doorGets->configWeb['paypal_demo']) ? 'checked' : '';
+                //     break;
+                // case 'transfer':
+                //     $isTransferActive = ($this->doorGets->configWeb['transfer_active']) ? 'checked' : '';
+                //     break;
+                // case 'check':
+                //     $isCheckActive = ($this->doorGets->configWeb['check_active']) ? 'checked' : '';
+                //     break;
+                // case 'cash':
+                //     $isCashActive = ($this->doorGets->configWeb['cash_active']) ? 'checked' : '';
+                //     break;
+
                 case 'backups':
                     
                     $urlTop = '<a href="?controller=configuration&action=backups&do=create"><img src="'.BASE_IMG.'add.png" alt="'.$this->doorGets->__("Créer une sauvegarde").'" class="ico-image" />  '.$this->doorGets->__('Créer une sauvegarde').'</a>';
@@ -193,7 +232,7 @@ class ConfigurationView extends doorGetsUserView{
 
                 case 'setup':
                     
-                    $urlTop = '<a href="?controller=configuration&action=setup&do=create"><img src="'.BASE_IMG.'add.png" alt="'.$this->doorGets->__("Créer un installer").'" class="ico-image" />  '.$this->doorGets->__('Créer un installer').'</a>';
+                    $urlTop = '<a href="?controller=configuration&action=setup&do=create"><img src="'.BASE_IMG.'add.png" alt="'.$this->doorGets->__("Créer un système d'installation").'" class="ico-image" />  '.$this->doorGets->__("Créer un système d'installation").'</a>';
                     
                     if (array_key_exists('do',$params['GET'])) {
                         
@@ -207,7 +246,7 @@ class ConfigurationView extends doorGetsUserView{
             }
             
             $ActionFile = 'user/configuration/user_configuration_'.$this->Action;
-            
+
             $tpl = Template::getView($ActionFile);
             ob_start(); if (is_file($tpl)) { include $tpl; } $out .= ob_get_clean();
             

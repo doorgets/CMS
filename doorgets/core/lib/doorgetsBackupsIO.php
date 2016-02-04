@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -35,7 +35,7 @@
 
 class doorgetsBackupsIO extends Langue{
     
-    use TraitDatabaseInstaller;
+    public $installDB;
     
     protected $doorGets;
 
@@ -44,7 +44,8 @@ class doorgetsBackupsIO extends Langue{
     public function __construct(&$doorGets,$dataInfo = array()) {
         
         $this->dataInfo = $dataInfo; 
-        $this->doorGets = $doorGets;    
+        $this->doorGets = $doorGets; 
+        $this->installDB = new DoDatabaseInstaller($doorGets);
         parent::__construct($doorGets->myLanguage);
     }
     
@@ -159,7 +160,7 @@ class doorgetsBackupsIO extends Langue{
     
     private function genExportMatrice() {
         
-        $arrayCatInc = array('blog','news','multipage','video','image','faq','partner','genform','sharedlinks');
+        $arrayCatInc = Constant::$modulesToExport;
         $arrayExclude = array('_dg_translator','_dg_translator_traduction','_dg_translator_version');
 
         include CONFIGURATION.'tables.php';
@@ -177,31 +178,34 @@ class doorgetsBackupsIO extends Langue{
                     switch($isAllModule[$i]['type']) {
                     
                         case 'faq':
-                            $table['_m_'.$isAllModule[$i]['uri']]['sql_create_table'] = $this->createSqlFaq($isAllModule[$i]['uri']);
+                            $table['_m_'.$isAllModule[$i]['uri']]['sql_create_table'] = $this->installDB->createSqlFaq($isAllModule[$i]['uri']);
                             break;
                         case 'partner':
-                            $table['_m_'.$isAllModule[$i]['uri']]['sql_create_table'] = $this->createSqlPartner($isAllModule[$i]['uri']);
+                            $table['_m_'.$isAllModule[$i]['uri']]['sql_create_table'] = $this->installDB->createSqlPartner($isAllModule[$i]['uri']);
                             break;
                         case 'image':
-                            $table['_m_'.$isAllModule[$i]['uri']]['sql_create_table'] = $this->createSqlImage($isAllModule[$i]['uri']);
+                            $table['_m_'.$isAllModule[$i]['uri']]['sql_create_table'] = $this->installDB->createSqlImage($isAllModule[$i]['uri']);
                             break;
                         case 'video':
-                            $table['_m_'.$isAllModule[$i]['uri']]['sql_create_table'] = $this->createSqlVideo($isAllModule[$i]['uri']);
+                            $table['_m_'.$isAllModule[$i]['uri']]['sql_create_table'] = $this->installDB->createSqlVideo($isAllModule[$i]['uri']);
                             break;
                         case 'multipage':
-                            $table['_m_'.$isAllModule[$i]['uri']]['sql_create_table'] = $this->createSqlMultipage($isAllModule[$i]['uri']);
+                            $table['_m_'.$isAllModule[$i]['uri']]['sql_create_table'] = $this->installDB->createSqlMultipage($isAllModule[$i]['uri']);
                             break;
                         case 'news':
-                            $table['_m_'.$isAllModule[$i]['uri']]['sql_create_table'] = $this->createSqlNews($isAllModule[$i]['uri']);
+                            $table['_m_'.$isAllModule[$i]['uri']]['sql_create_table'] = $this->installDB->createSqlNews($isAllModule[$i]['uri']);
                             break;
                         case 'sharedlinks':
-                            $table['_m_'.$isAllModule[$i]['uri']]['sql_create_table'] = $this->createSqlSharedlinks($isAllModule[$i]['uri']);
+                            $table['_m_'.$isAllModule[$i]['uri']]['sql_create_table'] = $this->installDB->createSqlSharedlinks($isAllModule[$i]['uri']);
                             break;
                         case 'blog':
-                            $table['_m_'.$isAllModule[$i]['uri']]['sql_create_table'] = $this->createSqlBlog($isAllModule[$i]['uri']);
+                            $table['_m_'.$isAllModule[$i]['uri']]['sql_create_table'] = $this->installDB->createSqlBlog($isAllModule[$i]['uri']);
                             break;
                         case 'genform':
-                            $table['_m_'.$isAllModule[$i]['uri']]['sql_create_table'] = $this->createSqlGenform($isAllModule[$i]['uri'],unserialize($isAllModule[$i]['extras']));
+                            $table['_m_'.$isAllModule[$i]['uri']]['sql_create_table'] = $this->installDB->createSqlGenform($isAllModule[$i]['uri'],unserialize($isAllModule[$i]['extras']));
+                            break;
+                        case 'genform':
+                            $table['_m_'.$isAllModule[$i]['uri']]['sql_create_table'] = $this->installDB->createSqlGenform($isAllModule[$i]['uri'],unserialize($isAllModule[$i]['extras']));
                             break;
                         
                     }

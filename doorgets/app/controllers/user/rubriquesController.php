@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -45,7 +45,8 @@ class RubriquesController extends doorGetsUserController{
             header('Location:./?controller=authentification&error-login=true&back='.urlencode($_SERVER['REQUEST_URI'])); exit();
         }
 
-        if (!in_array('menu',$doorGets->user['liste_module_interne'])) {
+        if (!in_array('menu',$doorGets->user['liste_module_interne'])
+            || ( in_array('menu',  $doorGets->user['liste_module_interne']) && SAAS_ENV && !SAAS_MENU)) {
 
             FlashInfo::set($doorGets->__("Vous n'avez pas les droits pour afficher ce module"),"error");
             header('Location:./'); exit();

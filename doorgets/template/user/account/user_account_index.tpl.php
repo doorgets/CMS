@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 20, February 2014
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2013 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -52,10 +52,16 @@
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane fade in active" id="tabs-1">
-                            [{!$this->doorGets->Form->input($this->doorGets->__('Nom'),'last_name','text',$this->user['last_name'],'input-user')!}]
-                            <div class="separateur-tb"></div>
-                            [{!$this->doorGets->Form->input($this->doorGets->__('Prénom'),'first_name','text',$this->user['first_name'],'input-user')!}]
-                            <div class="separateur-tb"></div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    [{!$this->doorGets->Form->input($this->doorGets->__('Nom'),'last_name','text',$this->user['last_name'],'input-user')!}]
+                                    <div class="separateur-tb"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    [{!$this->doorGets->Form->input($this->doorGets->__('Prénom'),'first_name','text',$this->user['first_name'],'input-user')!}]
+                                    <div class="separateur-tb"></div>
+                                </div>
+                            </div>
                             [{!$this->doorGets->Form->input($this->doorGets->__('Description courte'),'description','text',$this->user['description'],'input-user')!}]
                             <div class="separateur-tb"></div>
                             [{/($Attributes as $key => $Attribute):}]
@@ -69,58 +75,77 @@
                             <div class="separateur-tb"></div>
                         </div>
                         <div class="tab-pane fade" id="tabs-3">
-                            [{!$this->doorGets->Form->input($this->doorGets->__('Site perso'),'website','text',$this->user['website'])!}]
-                            <div class="separateur-tb"></div>
-                            [{!$this->doorGets->Form->input($nFace,'id_facebook','text',$this->user['id_facebook'])!}]
-                            <div class="separateur-tb"></div>
-                            [{!$this->doorGets->Form->input($nTwitter,'id_twitter','text',$this->user['id_twitter'])!}]
-                            <div class="separateur-tb"></div>
-                            [{!$this->doorGets->Form->input($nYoutube,'id_youtube','text',$this->user['id_youtube'])!}]
-                            <div class="separateur-tb"></div>
-                            [{!$this->doorGets->Form->input($nGoogle,'id_google','text',$this->user['id_google'])!}]
-                            <div class="separateur-tb"></div>
-                            [{!$this->doorGets->Form->input($nPinterest,'id_pinterest','text',$this->user['id_pinterest'])!}]
-                            <div class="separateur-tb"></div>
-                            [{!$this->doorGets->Form->input($nLinkedin,'id_linkedin','text',$this->user['id_linkedin'])!}]
-                            <div class="separateur-tb"></div>
-                            [{!$this->doorGets->Form->input($nMyspace,'id_myspace','text',$this->user['id_myspace'])!}]
-                            <div class="separateur-tb"></div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    [{!$this->doorGets->Form->input($this->doorGets->__('Site perso'),'website','text',$this->user['website'])!}]
+                                    <div class="separateur-tb"></div>
+                                    [{!$this->doorGets->Form->input($nFace,'id_facebook','text',$this->user['id_facebook'])!}]
+                                    <div class="separateur-tb"></div>
+                                    [{!$this->doorGets->Form->input($nTwitter,'id_twitter','text',$this->user['id_twitter'])!}]
+                                    <div class="separateur-tb"></div>
+                                    [{!$this->doorGets->Form->input($nYoutube,'id_youtube','text',$this->user['id_youtube'])!}]
+                                    <div class="separateur-tb"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    [{!$this->doorGets->Form->input($nGoogle,'id_google','text',$this->user['id_google'])!}]
+                                    <div class="separateur-tb"></div>
+                                    [{!$this->doorGets->Form->input($nPinterest,'id_pinterest','text',$this->user['id_pinterest'])!}]
+                                    <div class="separateur-tb"></div>
+                                    [{!$this->doorGets->Form->input($nLinkedin,'id_linkedin','text',$this->user['id_linkedin'])!}]
+                                    <div class="separateur-tb"></div>
+                                    [{!$this->doorGets->Form->input($nMyspace,'id_myspace','text',$this->user['id_myspace'])!}]
+                                    <div class="separateur-tb"></div>
+                                </div>
+                            </div>
                         </div>
                         <div class="tab-pane fade" id="tabs-4">
-                            [{!$this->doorGets->Form->select($this->doorGets->__('Pays'),'country',$this->doorGets->getArrayForms('country'),$this->user['country'])!}]
-                            <div class="separateur-tb"></div>
-                            [{!$this->doorGets->Form->input($this->doorGets->__('Ville').'<br />','city','text',$this->user['city'])!}]
-                            <div class="separateur-tb"></div>
-                            [{!$this->doorGets->Form->input($this->doorGets->__('Code Postal').'<br />','zipcode','text',$this->user['zipcode'])!}]
-                            <div class="separateur-tb"></div>
-                            [{!$this->doorGets->Form->input($this->doorGets->__('Adresse').'<br />','adresse','text',$this->user['adresse'])!}]
-                            <div class="separateur-tb"></div>
-                            [{!$this->doorGets->Form->input($this->doorGets->__('Téléphone fixe').'<br />','tel_fix','text',$this->user['tel_fix'])!}]
-                            <div class="separateur-tb"></div>
-                            [{!$this->doorGets->Form->input($this->doorGets->__('Téléphone mobile').'<br />','tel_mobil','text',$this->user['tel_mobil'])!}]
-                            <div class="separateur-tb"></div>
-                            [{!$this->doorGets->Form->input($this->doorGets->__('Téléphone fax').'<br />','tel_fax','text',$this->user['tel_fax'])!}]
-                            <div class="separateur-tb"></div>
+                        <div class="row">
+                                <div class="col-md-6">
+                                    [{!$this->doorGets->Form->select($this->doorGets->__('Pays'),'country',$this->doorGets->getArrayForms('country'),$this->user['country'])!}]
+                                    <div class="separateur-tb"></div>
+                                    [{!$this->doorGets->Form->input($this->doorGets->__('Région').'<br />','region','text',$this->user['region'])!}]
+                                    <div class="separateur-tb"></div>
+                                    [{!$this->doorGets->Form->input($this->doorGets->__('Ville').'<br />','city','text',$this->user['city'])!}]
+                                    <div class="separateur-tb"></div>
+                                    [{!$this->doorGets->Form->input($this->doorGets->__('Code Postal').'<br />','zipcode','text',$this->user['zipcode'])!}]
+                                    <div class="separateur-tb"></div>
+                                    [{!$this->doorGets->Form->input($this->doorGets->__('Adresse').'<br />','adresse','text',$this->user['adresse'])!}]
+                                    <div class="separateur-tb"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    [{!$this->doorGets->Form->input($this->doorGets->__('Téléphone fixe').'<br />','tel_fix','text',$this->user['tel_fix'])!}]
+                                    <div class="separateur-tb"></div>
+                                    [{!$this->doorGets->Form->input($this->doorGets->__('Téléphone mobile').'<br />','tel_mobil','text',$this->user['tel_mobil'])!}]
+                                    <div class="separateur-tb"></div>
+                                    [{!$this->doorGets->Form->input($this->doorGets->__('Téléphone fax').'<br />','tel_fax','text',$this->user['tel_fax'])!}]
+                                    <div class="separateur-tb"></div>
+                                </div>
+                            </div>
                         </div>
                         <div class="tab-pane fade" id="tabs-5">
-                            <h3 >[{!$this->doorGets->__('Choisissez votre langue par défaut')!}]</h3>
-                            <div class="separateur-tb"></div>
-                            [{!$this->doorGets->Form->select($this->doorGets->__('Votre langue').' : ','langue',$this->doorGets->getAllLanguages(),$this->user['langue'])!}]
-                            <div class="separateur-tb"></div>
-                            <h3 >[{!$this->doorGets->__('Choisissez votre fuseau horaire')!}]</h3>
-                            <div class="separateur-tb"></div>
-                            [{!$this->doorGets->Form->select($this->doorGets->__('Votre fuseau horaire').' : ','horaire',$this->doorGets->getArrayForms('times_zone'),$this->user['timezone'])!}]
-                            <div class="separateur-tb"></div>
-                            <h3 >[{!$this->doorGets->__('Notifications')!}]</h3>
-                            <div class="separateur-tb"></div>
-                            [{!$this->doorGets->Form->checkbox($this->doorGets->__('Autoriser les notifications par mail'),'notification_mail',1,$isActiveNotificationMail)!}]
-                            <div class="separateur-tb"></div>
-                            [{!$this->doorGets->Form->checkbox($this->doorGets->__('Recevoir la newletter'),'notification_newsletter',1,$isActiveNotificationNewsletter)!}]
-                            <div class="separateur-tb"></div>
-                            <h3 >[{!$this->doorGets->__('Choisissez un éditeur HTML')!}]</h3>
-                            <div class="separateur-tb"></div>
-                            [{!$this->doorGets->Form->select($this->doorGets->__('Votre éditeur').' : ','editor_html',$this->user['editor_group'],$this->user['editor_html'])!}]
-                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h3 >[{!$this->doorGets->__('Choisissez votre langue par défaut')!}]</h3>
+                                    <div class="separateur-tb"></div>
+                                    [{!$this->doorGets->Form->select($this->doorGets->__('Votre langue').' : ','langue',$this->doorGets->getAllLanguages(),$this->user['langue'])!}]
+                                    <div class="separateur-tb"></div>
+                                    <h3 >[{!$this->doorGets->__('Choisissez votre fuseau horaire')!}]</h3>
+                                    <div class="separateur-tb"></div>
+                                    [{!$this->doorGets->Form->select($this->doorGets->__('Votre fuseau horaire').' : ','horaire',$this->doorGets->getArrayForms('times_zone'),$this->user['timezone'])!}]
+                                    <div class="separateur-tb"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h3 >[{!$this->doorGets->__('Notifications')!}]</h3>
+                                    <div class="separateur-tb"></div>
+                                    [{!$this->doorGets->Form->checkbox($this->doorGets->__('Autoriser les notifications par mail'),'notification_mail',1,$isActiveNotificationMail)!}]
+                                    <div class="separateur-tb"></div>
+                                    [{!$this->doorGets->Form->checkbox($this->doorGets->__('Recevoir la newletter'),'notification_newsletter',1,$isActiveNotificationNewsletter)!}]
+                                    <div class="separateur-tb"></div>
+                                    <h3 >[{!$this->doorGets->__('Choisissez un éditeur HTML')!}]</h3>
+                                    <div class="separateur-tb"></div>
+                                    [{!$this->doorGets->Form->select($this->doorGets->__('Votre éditeur').' : ','editor_html',$this->user['editor_group'],$this->user['editor_html'])!}]
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

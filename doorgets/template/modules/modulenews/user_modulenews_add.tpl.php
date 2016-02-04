@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -46,17 +46,36 @@ unset($aActivation[0]);
         </legend>
         
         [{!$formAddTopExtra!}]
-        [{!$this->doorGets->Form->textarea($this->doorGets->__('Article').' <span class="cp-obli">*</span>','article_tinymce','','tinymce ckeditor')!}]
         <div class="separateur-tb"></div>
-        [{?(!empty($listeCategories)):}]
-            <label>[{!$this->doorGets->__('Catégories')!}] </label>
-            <div class="separateur-tb"></div>
-            [{/($listeCategories as $uri=>$value):}]
-                [{!$this->doorGets->Form->checkbox($value['name'],'categories_'.$value['id'],'1','','cat-edit-level-'.$value['level'])!}]
-            [/]
-            <div class="separateur-tb"></div>
-        [?]
+        <div class="row">
+            <div class="col-md-9">
+                [{!$this->doorGets->Form->textarea($this->doorGets->__('Article').' <span class="cp-obli">*</span>','article_tinymce','','tinymce ckeditor')!}]
+            </div>
+            <div class="col-md-3">
+                <div class="list-group">
+                    <div class="list-group-item"><b class="glyphicon glyphicon-align-justify"></b> [{!$this->doorGets->__('Catégories')!}]</div>
+                    [{?(!empty($listeCategories)):}]
+                        [{/($listeCategories as $uri=>$value):}]
+                            <div class="list-group-item cat-index-level-[{!$value['level']!}]">
+                                [{!$this->doorGets->Form->checkbox(''.$value['name'],'categories_'.$value['id'],'1','','cat-edit-level-'.$value['level'])!}]
+                            </div>
+                        [/]
+                    [?]
+                </div>
+            </div>
+        </div> 
+        <div class="row">
+            <div class="col-md-12">
+                <div class="live-preview-content live-preview"></div>
+            </div>
+        </div> 
         <div class="separateur-tb"></div>
         [{!$formAddBottomExtra!}]
+        <script type="text/javascript">
+            isUploadedInput("modulenews_add_image");
+            isUploadedMultiInput("modulenews_add_image_gallery");
+            isUploadedFacebookInput("modulenews_add_meta_facebook_image");
+            isUploadedTwitterInput("modulenews_add_meta_twitter_image");
+        </script>
     </div>
 </div>

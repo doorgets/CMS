@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -69,10 +69,7 @@ class GenRss extends Langue{
 
     public function loadModuleValid() {
 
-        $arListeModule[] = 'news';
-        $arListeModule[] = 'multipage';
-        $arListeModule[] = 'image';
-        $arListeModule[] = 'video';
+        $arListeModule = Constant::$modulesWithGallery;
 
         $out = array();
         $outInfo = array();
@@ -111,8 +108,11 @@ class GenRss extends Langue{
         
         if (array_key_exists($module_uri,$this->Modules)) {  
 
-            $table = '_m_'.$module_uri;
-            $table_trad = '_m_'.$module_uri.'_traduction';
+            // Merci à www.caron.ws
+            $tableName = $this->getRealUri($module_uri);
+            $table = '_m_'.$tableName;
+            $table_trad = $table.'_traduction';
+
             $sql = "SELECT * 
                 FROM $table, $table_trad 
                 WHERE 	$table.active = 2 
@@ -149,7 +149,13 @@ class GenRss extends Langue{
                 
                 // definition des variables pour le $out
                 $dateCreation = date("D, j M Y H:i:s \G\M\T",$isContent[$i]['date_creation']);
-                $url = URL.'t/'.$this->myLanguage().'/?'.$module_uri.'='.$isContent[$i]['uri'];
+
+                $cLanguages = count($this->allLanguagesWebsite);
+                $toLg = URL;
+                if ($cLanguages > 1) {
+                    $toLg = URL.'t/'.$this->myLanguage().'/';
+                }
+                $url = $toLg.'?'.$module_uri.'='.$isContent[$i]['uri'];
                 $titreCategorie = $this->getTitleCategorie($idCategory);
                 if (!array_key_exists('description',$isContent[$i])) {
                 $isContent[$i]['description'] = '';
@@ -182,8 +188,11 @@ class GenRss extends Langue{
         
         if (array_key_exists($module_uri,$this->Modules)) {  
 
-            $table = '_m_'.$module_uri;
-            $table_trad = '_m_'.$module_uri.'_traduction';
+            // Merci à www.caron.ws
+            $tableName = $this->getRealUri($module_uri);
+            $table = '_m_'.$tableName;
+            $table_trad = $table.'_traduction';
+
             $sql = "SELECT * 
                 FROM $table, $table_trad 
                 WHERE 	$table.active = 1 

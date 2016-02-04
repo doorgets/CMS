@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 20, February 2014
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -33,7 +33,7 @@
 
 unset($yesno[0]);
 
-$filter_select = $this->doorGets->_toArrayInv($isContent['params']['filter_select']);
+$filter_select = $this->doorGets->_toArrayInv($isContent['params']['filter_select'],',','');
 
 ?>
 <div class="doorGets-rubrique-center">
@@ -42,7 +42,7 @@ $filter_select = $this->doorGets->_toArrayInv($isContent['params']['filter_selec
 
         </div>
         <legend>
-            <span class="create" ><a class="doorGets-comebackform" href="?controller=attributes"><img src="[{!BASE_IMG!}]retour.png" class="Retour-img"> [{!$this->doorGets->__('Retour');}]</a></span>
+            <span class="create" ><a class="doorGets-comebackform" href="?controller=attributes"><i class="fa fa-undo fa-lg green-c"></i> [{!$this->doorGets->__('Retour');}]</a></span>
             <span class="create">[{!$this->doorGets->genLangueMenuAdmin()!}]</span>
             <b class="glyphicon glyphicon-pushpin"></b> <a href="?controller=attributes">[{!$this->doorGets->__('Attributs')!}] </a>
              / [{!$isContent['title']!}]
@@ -54,17 +54,31 @@ $filter_select = $this->doorGets->_toArrayInv($isContent['params']['filter_selec
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane fade in active" id="tabs-1">
-                        [{!$this->doorGets->Form->select($this->doorGets->__('Actif').' <span class="cp-obli">*</span>','active',$yesno,$isContent['active']);}]
-                        <div class="separateur-tb"></div>
-                        [{!$this->doorGets->Form->select($this->doorGets->__("Champ obligatoire").' <span class="cp-obli">*</span>','required',$yesno,$isContent['required']);}]
-                        <div class="separateur-tb"></div>
-                        [{!$this->doorGets->Form->input($this->doorGets->__("Titre").' <span class="cp-obli">*</span>','title','text',$isContent['title']);}]
-                        <div class="separateur-tb"></div>
-                        [{!$this->doorGets->Form->input($this->doorGets->__("Clé").' <span class="cp-obli">*</span> <small style="font-weight:100;">('.$this->doorGets->__("Caractères alpha numérique seulement").')</small><br />','uri','text',$isContent['uri']);}]
-                        <div class="separateur-tb"></div> 
+                        <div class="row">
+                            <div class="col-md-3">
+                                [{!$this->doorGets->Form->select($this->doorGets->__('Actif').' <span class="cp-obli">*</span>','active',$yesno,$isContent['active']);}]
+                                <div class="separateur-tb"></div>
+                            </div>
+                            <div class="col-md-3">
+                                [{!$this->doorGets->Form->select($this->doorGets->__("Champ obligatoire").' <span class="cp-obli">*</span>','required',$yesno,$isContent['required']);}]
+                                <div class="separateur-tb"></div>
+                            </div>
+                            <div class="col-md-6">
+                                [{!$this->doorGets->Form->select($this->doorGets->__("Type").' <span class="cp-obli">*</span>','type',$typeField,$isContent['type']);}]
+                                <div class="separateur-tb"></div>
+                            </div>
+                        </div> 
+                        <div class="row">
+                            <div class="col-md-6">
+                                [{!$this->doorGets->Form->input($this->doorGets->__("Titre").' <span class="cp-obli">*</span>','title','text',$isContent['title']);}]
+                                <div class="separateur-tb"></div>
+                            </div>
+                            <div class="col-md-6">
+                                [{!$this->doorGets->Form->input($this->doorGets->__("Clé").' <span class="cp-obli">*</span> <small style="font-weight:100;">('.$this->doorGets->__("Caractères alpha numérique seulement").')</small><br />','uri','text',$isContent['uri']);}]
+                                <div class="separateur-tb"></div> 
+                            </div>
+                        </div> 
                         [{!$this->doorGets->Form->input($this->doorGets->__('Description'),'description','text',$isContent['description']);}]
-                        <div class="separateur-tb"></div>
-                        [{!$this->doorGets->Form->select($this->doorGets->__("Type").' <span class="cp-obli">*</span>','type',$typeField,$isContent['type']);}]
                         <div class="separateur-tb"></div>
                         <div class="filter-input-text-show" style="display:none;">
                         [{!$this->doorGets->Form->select($this->doorGets->__("Choisir un filtre").' <span class="cp-obli">*</span>',"filter",$this->doorGets->getArrayForms('input_filter'),$isContent['params']['filter']);}]

@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -121,7 +121,7 @@ class contactRequest extends doorgetsWebsiteUserRequest{
                     $_subject   = $this->Website->__("Vous avez reçu un nouveau message");
                     $_message   = "<br /> \n\r <br /> \n\r <b>".$data['subject']."</b><br /> \n\r <br /> \n\r ".$data['message']."<br /> \n\r";
                     
-                    new SendMailAlert($_email,$_subject,$_message,$this->doorGets);
+                    new SendMailAlert($_email,$_subject,$_message,$this->Website);
                 }   
             }   
         }   

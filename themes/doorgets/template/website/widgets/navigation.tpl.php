@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -40,6 +40,13 @@
  */
         
 $currentUrl = urlencode($this->getCurrentUrl());
+// $Cart = new Cart($this);
+// $countCart = $Cart->getCount();
+
+$iMessageNotRead    = $this->getCountMessageNotRead();
+
+if (empty($iMessageNotRead)) { $iMessageNotRead = '';}
+if (!empty($iMessageNotRead)) { $iMessageNotRead    = '<small class="info-counts">'.$iMessageNotRead.'</small>'; }
 
 ?>
 <!-- doorGets:start:widgets/navigation -->
@@ -70,7 +77,7 @@ $currentUrl = urlencode($this->getCurrentUrl());
         [/]
         [{?(empty($isUser)):}]
             <li class="dropdown" >
-                <a href="[{!BASE!}]dg-user/" class="dropdown-toggle" data-toggle="dropdown" >
+                <a href="[{!URL!}]dg-user/" class="dropdown-toggle" data-toggle="dropdown" >
                     <b class="glyphicon glyphicon-user"></b><b class="caret"></b>
                 </a>
                 <ul class="dropdown-menu">
@@ -81,13 +88,14 @@ $currentUrl = urlencode($this->getCurrentUrl());
                 </ul>
             </li>
         [??]
+            
             [{
                 $toLangue = $user['langue'].'/';
             }]
             <li class="dropdown"  >
-                <a class="dropdown-toggle" data-toggle="dropdown"  href="[{!BASE!}]dg-user/?controller=account" title="[{!$this->__('Mon compte')!}]">
+                <a class="dropdown-toggle" data-toggle="dropdown"  href="[{!URL!}]dg-user/?controller=account" title="[{!$this->__('Mon compte')!}]">
                     <img src="[{!URL.'data/users/'.$user['avatar']!}]" class="avatar">
-                    [{!$Pseudo!}]
+                    <span class="badge badge-important">[{!$iMessageNotRead!}]</span>
                     <b class="caret"></b>
                 </a>
                 <ul class="dropdown-menu">
@@ -98,6 +106,7 @@ $currentUrl = urlencode($this->getCurrentUrl());
                         </a>
                     </li>
                     <li class="divider"></li>
+                    [{?(in_array('showprofile', $isUser['liste_module_interne'])):}]
                     <li >
                         <a href="[{!URL.'u/'.$user['pseudo'].'/'!}]" title="[{!$this->__('Afficher mon profil')!}]">
                             <b class="glyphicon glyphicon-user"></b> 
@@ -105,6 +114,7 @@ $currentUrl = urlencode($this->getCurrentUrl());
                         </a>
                     </li>
                     <li class="divider"></li>
+                    [?]
                     <li >
                         <a href="[{!URL_USER.$toLangue!}]?controller=account" title="[{!$this->__('Gérer mon profil')!}]">
                             <b class="glyphicon glyphicon-cog"></b> 
@@ -117,6 +127,16 @@ $currentUrl = urlencode($this->getCurrentUrl());
                         <a href="[{!URL_USER.$toLangue!}]?controller=myinbox" title="[{!$this->__('Boîte de récéption')!}]">
                             <b class="glyphicon glyphicon-inbox"></b> 
                             [{!$this->__('Boîte de récéption')!}]
+                            <span class="badge badge-important">[{!$iMessageNotRead!}]</span>
+                        </a>
+                    </li>
+                    <li class="divider"></li>
+                    [?]
+                    [{?(in_array('address', $isUser['liste_module_interne'])):}]
+                    <li >
+                        <a href="[{!URL_USER.$toLangue!}]?controller=address" title="[{!$this->__('Mes adresses')!}]">
+                            <b class="glyphicon glyphicon-road"></b> 
+                            [{!$this->__('Mes adresses')!}]
                         </a>
                     </li>
                     <li class="divider"></li>
@@ -129,7 +149,7 @@ $currentUrl = urlencode($this->getCurrentUrl());
                     </li>
                     <li class="divider"></li>
                     <li >
-                        <a  href="[{!URL_USER.$toLangue!}]?controller=authentification&action=logout" title="[{!$this->__('Me déconnecter')!}]">
+                        <a  href="[{!URL_USER.$toLangue!}]?controller=authentification&action=logout&back=[{!$currentUrl!}]" title="[{!$this->__('Me déconnecter')!}]">
                             <b class="glyphicon violet glyphicon-off red"></b>
                             <span class="red">[{!$this->__('Me déconnecter')!}]</span>
                         </a>

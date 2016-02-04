@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -40,15 +40,13 @@ require_once BASE.'config/config.php';
 
 define('BASE_URL',URL);
 
-if(array_key_exists('remove', $_GET)) {
-	$_SESSION = array();
- 	exit();
-}
+// Google API
+include BASE.'doorgets/lib/google/src/Google/autoload.php';
 
 $crud = new CRUD();
 
 $urlTraduction = '';
-$website = $crud->dbQS(1,'_website');
+$website = $crud->dbQS(Constant::$websiteId,'_website');
 if (!empty($website)) {
 	
 	$langueGroupe = @unserialize($website['langue_groupe']);
@@ -64,7 +62,7 @@ if (!empty($website)) {
 		$client->setAccessType('offline');
 		$client->setClientId($website['oauth_google_id']);
 		$client->setClientSecret($website['oauth_google_secret']);
-		$client->setRedirectUri(BASE_URL.'oauth2/google/login/');
+		$client->setRedirectUri(BASE_URL.'oauth2/google/login');
 
 		$client->addScope("https://www.googleapis.com/auth/plus.login");
 		$client->addScope("https://www.googleapis.com/auth/userinfo.email");
@@ -121,7 +119,7 @@ if (!empty($website)) {
 					$UserGoogleEntity->setFamilyName($userInfoDataJson->family_name);
 					$UserGoogleEntity->setLink($userInfoDataJson->link);
 					$UserGoogleEntity->setPicture($userInfoDataJson->picture);
-					$UserGoogleEntity->setGender($userInfoDataJson->gender);
+					//$UserGoogleEntity->setGender($userInfoDataJson->gender);
 					$UserGoogleEntity->setLocale($userInfoDataJson->locale);
 
 					$UserGoogleEntity->setDateCreation(time());
@@ -145,7 +143,7 @@ if (!empty($website)) {
 			header('Location: ' . filter_var($redirect, FILTER_SANITIZE_URL));
 			exit();
 
-		}else {
+		} else {
 
 			if (isset($_SESSION['oauth2']) && isset($_SESSION['oauth2']['google'])) {
 
@@ -157,24 +155,41 @@ if (!empty($website)) {
 
 				$UserGoogleEntity = $UserGoogleQuery->_getEntity();
 
-				if ($UserGoogleEntity ) {
+				$url = BASE_URL.'dg-user/'.$urlTraduction.'?controller=authentification';
+				if ($UserGoogleEntity) {
 					$userId = (int) $UserGoogleEntity->getIdUser();
 					$email = $UserGoogleEntity->getEmail();
 					if ($userId == 0) {
 
 						$userExists = $crud->dbQS($email,'_users','login');
 						if (!empty($userExists)) {
-
 							$UserGoogleEntity->setIdUser($userExists['id']);
 							$UserGoogleEntity->save();
+							$userInfoExists = $crud->dbQS($userExists['id'],'_users_info','id_user');
+							if (!empty($userInfoExists)) {
+								// Connect user
+		                        $_token = md5(uniqid(mt_rand(), true));
 
-							header('Location: ' . BASE_URL.'dg-user/'.$urlTraduction.'?controller=authentification'); exit();
-						
+		                        $_SESSION['doorgets_user']['id']        = $userInfoExists['id_user'];
+		                        $_SESSION['doorgets_user']['groupe']    = $userInfoExists['network'];
+		                        $_SESSION['doorgets_user']['login']     = $userExists['login'];
+		                        $_SESSION['doorgets_user']['password']  = $userExists['password'];
+		                        $_SESSION['doorgets_user']['langue']    = $userInfoExists['langue'];
+		                        $_SESSION['doorgets_user']['token']     = $_token;
+	                        
+		                        $crud->dbQU($userExists['id'],array('token'=>$_token),'_users');
+		                        FlashInfo::set(':)');
+		                        header('Location: ' . $url); exit();
+							}
 						} else {
-
-							header('Location: ' . BASE_URL.'dg-user/'.$urlTraduction.'?controller=authentification&action=register'); exit();
+							$url = BASE_URL.'dg-user/'.$urlTraduction.'?controller=authentification&action=register';
+							header('Location: ' . $url); exit();
 						}
-					}
+					} 
+				} else {
+					$_SESSION = array();
+					$url = BASE_URL.'dg-user/'.$urlTraduction.'?controller=authentification&action=register';
+					header('Location: ' . $url); exit();
 				}
 
 				// try {
@@ -191,19 +206,10 @@ if (!empty($website)) {
 				// 	exit();
 				// }
 
-				$url = BASE;
-				if (array_key_exists('backurl',$_SESSION)) {
-					
-					$url = filter_var ( $_SESSION['backurl'], FILTER_SANITIZE_URL );
-					
-				}
-
 				header('Location: ' . $url); exit();
 			
 			} else {
-
 				$authUrl = $client->createAuthUrl();
-
 				header('Location: ' . filter_var($authUrl, FILTER_SANITIZE_URL)); exit();
 			}
 			

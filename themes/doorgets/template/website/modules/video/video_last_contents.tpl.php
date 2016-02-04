@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -46,7 +46,7 @@
 ?>
 <!-- doorGets:start:modules/video/video_last_contents -->
 
-<div class="doorGets-video-last-contents doorGets-last-contents-[{!$module!}]">
+<div class="container doorGets-video-last-contents doorGets-last-contents-[{!$module!}]">
     <div class="row">
         <div class="col-md-12">
             
@@ -57,7 +57,7 @@
                         <div class="list-group  hover-t">
                             <div class="list-group-item " >
                                 <span  class="color-in"  >
-                                    [{!ucfirst(mb_strtolower($content['content_traduction']['titre'],'UTF-8'))!}]
+                                    [{!ucfirst(mb_strtolower($this->_truncate($content['content_traduction']['titre'],'40'),'UTF-8'))!}]
                                 </span>
                                 <span class="badge" >
                                     <img alt="" src="[{!$_imgTime!}]" class="img-icone"  >
@@ -65,7 +65,7 @@
                                 </span>
                             </div>
                             <div class="list-group-item center-g">
-                                <a href="[{!BASE_URL!}]?[{!$module!}]=[{!$content['content_traduction']['uri']!}]" title="[{!$content['content_traduction']['titre']!}]"  >
+                                <a href="[{!$this->getBaseUrl()!}]?[{!$module!}]=[{!$content['content_traduction']['uri']!}]" title="[{!$content['content_traduction']['titre']!}]"  >
                                     <img alt="" src="https://i2.ytimg.com/vi/[{!$content['content_traduction']['youtube']!}]/mqdefault.jpg" class="youtube" >
                                 </a>
                             </div>

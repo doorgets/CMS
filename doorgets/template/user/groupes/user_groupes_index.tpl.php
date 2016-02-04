@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 20, February 2014
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -41,13 +41,21 @@
     <div class="doorGets-rubrique-center-content">
         <legend>
             <span class="create" ><a href="?controller=groupes&action=add"class="violet" ><b class="glyphicon glyphicon-plus"></b>  [{!$this->doorGets->__('Créer un groupe')!}]</a></span>
+            [{?((in_array('attributes', $this->doorGets->user['liste_module_interne']) && !SAAS_ENV)
+            || (in_array('attributes', $this->doorGets->user['liste_module_interne']) && SAAS_ENV && SAAS_TRADUCTION) ):}]
+                <span class="create" >
+                    <a href="?controller=attributes"><b class="glyphicon glyphicon-pushpin"></b>
+                        [{!$this->doorGets->__('Attributs')!}]
+                    </a>
+                </span>
+            [?]
             <span class="create">[{!$this->doorGets->genLangueMenuAdmin()!}]</span>
             <b class="glyphicon glyphicon-cloud"></b> [{!$this->doorGets->__('Groupes')!}]
         </legend>
         [{?($cAll != 0):}]
             [{!$block->getHtml()!}]
         [??]
-            <div class="alert alert-info">[{!$this->doorGets->__("Aucun groupe")!}].</span>
+            <div class="alert alert-info"><i class="fa fa-exclamation-triangle"></i> [{!$this->doorGets->__("Aucun groupe")!}].</span>
         [?]
     </div>
 </div>

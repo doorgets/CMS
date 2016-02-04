@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 20, February 2014
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -68,16 +68,39 @@ class databaseRequest extends doorgetsRequest{
             
             
             if (empty($form->e)) {
+
+                $sql_host   = $data['database_host']     = $form->i['hote'];
+                $sql_db     = $data['database_name']     = $form->i['name'];
+                $sql_login  = $data['database_login']    = $form->i['login'];
+                $sql_pwd    = $data['database_password'] = $form->i['password'];
+
                 
                 $isConnected = $this->isConnectedToDatabase($form->i['hote'],$form->i['name'],$form->i['login'],$form->i['password']);
                 
-            }
-            
-            if ($isConnected) {
-                if ($pos <= count($StepsList)) {
+                if (empty($isConnected)) {
+                    $form->e['doorgets_database_hote'] = "ok";
+                    $form->e['doorgets_database_login'] = "ok";
+                } else {
+                    $data['mysql_version'] = $isConnected;
+                    $this->doorgets->createDatabase($data);
+                }
+                
+                if ($pos <= count($StepsList) && empty($form->e)) {
                     
                     $fileTemp = BASE.'temp/database.php';
-                    $isDatabaseConnect = serialize($form->i);
+                    $dataToSave = $form->i;
+                    $dataToSave['mysql_version'] = '';
+                    try {
+                        $db = Connexion::getInstance($sql_host,$sql_db,$sql_login, $sql_pwd)->getConnexion();
+                        $version = $db->query('select version()')->fetchColumn();
+                        $dataToSave['mysql_version'] = mb_substr($version, 0, 6);
+                    }
+                    catch (PDOException $e){
+                        //echo "DataBase Errorz: " .$e->getMessage() .'<br>'; exit();
+                    }
+                    catch (Exception $e) {
+                    }
+                    $isDatabaseConnect = serialize($dataToSave);
                     file_put_contents($fileTemp,$isDatabaseConnect);
                     
                     $databaseIsInsalled = $this->installDatabase();
@@ -88,9 +111,8 @@ class databaseRequest extends doorgetsRequest{
                     }
                     
                     header("Location:".$_SERVER['REQUEST_URI']); exit();            
-                }                
+                }  
             }
-            
         }
     }
     
@@ -112,40 +134,21 @@ class databaseRequest extends doorgetsRequest{
             $cFileDatabase = file_get_contents($fileTempDatabase);
             if ($cOutFileDatabase = unserialize($cFileDatabase)) {
                 
-                $sql_host   = $cOutFileDatabase['hote'];
-                $sql_db     = $cOutFileDatabase['name'];
-                $sql_login  = $cOutFileDatabase['login'];
-                $sql_pwd    = $cOutFileDatabase['password'];
-                
-                $db = new CRUD($sql_host,$sql_db,$sql_login,$sql_pwd);
-                 
-                $bigQueries = $this->getSQLQueryToImport();
-                        
-                if (!empty($bigQueries)) {
+                $sql_host       = $cOutFileDatabase['hote'];
+                $sql_db         = $cOutFileDatabase['name'];
+                $sql_login      = $cOutFileDatabase['login'];
+                $sql_pwd        = $cOutFileDatabase['password'];
+                $mysql_version  = $cOutFileDatabase['mysql_version'];
 
-                    if(array_key_exists('create', $bigQueries)) {
-                        $db->dbQL($bigQueries['create']);
-                        unset($bigQueries['create']);
-                    }
-                    
-                    foreach ($bigQueries as $bigquery) {
-
-                        if (!empty($bigquery)) {
-
-                            $db->dbQL($bigquery);
-                        }
-                    }
-
-                    return true;
-                }
+                $this->getSQLQueryToImport($sql_host,$sql_db,$sql_login,$sql_pwd,$mysql_version);
+                return true;
             }
 
             return false;
         }
     }
 
-    private function getSQLQueryToImport() {
-
+    private function getSQLQueryToImport($sql_host,$sql_db,$sql_login,$sql_pwd,$mysql_version) {
 
         $file = 'database.zip';
         $toFile = BASE.'data/'.$file;
@@ -176,51 +179,69 @@ class databaseRequest extends doorgetsRequest{
             
             $configData  = unserialize($contents);
 
+            
+
             if (!empty($configData) && is_array($configData)) {
                 
                 $sql_query_install = '';
                 $dirDatabase = 'database/';
                 $bigQueries['create'] = '';
 
-                // Installation de la base de données
-                foreach($configData as $k=>$v) {
+                try {
                     
-                    if (!empty($v['sql_create_table'])) {
-                        
-                        $query = str_replace("\n",' ',$v['sql_create_table']);
-                        $query = str_replace("\t",'',$query);
-                        $query = str_replace("\r",'',$query);
-                        
-                        $bigQueries['create'] .= $query;
-                        
-                    }    
+                    $db = Connexion::getInstance($sql_host,$sql_db,$sql_login, $sql_pwd)->getConnexion();
 
-                    $positionBigQueries++;
-                    
-                    $dirDatabaseName = $dirTempDatabase.'database/'.$k.'/';
-                    $allFiles = $this->files($dirDatabaseName);
-                    foreach($allFiles as $nameFile) {
-                        
-                        $dataTableFile = file_get_contents($dirDatabaseName.$nameFile);
-                        if ($dataTableContent = unserialize($dataTableFile)) {
+                    // $default_charset = 'utf8';
+                    // $default_collation = 'utf8_general_ci';
+
+                    // if ($mysql_version > '5.5.3') {
+                    //     $default_charset = 'utf8mb4';
+                    //     $default_collation = 'utf8mb4_general_ci';
+                    // } 
+
+                    //$db->query("SET NAMES '$default_charset' COLLATE '$default_collation';");
+                    // Installation de la base de données
+                    $queries = '';
+                    foreach($configData as $k=>$v) {
+
+                        if (!empty($v['sql_create_table'])) {
                             
-                            $bigQueries[$positionBigQueries] = $dataTableContent;
-                            $positionBigQueries++;
-                        }
+                            $query = str_replace("\n",' ',$v['sql_create_table']);
+                            $query = str_replace("\t",'',$query);
+                            $query = str_replace("\r",'',$query);
+                            
+                            //$bigQueries['create'] .= $query;
+                            $queries .= $query;
+                            
+                        }    
                     }
 
-                    $positionBigQueries++;
+                    $db->exec($queries);
+
+                    // Installation de la base de données
+                    foreach($configData as $k=>$v) {
+                        
+                        $dirDatabaseName = $dirTempDatabase.'database/'.$k.'/';
+                        $allFiles = $this->files($dirDatabaseName);
+                        foreach($allFiles as $nameFile) {
+                            
+                            if (!empty($queries)) {
+                                $db->exec(file_get_contents($dirDatabaseName.$nameFile));
+                            }
+                        }
+                    }
                 }
-                
+                catch (PDOException $e){
+                    //echo "DataBase Errorz: " .$e->getMessage() .'<br>'; exit();
+                }
+                catch (Exception $e) {
+                    //echo "General Errorz: ".$e->getMessage() .'<br>'; exit();
+                }
                 // Suppression des données temporaire
                 if (is_dir($nameDirTemp)) { $this->destroy_dir($nameDirTemp); }
                 
             }
         }
-
-        
-
-        return $bigQueries;
     }
     
     // Virtual Query Insert 
@@ -276,22 +297,24 @@ class databaseRequest extends doorgetsRequest{
     
     private function isConnectedToDatabase($host="localhost",$database="",$login="root",$pwd="") {
         
-        try{
-            
-            $con = @mysql_connect($host,$login,$pwd);
-            if (!empty($con)) {
-                
-                $db_selected = mysql_select_db($database, $con);
-                if ($db_selected) {
-                   return true;
-                }
-                
-            }
-            
+        try {
+            $conn = new PDO(
+                "mysql:host=".$host.";", 
+                $login, 
+                $pwd
+            );
+        }
+        catch (PDOException $e){
+            $conn = null;
             return false;
-            
-        }catch(Exception $e) {  }
+        }
+        catch (Exception $e) {
+            $conn = null;
+            return false;
+        }
         
+        $conn = null;
+        return true;
     }
     
 }

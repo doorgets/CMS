@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -39,9 +39,9 @@
 
         </div>
         <legend>
-            <span class="create" ><a class="doorGets-comebackform" href="?controller=theme"><img src="[{!BASE_IMG!}]retour.png" class="Retour-img"> [{!$this->doorGets->__('Retour')!}]</a></span>
-            <img src="[{!BASE_IMG!}]icone_theme.png" > <a href="?controller=theme">[{!$this->doorGets->__('Thème')!}] </a> 
-             / [{!$this->doorGets->__('Supprimer')!}] / [{!$theme!}] [{?($nameTheme === $theme):}]<img src="[{!BASE_IMG.'activer.png'!}]"  />[?]
+            <span class="create" ><a class="doorGets-comebackform" href="?controller=theme"><i class="fa fa-undo fa-lg green-c"></i> [{!$this->doorGets->__('Retour')!}]</a></span>
+            <b class="glyphicon glyphicon-tint"></b> <a href="?controller=theme">[{!$this->doorGets->__('Thème')!}] </a> 
+             / [{!$theme!}] [{?($nameTheme === $theme):}]<img src="[{!BASE_IMG.'activer.png'!}]"  />[?]
         </legend>
         
         [{?($countTheme > 1 && $nameTheme !== $theme):}]

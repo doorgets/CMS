@@ -75,8 +75,14 @@ class SendMailAuth {
         $mail->isHTML(true);
 
         $mail->Subject = $this->Subject;
-        $mail->Body    = $this->messageHtml;
+        $mail->Body    = Template::get('mail/wrapper',array(
+            'title' => $this->Subject,
+            'message' => $this->messageHtml,
+            'doorGets' => $this->doorGets
+        ));
+        
         //$mail->AltBody = $this->messageTxt;
+        //$mail->addAttachment(BASE_IMG.'logo_mail.png','logo_mail.png');
 
         if($mail->send()) {
             $this->isSended = true;
@@ -97,8 +103,12 @@ class SendMailAuth {
             case 'forget':
                 $out = $this->doorGets->__("Mot de passe oublié");
                 break;
+
+            case 'support':
+                $out = $this->doorGets->__("Support");
+                break;
         
-           case 'new_email':
+            case 'new_email':
                 $out = $this->doorGets->__("Confirmer votre adresse email");
                 break;
             
@@ -113,15 +123,20 @@ class SendMailAuth {
         
         $msgHtmlSubscribe    = $this->doorGets->__("Salut").',<br /><br />';
         $msgHtmlSubscribe   .= $this->doorGets->__("Veuillez cliquer sur le lien suivant pour confirmer votre inscription")." : <br /><br />";
-        $msgHtmlSubscribe   .= $url;
+        $msgHtmlSubscribe   .= "<a href=\"$url\">$url</a>";
         
         
         $msgHtmlForget       = $this->doorGets->__("Salut").',<br /><br />';
         $msgHtmlForget      .= $this->doorGets->__("Veuillez cliquer sur le lien suivant pour redéfinir votre mot de passe")." : <br /><br />";
-        $msgHtmlForget      .= $url;
+        $msgHtmlForget      .= "<a href=\"$url\">$url</a>";
     
         $msgHtmlNewemail     = $this->doorGets->__("Salut").',<br /><br />';
-        $msgHtmlNewemail    .= $this->doorGets->__("Voici votre code pour changer votre adresse email ")." : $url <br /><br />";
+        $msgHtmlNewemail    .= $this->doorGets->__("Voici votre code pour changer votre adresse email ")." : <br /><br />";
+        $msgHtmlNewemail    .= "<a href=\"$url\">$url</a>";
+
+        $msgHtmlSupport     = $this->doorGets->__("Salut").',<br /><br />';
+        $msgHtmlSupport    .= $this->doorGets->__("Une réponse du support est en ligne")." : <br /><br />";
+        $msgHtmlSupport    .= '<a href="'.URL.'dg-user/">'.URL.'dg-user/</a>';
         
         switch($type) {
             
@@ -132,8 +147,12 @@ class SendMailAuth {
             case 'forget':
                 $out = $msgHtmlForget;
                 break;
+
+            case 'support':
+                $out = $msgHtmlSupport;
+                break;
         
-        case 'new_email':
+            case 'new_email':
                 $out = $msgHtmlNewemail;
                 break;
             
@@ -162,6 +181,11 @@ class SendMailAuth {
         $msgTxtNewemail     = $this->doorGets->__("Salut").','."\r\n";
         $msgTxtNewemail    .= $this->doorGets->__("Voici votre code pour changer votre adresse email")." : $url "."\r\n\r\n";
         
+        $msgTxtSupport     = $this->doorGets->__("Salut").','."\r\n";
+        $msgTxtSupport    .= $this->doorGets->__("Une réponse du support est en ligne")." : ";
+        $msgTxtSupport    .= '<a href="'.URL.'dg-user/">'.URL.'dg-user/</a>';
+        $msgTxtSupport    .= "\r\n\r\n";
+        
         switch($type) {
             
             case 'subscribe':
@@ -172,7 +196,11 @@ class SendMailAuth {
                 $out = $msgTxtForget;
                 break;
         
-        case 'new_email':
+            case 'support':
+                $out = $msgTxtSupport;
+                break;
+
+            case 'new_email':
                 $out = $msgTxtNewemail;
                 break;
             

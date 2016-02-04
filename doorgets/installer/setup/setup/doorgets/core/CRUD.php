@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 20, February 2014
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -38,51 +38,39 @@ class CRUD {
     private $dbLogin;
     private $dbPassword;
     private $dbQuery = "";
-    protected $dbpdo = null;
-    
+    public $dbpdo = null;
+
+    private $host,$dbName,$login,$password;
+
     public function __construct($host,$dbName,$login,$password) {
-	
-    	$this->dbDSN 		=   "mysql:host=".$host.";dbname=".$dbName;
-    	$this->dbLogin 		=   $login;
-    	$this->dbPassword 	=   $password;
-    	
-    	try
-    	{
-    	    
-    	    $this->dbpdo = new PDO($this->dbDSN,$this->dbLogin,$this->dbPassword);
-    	}
-    	catch(PDOException $e)
-    	{
-    	    
-    	    exit();
-    	}
-    	$this->dbpdo->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
-    	$this->dbpdo->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
-    	$this->dbpdo->beginTransaction();
-	
-	
+        $this->host = $host;
+        $this->dbName = $dbName;
+        $this->login = $login;
+        $this->password = $password;
+        $this->dbpdo = Connexion::getInstance($host,$dbName,$login,$password)->getConnexion();
     }
     
     public function __destruct() {
-	
-    	if (!empty($this->dbQuery)) {
-    	    $this->dbpdo->query($this->dbQuery);
-    	}
-    	if (!empty($this->dbpdo)) {
-    	    $this->dbpdo->commit();
-    	}
-    	$this->dbpdo = null;
-	
+
+        // if (!empty($this->dbQuery) && !is_null($this->dbpdo)) {
+        //     $i = Connexion::getInstance($this->host,$this->dbName,$this->login,$this->password)->getConnexion();
+        //     $i->query($this->dbQuery);
+        //     try {
+        //         $i->commit();  
+        //     } catch(Exception $e) {
+
+        //     }
+        // }
     }
     
     public function dbQuery($q) {
-	
-	   $this->dbQuery .= $q;
+    
+       $this->dbQuery .= $q;
     }
     
     public function dbQL($query) {
-	   
-        $this->dbpdo->query($query);	
+       
+        $this->dbpdo->query($query);    
         return $query;
     
     }
@@ -96,9 +84,9 @@ class CRUD {
         $d = substr($d,0,-1);
         $d .= ") VALUES ("; 
         foreach($data as $k=>$v) {
-	    
-	    $d .= '\''.$v.'\',';
-	   
+        
+        $d .= '\''.$v.'\',';
+       
         }
         $d = substr($d,0,-1);
         $d .= ")";
@@ -118,9 +106,9 @@ class CRUD {
         }
         $d = substr($d,0,-2);
         $d .= " WHERE ".$fieldId." ".$equ." '$id' $other ;";
-	
-        $this->dbQuery($d);
-	
+    
+        $this->dbpdo->query($d);
+    
     }
 
     public function dbQD($id,$table,$field="id",$signe="=",$limit=' LIMIT 1 ') {

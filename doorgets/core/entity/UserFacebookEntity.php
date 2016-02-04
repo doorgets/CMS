@@ -1,4 +1,35 @@
-<?php
+<?php 
+
+/*******************************************************************************
+/*******************************************************************************
+    doorGets 7.0 - 01, February 2016
+    doorGets it's free PHP Open Source CMS PHP & MySQL
+    Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
+    
+/*******************************************************************************
+
+    Website : http://www.doorgets.com
+    Contact : http://www.doorgets.com/t/en/?contact
+    
+/*******************************************************************************
+    -= One life, One code =-
+/*******************************************************************************
+    
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    
+******************************************************************************
+******************************************************************************/
 
 class UserFacebookEntity extends AbstractEntity
 {
@@ -120,233 +151,168 @@ class UserFacebookEntity extends AbstractEntity
  
 	
 
-	public function setId($Id)
-	{
-		
+	public function setId($Id) {
 		$this->Id = $Id;
-
 		return $this;
 	} 
 	
 
-	public function setIdUser($IdUser)
-	{
-		
+	public function setIdUser($IdUser) {
 		$this->IdUser = $IdUser;
-
 		return $this;
 	} 
 	
 
-	public function setIdFacebook($IdFacebook)
-	{
-		
+	public function setIdFacebook($IdFacebook) {
 		$this->IdFacebook = $IdFacebook;
-
 		return $this;
 	} 
 	
 
-	public function setName($Name)
-	{
-		
+	public function setName($Name) {
 		$this->Name = $Name;
-
 		return $this;
 	} 
 	
 
-	public function setEmail($Email)
-	{
-		
+	public function setEmail($Email) {
 		$this->Email = $Email;
-
 		return $this;
 	} 
 	
 
-	public function setFirstName($FirstName)
-	{
-		
+	public function setFirstName($FirstName) {
 		$this->FirstName = $FirstName;
-
 		return $this;
 	} 
 	
 
-	public function setMiddleName($MiddleName)
-	{
-		
+	public function setMiddleName($MiddleName) {
 		$this->MiddleName = $MiddleName;
-
 		return $this;
 	} 
 	
 
-	public function setLastName($LastName)
-	{
-		
+	public function setLastName($LastName) {
 		$this->LastName = $LastName;
-
 		return $this;
 	} 
 	
 
-	public function setGender($Gender)
-	{
-		
+	public function setGender($Gender) {
 		$this->Gender = $Gender;
-
 		return $this;
 	} 
 	
 
-	public function setLink($Link)
-	{
-		
+	public function setLink($Link) {
 		$this->Link = $Link;
-
 		return $this;
 	} 
 	
 
-	public function setBirthday($Birthday)
-	{
-		
+	public function setBirthday($Birthday) {
 		$this->Birthday = $Birthday;
-
 		return $this;
 	} 
 	
 
-	public function setLocation($Location)
-	{
-		
+	public function setLocation($Location) {
 		$this->Location = $Location;
-
 		return $this;
 	} 
 	
 
-	public function setTimezone($Timezone)
-	{
-		
+	public function setTimezone($Timezone) {
 		$this->Timezone = $Timezone;
-
 		return $this;
 	} 
 	
 
-	public function setAccessToken($AccessToken)
-	{
-		
+	public function setAccessToken($AccessToken) {
 		$this->AccessToken = $AccessToken;
-
 		return $this;
 	} 
 	
 
-	public function setDateCreation($DateCreation)
-	{
-		
+	public function setDateCreation($DateCreation) {
 		$this->DateCreation = $DateCreation;
-
 		return $this;
 	} 
 	
 
-	public function setDateModification($DateModification)
-	{
-		
+	public function setDateModification($DateModification) {
 		$this->DateModification = $DateModification;
-
 		return $this;
 	} 
 
-		
-	public function getId()
-	{
+
+	public function getId() {
 		return $this->Id ;
 	} 
-		
-	public function getIdUser()
-	{
+
+	public function getIdUser() {
 		return $this->IdUser ;
 	} 
-		
-	public function getIdFacebook()
-	{
+
+	public function getIdFacebook() {
 		return $this->IdFacebook ;
 	} 
-		
-	public function getName()
-	{
+
+	public function getName() {
 		return $this->Name ;
 	} 
-		
-	public function getEmail()
-	{
+
+	public function getEmail() {
 		return $this->Email ;
 	} 
-		
-	public function getFirstName()
-	{
+
+	public function getFirstName() {
 		return $this->FirstName ;
 	} 
-		
-	public function getMiddleName()
-	{
+
+	public function getMiddleName() {
 		return $this->MiddleName ;
 	} 
-		
-	public function getLastName()
-	{
+
+	public function getLastName() {
 		return $this->LastName ;
 	} 
-		
-	public function getGender()
-	{
+
+	public function getGender() {
 		return $this->Gender ;
 	} 
-		
-	public function getLink()
-	{
+
+	public function getLink() {
 		return $this->Link ;
 	} 
-		
-	public function getBirthday()
-	{
+
+	public function getBirthday() {
 		return $this->Birthday ;
 	} 
-		
-	public function getLocation()
-	{
+
+	public function getLocation() {
 		return $this->Location ;
 	} 
-		
-	public function getTimezone()
-	{
+
+	public function getTimezone() {
 		return $this->Timezone ;
 	} 
-		
-	public function getAccessToken()
-	{
+
+	public function getAccessToken() {
 		return $this->AccessToken ;
 	} 
-		
-	public function getDateCreation()
-	{
+
+	public function getDateCreation() {
 		return $this->DateCreation ;
 	} 
-		
-	public function getDateModification()
-	{
+
+	public function getDateModification() {
 		return $this->DateModification ;
 	} 
 
 		
-	public function getValidationId()
-	{
+	public function getValidationId() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 11, 
@@ -357,8 +323,7 @@ class UserFacebookEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationIdUser()
-	{
+	public function getValidationIdUser() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 11, 
@@ -369,8 +334,7 @@ class UserFacebookEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationIdFacebook()
-	{
+	public function getValidationIdFacebook() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -381,8 +345,7 @@ class UserFacebookEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationName()
-	{
+	public function getValidationName() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -393,8 +356,7 @@ class UserFacebookEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationEmail()
-	{
+	public function getValidationEmail() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -405,8 +367,7 @@ class UserFacebookEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationFirstName()
-	{
+	public function getValidationFirstName() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -417,8 +378,7 @@ class UserFacebookEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationMiddleName()
-	{
+	public function getValidationMiddleName() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -429,8 +389,7 @@ class UserFacebookEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationLastName()
-	{
+	public function getValidationLastName() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -441,8 +400,7 @@ class UserFacebookEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationGender()
-	{
+	public function getValidationGender() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -453,8 +411,7 @@ class UserFacebookEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationLink()
-	{
+	public function getValidationLink() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -465,8 +422,7 @@ class UserFacebookEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationBirthday()
-	{
+	public function getValidationBirthday() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -477,8 +433,7 @@ class UserFacebookEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationLocation()
-	{
+	public function getValidationLocation() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -489,8 +444,7 @@ class UserFacebookEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationTimezone()
-	{
+	public function getValidationTimezone() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -501,8 +455,7 @@ class UserFacebookEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationAccessToken()
-	{
+	public function getValidationAccessToken() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -513,8 +466,7 @@ class UserFacebookEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationDateCreation()
-	{
+	public function getValidationDateCreation() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 11, 
@@ -525,8 +477,7 @@ class UserFacebookEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationDateModification()
-	{
+	public function getValidationDateModification() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 11, 
@@ -537,13 +488,9 @@ class UserFacebookEntity extends AbstractEntity
 		);
 	} 
 
-	
 
 	public function _getMap() { 
-
-		
 		$parentMap = parent::_getMap();
-
 		return array_merge($parentMap, array(            
 		    'Id' =>  'id',            
 		    'IdUser' =>  'id_user',            
@@ -561,8 +508,7 @@ class UserFacebookEntity extends AbstractEntity
 		    'AccessToken' =>  'access_token',            
 		    'DateCreation' =>  'date_creation',            
 		    'DateModification' =>  'date_modification',		
-		)); 
-
+		));
 	} 
 
 

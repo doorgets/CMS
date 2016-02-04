@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -31,26 +31,6 @@
 ******************************************************************************
 ******************************************************************************/
 
-$phpOpen = '[[php/o]]';
-$phpClose = '[[php/c]]';
-
-$article = $isContent['article_tinymce'];
-
-$article = str_replace(";?",$phpOpen,$article);
-$article = str_replace("?&",$phpClose,$article);
-$article = htmlspecialchars_decode(html_entity_decode($article));
-$article = str_replace($phpOpen,"; ?",$article); 
-$article = str_replace($phpClose,"? &",$article); 
- 
-$urlLangueTraduction = '';
-$cLanguageWebsite = count($this->doorGets->allLanguagesWebsite);
-if ($cLanguageWebsite > 1) { $urlLangueTraduction = 't/'.$lgActuel.'/'; }
-
-$cVersion = $this->getCountVersion();
-$versions = $this->getAllVersion();
-
-$url = "?controller=module".$moduleInfos['type']."&uri=".$moduleInfos['uri']."&lg=".$lgActuel;
-
 ?>
 <div class="doorGets-rubrique-center">
     <div class="doorGets-rubrique-center-title page-header">
@@ -58,7 +38,7 @@ $url = "?controller=module".$moduleInfos['type']."&uri=".$moduleInfos['uri']."&l
     </div>
     <div class="doorGets-rubrique-center-content">
         <legend>
-            <span class="create" ><a class="doorGets-comebackform" href="?controller=modules"><img src="[{!BASE_IMG!}]retour.png" class="Retour-img"> [{!$this->doorGets->__('Retour')!}]</a></span>
+            <span class="create" ><a class="doorGets-comebackform" href="?controller=modules"><i class="fa fa-undo fa-lg green-c"></i> [{!$this->doorGets->__('Retour')!}]</a></span>
             [{?($is_modo):}]
                 <span class="create" ><a  href="?controller=modules&action=editpage&id=[{!$moduleInfos['id']!}]&lg=[{!$lgActuel!}]"><b class="glyphicon glyphicon-cog"></b> [{!$this->doorGets->__('Paramètres')!}]</a></span>
                 <span class="create" >[{!$this->doorGets->genLangueMenuAdmin()!}]</span>
@@ -90,7 +70,14 @@ $url = "?controller=module".$moduleInfos['type']."&uri=".$moduleInfos['uri']."&l
                     [?]
                     [{!$this->doorGets->Form->input($this->doorGets->__('Titre').' <span class="cp-obli">*</span>','titre','text',$isContent['titre']);}]
                     <div class="separateur-tb"></div>
-                    [{!$this->doorGets->Form->textarea($this->doorGets->__('Contenu de la page').' <span class="cp-obli">*</span>','article_tinymce',$article,'tinymce ckeditor')!}]
+                    <div class="row">
+                        <div class="col-md-12">
+                            [{!$this->doorGets->Form->textarea($this->doorGets->__('Contenu de la page').' <span class="cp-obli">*</span>','article_tinymce',$article,'tinymce ckeditor')!}]
+                        </div>
+                        <div class="col-md-12">
+                            <div class="live-preview-content live-preview"></div>
+                        </div>
+                    </div> 
                     <div class="separateur-tb"></div>
                 </div>
                 <div class="tab-pane fade" id="tabs-2">

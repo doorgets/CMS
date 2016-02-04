@@ -25,5 +25,6 @@ $attributes = array(
     'data-offset-bottom',
     'data-src',
     'data-toggle',
-    'data-placement'
+    'data-placement',
+    'target'
 );

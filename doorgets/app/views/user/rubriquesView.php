@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -97,10 +97,13 @@ class RubriquesView extends doorGetsUserView{
                     $block = new BlockTable();
                     $block->setClassCss('doorgets-listing');
                     
+                    $editMode = true;
+                    include CONFIG.'modules.php';
+
                     if ($cAll != 0) {
                         
-                        $block->addTitle($nbStringCount,'titre','first-title td-title');
                         $block->addTitle('','statut','td-title');
+                        $block->addTitle($nbStringCount,'titre','first-title td-title');
                         $block->addTitle('','topup','td-title');
                         $block->addTitle('','topbottom','td-title');
                         $block->addTitle('','edit','td-title');
@@ -108,44 +111,44 @@ class RubriquesView extends doorGetsUserView{
                         
                         for($i=0;$i<$cAll;$i++) {
                             
-                            $urlStatut = BASE_IMG.'puce-verte.png';
+                            $urlStatut = 'fa fa-eye-slash orange-c';
                             
                             $bCss = 'backddd';$nModule = '';$tModule = '';$tiModule = '';
                             $isModule = $this->doorGets->dbQS($all[$i]['idModule'],'_modules');
                             $isModuleTrad = $this->doorGets->dbQS($all[$i]['idModule'],'_modules_traduction','id_module'," AND langue = '".$this->doorGets->myLanguage()."' LIMIT 1 ");
                             if (!empty($isModule) && !empty($isModuleTrad)) {
                                 
+                                $imageIcone = BASE_IMG.'ico_module.png';
+                                if (array_key_exists($isModule['type'],$listeInfos)) {$imageIcone = $listeInfos[$isModule['type']]['image'];}
+                                $urlImage = '<img src="'.$imageIcone.'" class="px36"> ';
+                                
+
                                 $nModule=$isModule['uri'];
                                 $tModule='['.$isModule['type'].']';
-                                $tiModule = '<span class="right"><small>'.$all[$i]['name'].' #</small></span> '.$isModuleTrad['nom'].' - '.$isModuleTrad['titre'];
+                                $tiModule = '<span class="pull-right">'.$all[$i]['name'].' #'.$isModuleTrad['nom'].' '.$urlImage.'</span>'.$isModuleTrad['titre'];
                                 $bCss = ' hover';
-                                if ($all[$i]['showinmenu'] === '2') {
-                                    
-                                    $urlStatut = BASE_IMG.'puce-orange.png';
-                                    
+                                if ($all[$i]['showinmenu'] === '1') {
+                                    $urlStatut = 'fa fa-eye fa-lg green-c';
+                                }
+                                if ($all[$i]['idModule'] === '0') {
+                                    $urlStatut = 'fa fa-ban fa-lg red-c';
                                 }
                             }else{
-                                
                                 $tiModule = $all[$i]['name'];
-                                if ($all[$i]['showinmenu'] === '2') {
-                                    
-                                    $urlStatut = BASE_IMG.'puce-rouge.png';
-                                    
-                                }else{
-                                    
-                                    $urlStatut = BASE_IMG.'puce-orange.png';
-                                    
+                                if ($all[$i]['showinmenu'] === '1') {
+                                    $urlStatut = 'fa fa-eye fa-lg green-c';   
                                 }
-                                
-                                
+                                if ($all[$i]['idModule'] === '0') {
+                                    $urlStatut = 'fa fa-ban fa-lg red-c';
+                                }
                             }
                             
-                            $urlStatut = '<img src="'.$urlStatut.'" >';
+                            $urlStatut = '<i class="'.$urlStatut.'" ></i> ';
                             
-                            $urlVoirTitle = '<a title="'.$this->doorGets->__('Modifier').'" href="./?controller=rubriques&action=edit&id='.$all[$i]['id'].'"><img src="'.BASE_IMG.'list-rubrique.png'.'" style="width: 20px;height: 20px;vertical-align: middle;margin-right: 5px;"> '.$tiModule.' '.$tModule.'</a>';
-                            $urlVoir = '<a title="'.$this->doorGets->__('Modifier').'" href="./?controller=rubriques&action=edit&id='.$all[$i]['id'].'"><b class="glyphicon glyphicon-file"></b></a>';
-                            $urlDelete = '<a title="'.$this->doorGets->__('Supprimer').'" href="./?controller=rubriques&action=delete&id='.$all[$i]['id'].'"><b class="glyphicon glyphicon-remove red"></b></a>';
-                            $urlEdit = '<a title="'.$this->doorGets->__('Modifier').'" href="./?controller=rubriques&action=edit&id='.$all[$i]['id'].'"><b class="glyphicon glyphicon-pencil green-font"></b></a>';
+                            $urlVoirTitle = $tiModule.' '.$tModule.'</a>';
+                            $urlVoir = '<a title="'.$this->doorGets->__('Modifier').'" href="./?controller=rubriques&action=edit&id='.$all[$i]['id'].'"><b class="glyphicon glyphicon-zoom-in"></b></a>';
+                            $urlDelete = ' <a class="pull-left" title="'.$this->doorGets->__('Supprimer').'" href="./?controller=rubriques&action=delete&id='.$all[$i]['id'].'"><b class="glyphicon glyphicon-remove fa-lg red"></b></a>';
+                            $urlEdit = ' <a class="pull-right" title="'.$this->doorGets->__('Modifier').'" href="./?controller=rubriques&action=edit&id='.$all[$i]['id'].'"><b class="glyphicon glyphicon-pencil fa-lg green-font"></b></a>';
                             
                             $urlMovedown = '';
                             if ($all[$i]['ordre'] != $cResultsInt) {
@@ -157,10 +160,16 @@ class RubriquesView extends doorGetsUserView{
                             }
                             $dateCreation = GetDate::in($all[$i]['date_creation'],1,$this->doorGets->myLanguage());
                             
+
                             
-                            
-                            $block->addContent('titre',$urlVoirTitle );
+                            $all[$i]['title'] = $urlStatut.$urlVoirTitle;
+                            $all[$i]['urlEdit'] = $urlEdit;
+                            $all[$i]['urlEdit'] = $urlEdit;
+                            $all[$i]['urlEdit'] = $urlEdit;
+                            $all[$i]['urlDelete'] = $urlDelete;
+
                             $block->addContent('statut',$urlStatut,'center tb-30');
+                            $block->addContent('titre',$urlVoirTitle );
                             $block->addContent('topbottom',$urlMovedown,'center tb-30');
                             $block->addContent('topup',$urlMoveup,'center tb-30');
                             $block->addContent('edit',$urlEdit,'center tb-30');
@@ -176,10 +185,7 @@ class RubriquesView extends doorGetsUserView{
             $ActionFile = 'user/rubriques/user_rubriques_'.$this->Action;
             
             $tpl = Template::getView($ActionFile);
-            ob_start();
-            if (is_file($tpl)) { include $tpl; }
-            
-            $out .= ob_get_clean();
+            ob_start(); if (is_file($tpl)) { include $tpl; } $out .= ob_get_clean();
             
         }
         

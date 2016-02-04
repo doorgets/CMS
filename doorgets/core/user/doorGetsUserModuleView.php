@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -43,6 +43,7 @@ class doorGetsUserModuleView extends doorGetsUserView{
     
     public function getContent() {
 
+
         $out                = '';
         $User               = $this->doorGets->user;
         $lgActuel           = $this->doorGets->getLangueTradution();
@@ -52,10 +53,10 @@ class doorGetsUserModuleView extends doorGetsUserView{
         $version_id         = 0;
         
         // Check if is content modo
-        (in_array($moduleInfos['id'], $User['liste_module_modo'])) ? $is_modo = true : $is_modo = false;
+        $is_modo = (in_array($moduleInfos['id'], $User['liste_module_modo']))?true:false;
 
         // Check if is content admin
-        (in_array($moduleInfos['id'], $User['liste_module_admin'])) ? $is_admin = true : $is_admin = false;
+        $is_admin = (in_array($moduleInfos['id'], $User['liste_module_admin']))?true:false;
 
         // Check if is module modo
         (
@@ -64,11 +65,14 @@ class doorGetsUserModuleView extends doorGetsUserView{
 
         ) ? $is_modules_modo = true : $is_modules_modo = false;
 
+        // check if user can add content
+        $user_can_add = (in_array($moduleInfos['id'], $User['liste_module_add']))?true:false;
+
         // check if user can edit content
-        (in_array($moduleInfos['id'], $User['liste_module_edit'])) ? $user_can_edit = true : $user_can_edit = false;
+        $user_can_edit = (in_array($moduleInfos['id'], $User['liste_module_edit']))?true:false;
 
         // check if user can delete content
-        (in_array($moduleInfos['id'], $User['liste_module_delete'])) ? $user_can_delete = true : $user_can_delete = false;
+        $user_can_delete = (in_array($moduleInfos['id'], $User['liste_module_delete']))?true:false;
 
         // Init count total contents
         $countContents = 0;
@@ -180,15 +184,15 @@ class doorGetsUserModuleView extends doorGetsUserView{
                             "titre"=>$this->doorGets->__('Titre'),
                             "active"=>$this->doorGets->__('Statut'),
                             "pseudo"=>$this->doorGets->__('Pseudo'),
-                            "date_creation"=>$this->doorGets->__('Date'),
+                            "date_modification"=>$this->doorGets->__('Date'),
                             
                         );
                         
 
-                        $isFieldArraySort   = array('active','titre','pseudo','date_creation',);
+                        $isFieldArraySort   = array('active','titre','pseudo','date_modification',);
                         $isInClassicTable   = array('active','pseudo');
-                        $isFieldArraySearch = array('titre','active','pseudo','date_creation_start','date_creation_end',);
-                        $isFieldArrayDate   = array('date_creation');
+                        $isFieldArraySearch = array('titre','active','pseudo','date_modification_start','date_modification_end',);
+                        $isFieldArrayDate   = array('date_modification');
                         
                         
 
@@ -243,36 +247,36 @@ class doorGetsUserModuleView extends doorGetsUserView{
                                 
                                 $valueQP = '';
                                 if (
-                                    array_key_exists('q_'.$v,$params['GET'])
-                                    && !empty($params['GET']['q_'.$v])
+                                    array_key_exists('doorGets_search_filter_q_'.$v,$params['GET'])
+                                    && !empty($params['GET']['doorGets_search_filter_q_'.$v])
                                ) {
                                     
-                                    $valueQP = trim($params['GET']['q_'.$v]);
-                                    $aGroupeFilter['q_'.$v] = $valueQP;
+                                    $valueQP = trim($params['GET']['doorGets_search_filter_q_'.$v]);
+                                    $aGroupeFilter['doorGets_search_filter_q_'.$v] = $valueQP;
                                     
                                 }
                                 
                                 if (
-                                    array_key_exists('q_'.$v,$params['POST'])
-                                    && !array_key_exists('q_'.$v,$params['GET'])
-                                    && !empty($params['POST']['q_'.$v])
-                               ) {
+                                    array_key_exists('doorGets_search_filter_q_'.$v,$params['POST'])
+                                    && !array_key_exists('doorGets_search_filter_q_'.$v,$params['GET'])
+                                    && !empty($params['POST']['doorGets_search_filter_q_'.$v])
+                                ) {
                                     
-                                    $valueQP = trim($params['POST']['q_'.$v]);
-                                    $aGroupeFilter['q_'.$v] = $valueQP;
+                                    $valueQP = trim($params['POST']['doorGets_search_filter_q_'.$v]);
+                                    $aGroupeFilter['doorGets_search_filter_q_'.$v] = $valueQP;
                                     
                                 }
-                                
+
                                 if (
-                                    ( array_key_exists('q_'.$v,$params['GET'])
-                                        && !empty($params['GET']['q_'.$v])
+                                    ( array_key_exists('doorGets_search_filter_q_'.$v,$params['GET'])
+                                        && !empty($params['GET']['doorGets_search_filter_q_'.$v])
                                     )
                                     ||
-                                    ( array_key_exists('q_'.$v,$params['POST'])
-                                        && !array_key_exists('q_'.$v,$params['GET'])
-                                        && !empty($params['POST']['q_'.$v])
+                                    ( array_key_exists('doorGets_search_filter_q_'.$v,$params['POST'])
+                                        && !array_key_exists('doorGets_search_filter_q_'.$v,$params['GET'])
+                                        && !empty($params['POST']['doorGets_search_filter_q_'.$v])
                                     )
-                               ) {
+                                ) {
                                     
                                     
                                     if (!empty($valueQP)) {
@@ -283,19 +287,19 @@ class doorGetsUserModuleView extends doorGetsUserView{
                                         if (in_array($valEnd,$isFieldArrayDate)) {
                                             
                                             if (
-                                                array_key_exists('q_'.$v,$params['GET'])
-                                                && !empty($params['GET']['q_'.$v])
+                                                array_key_exists('doorGets_search_filter_q_'.$v,$params['GET'])
+                                                && !empty($params['GET']['doorGets_search_filter_q_'.$v])
                                            ) {
-                                                $fromFormat = trim($params['GET']['q_'.$valEnd.'_start']);
-                                                $toFormat = trim($params['GET']['q_'.$valEnd.'_end']);
+                                                $fromFormat = trim($params['GET']['doorGets_search_filter_q_'.$valEnd.'_start']);
+                                                $toFormat = trim($params['GET']['doorGets_search_filter_q_'.$valEnd.'_end']);
                                                 
                                             }else{
-                                                $fromFormat = trim($params['POST']['q_'.$valEnd.'_start']);
-                                                $toFormat = trim($params['POST']['q_'.$valEnd.'_end']);
+                                                $fromFormat = trim($params['POST']['doorGets_search_filter_q_'.$valEnd.'_start']);
+                                                $toFormat = trim($params['POST']['doorGets_search_filter_q_'.$valEnd.'_end']);
                                             }
                                             
-                                            $isValStart = $this->validateDate($fromFormat);
-                                            $isValEnd   = $this->validateDate($toFormat);
+                                            $isValStart = $this->doorGets->validateDate($fromFormat);
+                                            $isValEnd   = $this->doorGets->validateDate($toFormat);
                                             
                                             $from = "";
                                             $to = "";
@@ -312,7 +316,7 @@ class doorGetsUserModuleView extends doorGetsUserView{
                                                 if (strlen(str_replace('_end','',$v)) !== strlen($v)) {
                                                     
                                                     $valEnd =  filter_var($valEnd, FILTER_SANITIZE_STRING);
-                                                    $nameTable = $tableName.".".$valEnd;
+                                                    $nameTable = $this->doorGets->Table."_traduction.".$valEnd;
                                                     
                                                     $sqlLabelSearch .= $nameTable." >= $from AND ";
                                                     $sqlLabelSearch .= $nameTable." <= $to AND ";
@@ -388,11 +392,11 @@ class doorGetsUserModuleView extends doorGetsUserView{
                             
                             $getCategorie = $params['GET']['categorie'];
                             
-                            $arrForCountSearchQuery[] = array('key'=>$this->doorGets->Table.'.categorie','type'=>'like','value'=>$getCategorie.',');
+                            $arrForCountSearchQuery[] = array('key'=>$this->doorGets->Table.'.categorie','type'=>'like','value'=>'#'.$getCategorie.',');
                             
                             $cResultsInt = $this->doorGets->getCountTable($tAll,$arrForCountSearchQuery);
                             
-                            $sqlCategorie = " AND ".$this->doorGets->Table.".categorie LIKE '%".$getCategorie.",%'";
+                            $sqlCategorie = " AND ".$this->doorGets->Table.".categorie LIKE '%#".$getCategorie.",%'";
                             $urlCategorie = '&categorie='.$getCategorie;
                             
                         }
@@ -545,20 +549,20 @@ class doorGetsUserModuleView extends doorGetsUserView{
                         }
                         
                         $valFilterDateStart = '';
-                        if (array_key_exists('q_date_creation_start',$aGroupeFilter)) {
-                            $valFilterDateStart = $aGroupeFilter['q_date_creation_start'];
+                        if (array_key_exists('q_date_modification_start',$aGroupeFilter)) {
+                            $valFilterDateStart = $aGroupeFilter['q_date_modification_start'];
                         }
                         
                         $valFilterDateEnd = '';
-                        if (array_key_exists('q_date_creation_end',$aGroupeFilter)) {
-                            $valFilterDateEnd = $aGroupeFilter['q_date_creation_end'];
+                        if (array_key_exists('q_date_modification_end',$aGroupeFilter)) {
+                            $valFilterDateEnd = $aGroupeFilter['q_date_modification_end'];
                         }
                         
                         $sFilterActive  = $this->doorGets->Form['_search_filter']->select('','q_active',$arFilterActivation,$valFilterActive);
                         $sFilterTitre   = $this->doorGets->Form['_search_filter']->input('','q_titre','text',$valFilterTitre);
                         $sFilterPseudo   = $this->doorGets->Form['_search_filter']->input('','q_pseudo','text',$valFilterPseudo);
-                        $sFilterDate    = $this->doorGets->Form['_search_filter']->input('','q_date_creation_start','text',$valFilterDateStart,'doorGets-date-input datepicker-from');
-                        $sFilterDate    .= $this->doorGets->Form['_search_filter']->input('','q_date_creation_end','text',$valFilterDateEnd,'doorGets-date-input datepicker-to');
+                        $sFilterDate    = $this->doorGets->Form['_search_filter']->input('','q_date_modification_start','text',$valFilterDateStart,'doorGets-date-input datepicker-from');
+                        $sFilterDate    .= $this->doorGets->Form['_search_filter']->input('','q_date_modification_end','text',$valFilterDateEnd,'doorGets-date-input datepicker-to');
                         
                         // Search
                         $urlMassdelete = '<input type="checkbox" class="check-me-mass-all" />';
@@ -568,7 +572,7 @@ class doorGetsUserModuleView extends doorGetsUserView{
                         $block->addContent('titre',$sFilterTitre );
                         $block->addContent('active',$sFilterActive ,'text-center tb-30');
                         $block->addContent('pseudo',$sFilterPseudo ,'text-center');
-                        $block->addContent('date_creation',$sFilterDate,'text-center');
+                        $block->addContent('date_modification',$sFilterDate,'text-center');
                         $block->addContent('edit','--','text-center');
                         $block->addContent('delete','--','text-center');
                         
@@ -580,7 +584,7 @@ class doorGetsUserModuleView extends doorGetsUserView{
                             $block->addContent('titre','' );
                             $block->addContent('active','' ,'center  tb-30');
                             $block->addContent('pseudo','' ,'center');
-                            $block->addContent('date_creation','','center');
+                            $block->addContent('date_modification','','center');
                             $block->addContent('edit','','center');
                             $block->addContent('delete','','center');
                             
@@ -588,34 +592,29 @@ class doorGetsUserModuleView extends doorGetsUserView{
                         
                         for($i=0;$i<$cAll;$i++) {
                             
-                            $ImageStatut = BASE_IMG.'puce-rouge.png';
-                            if ($all[$i]['active'] == '2')
-                            {
-                                
-                                $ImageStatut = BASE_IMG.'puce-verte.png';
-                                
-                            }elseif ($all[$i]['active'] == '3') {
-                                
-                                $ImageStatut = BASE_IMG.'puce-orange.png';
-                                
-                            }elseif ($all[$i]['active'] == '4') {
-                                
-                                $ImageStatut = BASE_IMG.'icone_redaction.png';
-                                
+                            $ImageStatut = 'fa-ban red';
+                            if ($all[$i]['active'] == '2') {
+                                $ImageStatut = 'fa-eye green-c';
+                            } elseif ($all[$i]['active'] == '3') {
+                                $ImageStatut = 'fa-hourglass-start orange-c';
+                            } elseif ($all[$i]['active'] == '4') {
+                                $ImageStatut = 'fa-pencil gris-c';
                             }
-                            $urlStatut = '<img src="'.$ImageStatut.'" style="vertical-align: middle;" >';
+
+                            $urlStatut = '<i class="fa '.$ImageStatut.' fa-lg" ></i>';
+
                             
                             $urlMassdelete = $all[$i]['id_content'];
                             $urlTitle = $all[$i]["titre"];
                             $urlDelete = '<a title="'.$this->doorGets->__('Supprimer').'" href="./?controller=module'.$moduleInfos['type'].'&uri='.$this->doorGets->Uri.'&action=delete&id='.$all[$i]['id_content'].'&lg='.$lgActuel.'"><b class="glyphicon glyphicon-remove red"></b></a>';
                             $urlEdit = '<a title="'.$this->doorGets->__('Modifier').'" href="./?controller=module'.$moduleInfos['type'].'&uri='.$this->doorGets->Uri.'&action=edit&id='.$all[$i]['id_content'].'&lg='.$lgActuel.'"><b class="glyphicon glyphicon-pencil green-font"></b></a>';
-                            $dateCreation = GetDate::in($all[$i]['date_creation'],1,$this->doorGets->myLanguage());
+                            $dateCreation = GetDate::in($all[$i]['date_modification'],1,$this->doorGets->myLanguage());
                             
                             //$block->addContent('sel_mass',$urlMassdelete ,'tb-30');
                             $block->addContent('titre',$urlTitle );
                             $block->addContent('active',$urlStatut ,'tb-30 text-center');
                             $block->addContent('pseudo',$all[$i]['pseudo'] ,'tb-150 text-center');
-                            $block->addContent('date_creation',$dateCreation,'tb-150 text-center');
+                            $block->addContent('date_modification',$dateCreation,'tb-150 text-center');
                             $block->addContent('edit',$urlEdit,'tb-30 text-center');
                             $block->addContent('delete',$urlDelete,'tb-30 text-center');
                             
@@ -696,7 +695,6 @@ class doorGetsUserModuleView extends doorGetsUserView{
                         $image_gallery = $this->doorGets->_toArray($isContent['image_gallery'],';');
                     }
                     
-
                     $htmlCanotEdit = '';
                     $fileCanotEdit = 'modules/'.$this->doorGets->zoneArea().'_canot_edit';
                     $tplCanotEdit = Template::getView($fileCanotEdit);

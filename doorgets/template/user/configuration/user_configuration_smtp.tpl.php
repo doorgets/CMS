@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -51,7 +51,10 @@
         [{!$this->doorGets->Form->open('post')!}]
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    [{!$this->doorGets->Form->checkbox($this->doorGets->__('Activer').' Mandrill','smtp_mandrill_active',1,$isMandrillActive)!}]
+                    [{!$this->doorGets->Form->checkbox($this->doorGets->__('Activer votre serveur'),'smtp_mandrill_active',1,$isMandrillActive)!}]
+                </div>
+                <div class="panel-heading">
+                    [{!$this->doorGets->Form->checkbox($this->doorGets->__('Activer le chiffrage').'/'.$this->doorGets->__('Sécurité SSL'),'smtp_mandrill_ssl',1,$isMandrillSSL)!}]
                 </div>
                 <div class="panel-body">
                     <div class="separateur-tb"></div>

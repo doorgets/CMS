@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -31,14 +31,13 @@
 ******************************************************************************
 ******************************************************************************/
 
-
 ?>
 <legend>
     <a href="?controller=module[{!$moduleInfos['type']!}]&uri=[{!$moduleInfos['uri']!}]&lg=[{!$lgActuel!}]"><img src="[{!BASE_IMG.'mod_'.$moduleInfos['type'].'.png'!}]" title="[{!$moduleInfos['nom']!}]" class="doorGets-img-ico px25" /> [{!$moduleInfos['nom']!}]</a> 
     [{?($is_modules_modo):}]
-        <span class="create" ><a  href="?controller=modules&action=editblog&id=[{!$moduleInfos['id']!}]&lg=[{!$lgActuel!}]"><b class="glyphicon glyphicon-cog"></b> [{!$this->doorGets->__('Paramètres')!}]</a></span>
+        <span class="create" ><a  href="?controller=modules&action=edit[{!$moduleInfos['type']!}]&id=[{!$moduleInfos['id']!}]&lg=[{!$lgActuel!}]"><b class="glyphicon glyphicon-cog"></b> [{!$this->doorGets->__('Paramètres')!}]</a></span>
     [?]
-    [{?(!($isLimited && $countContents >= $isLimited)):}]
+    [{?($user_can_add && !($isLimited && $countContents >= $isLimited)):}]
         <span class="create" ><a href="?controller=module[{!$moduleInfos['type']!}]&uri=[{!$this->doorGets->Uri!}]&action=add"class="violet" ><b class="glyphicon glyphicon-plus"></b>  [{!$this->doorGets->__('Ajouter')!}]</a></span>
     [?]
     [{?($is_modo):}]

@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -41,7 +41,7 @@
     </div>
     <div class="doorGets-rubrique-center-content">
         <legend>
-            <span class="create" ><a class="doorGets-comebackform" href="?controller=modules"><img src="[{!BASE_IMG!}]retour.png" class="Retour-img"> [{!$this->doorGets->__('Retour')!}]</a></span>
+            <span class="create" ><a class="doorGets-comebackform" href="?controller=widgets"><i class="fa fa-undo fa-lg green-c"></i> [{!$this->doorGets->__('Retour')!}]</a></span>
             <span class="create" ><a  href="?controller=modules&action=editgenform&id=[{!$moduleInfos['id']!}]&lg=[{!$lgActuel!}]"><b class="glyphicon glyphicon-cog"></b> [{!$this->doorGets->__('Paramètres')!}]</a></span>
             <img src="[{!BASE_IMG.'mod_genform.png'!}]" title="[{!$this->doorGets->__("Formulaire")!}]" class="doorGets-img-ico px25" />[{!$moduleInfos['titre']!}]
             
@@ -85,11 +85,11 @@
                
                 [{?(!empty($aGroupeFilter)):}]
                     <div class="alert alert-info">
-                        [{!$this->doorGets->__("Aucune donnée trouvé pour votre recherche");}]
+                        <i class="fa fa-exclamation-triangle"></i> [{!$this->doorGets->__("Aucune donnée trouvé pour votre recherche");}]
                     </div>
                 [??]
                     <div class="alert alert-info">
-                        [{!$this->doorGets->__("Il n'y a actuellement aucune donnée")!}] 
+                        <i class="fa fa-exclamation-triangle"></i> [{!$this->doorGets->__("Il n'y a actuellement aucune donnée")!}] 
                     </div>
                 [?]
                 

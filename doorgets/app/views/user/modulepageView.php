@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -35,9 +35,7 @@
 class ModulePageView extends doorGetsUserModuleOrderView {
     
     public function __construct(&$doorGets) {
-        
         parent::__construct($doorGets);
-
     }
     
     public function getContent() {
@@ -83,10 +81,9 @@ class ModulePageView extends doorGetsUserModuleOrderView {
                     $isContentTraduction = $this->doorGets->dbQS($idLgGroupe,$this->doorGets->Table.'_traduction');
                     if (!empty($isContentTraduction)) {
                         
+                        $article = $isContentTraduction['article'] = $this->doorGets->_cleanPHP($isContentTraduction['article_tinymce']);
                         $this->isContent = $isContent = array_merge($isContent,$isContentTraduction);
-                        
                     }
-                    
                 }
                 
             }
@@ -97,15 +94,14 @@ class ModulePageView extends doorGetsUserModuleOrderView {
 
             $version_id = $params['GET']['version'];
             $isContentVesion = $this->getVersionById($version_id,$isContent);
-            
             if (!empty($isContentVesion)) {
+                $article = $isContent['article'] = $this->doorGets->_cleanPHP($isContentVesion['article_tinymce']);
                 $isContent = array_merge($isContent,$isContentVesion);
                 $isVersionActive    = true;
-                
             }
             
         }
-        
+            
         $user_can_edit = true;
         $htmlCanotEdit = '';
 
@@ -130,8 +126,17 @@ class ModulePageView extends doorGetsUserModuleOrderView {
         $tplFormEditBottom = Template::getView($fileFormEditBottom);
         ob_start(); if (is_file($tplFormEditBottom)) { include $tplFormEditBottom;} $formEditBottom = ob_get_clean();
         
-        
         $ActionFile = 'modules/'.$this->doorGets->controllerNameNow().'/user_'.$this->doorGets->controllerNameNow().'_'.$this->Action;
+         
+        $urlLangueTraduction = '';
+        $cLanguageWebsite = count($this->doorGets->allLanguagesWebsite);
+        if ($cLanguageWebsite > 1) { $urlLangueTraduction = 't/'.$lgActuel.'/'; }
+
+        $cVersion = $this->getCountVersion();
+        $versions = $this->getAllVersion();
+
+        $url = "?controller=module".$moduleInfos['type']."&uri=".$moduleInfos['uri']."&lg=".$lgActuel;
+
 
         $tpl = Template::getView($ActionFile);
         ob_start(); if (is_file($tpl)) { include $tpl; } $out .= ob_get_clean();

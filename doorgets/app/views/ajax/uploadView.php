@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -41,6 +41,8 @@ class UploadView extends doorGetsAjaxView{
 
     public function getResponse() {
         
+        $this->doorGets->checkAjaxMode();
+        
         $response = array(
             'code' => 404,
             'data' => array()
@@ -74,27 +76,21 @@ class UploadView extends doorGetsAjaxView{
                     //     $error = true;
                     // }
                     
-
-                    $extension = '.png';
                     $error = false;
 
-                    if ( isset($_FILES[0]) && $_FILES[0]["error"] === 0 ) {
-
-                        if ($_FILES[0]["type"] == "image/jpeg") {
-                            $extension = '.jpg';
-                        }
+                    if (
+                        !isset($_FILES[0]) 
+                        || $_FILES[0]["error"] !== 0 
+                        || !array_key_exists($_FILES[0]["type"],Constant::$extensionsImage)) {
                         
-                    }else{
-                        
-                        
-                        $error = true;
+                        $error = true; 
                     }
                     
                     if (!$error) {
-                
-                        $nameFileImage = time().'-'.uniqid('doorgets').$extension;
                         
-                        $uri = $this->doorGets->getRealUri($uri);
+                        $extension = '.'.Constant::$extensionsImage[$_FILES[0]["type"]];
+                        $nameFileImage = time().'-'.uniqid('doorgets').$extension;
+        
                         if (!is_dir(BASE_DATA.$uri)) { 
                             @mkdir(BASE_DATA.$uri, 0777, true);
                             copy(BASE_DATA.'index.php',BASE_DATA.$uri.'/index.php');

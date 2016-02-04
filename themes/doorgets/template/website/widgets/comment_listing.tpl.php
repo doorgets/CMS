@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -56,7 +56,7 @@
         [{-($i=0;$i<$countComments;$i++):}]
             [{$date = GetDate::in($isModuleComments[$i]['date_creation'],1,$this->myLanguage);}]
             <div class="m-comment" >
-                <span ><b>[{!$isModuleComments[$i]['nom']!}]</b> <small class="right">[{!$date!}]</small></span>
+                <span ><b class="violet">[{!$isModuleComments[$i]['nom']!}]</b> [{?($isModuleComments[$i]['stars'] > 0):}]<input type="hidden" class="rating green" data-fractions="3" disabled="disabled" value="[{!$isModuleComments[$i]['stars']!}]"/>[?] <small class="pull-right">[{!$date!}]</small></span>
                 <div class="comment-content" >
                 [{!$isModuleComments[$i]['comment']!}]
                 </div>

@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -81,10 +81,10 @@ class doorgetsWebsiteUserView{
         $website     = $this->Website;
         $moduleName  = $website->getModule();
         $modules     = $website->getActiveModules();
-        
+
         $user        = $website->_User;
 
-        if (!empty($user)) {
+        if (!empty($user) && array_key_exists($moduleName,$modules)) {
             
             $this->user_can_list    = (in_array($modules[$moduleName]['id'], $user['liste_module_list'])) ? true : false;
             $this->user_can_show    = (in_array($modules[$moduleName]['id'], $user['liste_module_show'])) ? true : false;
@@ -105,26 +105,29 @@ class doorgetsWebsiteUserView{
             );
         }
 
-        $this->module_public_module     = ((bool) (int) $modules[$moduleName]['all']['public_module']) ? false : true;
-        $this->module_public_comment    = ((bool) (int)$modules[$moduleName]['all']['public_comment']) ? false : true;
-        $this->module_public_add        = ((bool) (int)$modules[$moduleName]['all']['public_add']) ? false : true;
-        
-        $this->modulePrivilege = array (
+        if (array_key_exists($moduleName,$modules)) {
+            
+            $this->module_public_module     = ((bool) (int) $modules[$moduleName]['all']['public_module']) ? false : true;
+            $this->module_public_comment    = ((bool) (int)$modules[$moduleName]['all']['public_comment']) ? false : true;
+            $this->module_public_add        = ((bool) (int)$modules[$moduleName]['all']['public_add']) ? false : true;
+            
+            $this->modulePrivilege = array (
 
-            'public_module'    => $this->module_public_module,
-            'public_comment'   => $this->module_public_comment,
-            'public_add'       => $this->module_public_add,
+                'public_module'    => $this->module_public_module,
+                'public_comment'   => $this->module_public_comment,
+                'public_add'       => $this->module_public_add,
 
-        );
+            );
 
-        $tplPassword = $this->checkModulePassword(
-            $modules[$moduleName]['all']['with_password'],
-            $modules[$moduleName]['all']['password'],
-            $moduleName
-        );
-        
-        if (!empty($tplPassword)) {
-            return $tplPassword;
+            $tplPassword = $this->checkModulePassword(
+                $modules[$moduleName]['all']['with_password'],
+                $modules[$moduleName]['all']['password'],
+                $moduleName
+            );
+            
+            if (!empty($tplPassword)) {
+                return $tplPassword;
+            }
         }
 
         $cLan = count($website->allLanguagesWebsite);

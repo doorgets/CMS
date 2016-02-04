@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -31,10 +31,6 @@
 ******************************************************************************
 ******************************************************************************/
 
-
-    $listeCategories = $this->doorGets->categorieSimple;
-    unset($listeCategories[0]);
-    
 ?>
 <div class="doorGets-rubrique-center">
     <div class="doorGets-rubrique-center-title page-header">
@@ -48,6 +44,11 @@
         
         [{!$formAddTop!}]
         [{!$this->doorGets->Form->textarea($this->doorGets->__('Contenu de la page').' <span class="cp-obli">*</span>','article_tinymce','','tinymce ckeditor')!}]
+        <div class="row">
+            <div class="col-md-12">
+                <div class="live-preview-content live-preview"></div>
+            </div>
+        </div> 
         <div class="separateur-tb"></div>
         [{!$formAddBottom!}]
         

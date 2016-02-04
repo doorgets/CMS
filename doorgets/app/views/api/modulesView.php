@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -34,7 +34,15 @@
 
 class ModulesView extends doorGetsApiView{
     
+    private $authorizedType = array();
+
     public function __construct(&$doorgets) {
+        
+        $this->authorizedType = array(
+            'blog',
+            'news',
+            'page'
+        );
         
         parent::__construct($doorgets); 
     }
@@ -55,52 +63,55 @@ class ModulesView extends doorGetsApiView{
         $idPreviousContent  = 0;
         $id                 = 0;
 
-        // Check if is content modo
-        (in_array($moduleInfos['id'], $User['liste_module_modo'])) ? $is_modo = true : $is_modo = false;
+        if (!empty($User)) {
 
-        // Check if is module modo
-        (
-            in_array('module', $User['liste_module_interne'])  
-            && in_array('module_'.$moduleInfos['type'],  $User['liste_module_interne'])
+            // Check if is content modo
+            $is_modo = (in_array($moduleInfos['id'], $User['liste_module_modo']))?true:false;
 
-        ) ? $is_modules_modo = true : $is_modules_modo = false;
+            // Check if is module modo
+            (
+                in_array('module', $User['liste_module_interne'])  
+                && in_array('module_'.$moduleInfos['type'],  $User['liste_module_interne'])
 
-        // check if user can edit content
-        (in_array($moduleInfos['id'], $User['liste_module_edit'])) ? $user_can_edit = true : $user_can_edit = false;
+            ) ? $is_modules_modo = true : $is_modules_modo = false;
 
-        // check if user can delete content
-        (in_array($moduleInfos['id'], $User['liste_module_delete'])) ? $user_can_delete = true : $user_can_delete = false;
+            // check if user can edit content
+            $user_can_edit = (in_array($moduleInfos['id'], $User['liste_module_edit']))?true:false;
 
-        // get Content for edit / delete
-        $params = $this->doorGets->Params();
-        if (array_key_exists('id',$params['GET'])) {
-            
-            $id = $params['GET']['id'];
-            $isContent = $this->doorGets->dbQS($id,$this->doorGets->Table);
-            
-            if (!empty($isContent)) {
+            // check if user can delete content
+            $user_can_delete = (in_array($moduleInfos['id'], $User['liste_module_delete']))?true:false;
+
+            // get Content for edit / delete
+            $params = $this->doorGets->Params();
+            if (array_key_exists('id',$params['GET'])) {
                 
-                if ($lgGroupe = @unserialize($isContent['groupe_traduction'])) {
+                $id = $params['GET']['id'];
+                $isContent = $this->doorGets->dbQS($id,$this->doorGets->Table);
+                
+                if (!empty($isContent)) {
                     
-                    $idLgGroupe = $lgGroupe[$lgActuel];
-                    
-                    $isContentTraduction = $this->doorGets->dbQS($idLgGroupe,$this->doorGets->Table.'_traduction');
-                    
-                    if (!empty($isContentTraduction)) {
+                    if ($lgGroupe = @unserialize($isContent['groupe_traduction'])) {
                         
-                        $isContent = array_merge($isContent,$isContentTraduction);
-                        $this->isContent = $isContent;
+                        $idLgGroupe = $lgGroupe[$lgActuel];
+                        
+                        $isContentTraduction = $this->doorGets->dbQS($idLgGroupe,$this->doorGets->Table.'_traduction');
+                        
+                        if (!empty($isContentTraduction)) {
+                            
+                            $isContent = array_merge($isContent,$isContentTraduction);
+                            $this->isContent = $isContent;
 
-                        $idNextContent      = $this->doorGets->getIdContentPosition($isContent['id_content']);
-                        $idPreviousContent  = $this->doorGets->getIdContentPosition($isContent['id_content'],'prev');
-                    
-                    } else {
+                            $idNextContent      = $this->doorGets->getIdContentPosition($isContent['id_content']);
+                            $idPreviousContent  = $this->doorGets->getIdContentPosition($isContent['id_content'],'prev');
+                        
+                        } else {
 
-                        $this->isContent = $isContent = array();
+                            $this->isContent = $isContent = array();
+                        }
                     }
                 }
+                
             }
-            
         }
         
         switch ($this->doorGets->requestMethod) {
@@ -132,6 +143,12 @@ class ModulesView extends doorGetsApiView{
                     
                     $withAllData = false;
                     $all = $this->doorGets->getAllActiveModules($withAllData);
+                    foreach ($all as $k => $value) {
+                        if (!in_array($value['type'],$this->authorizedType)) {
+                            unset($all[$k]);
+                        }
+                    }
+
                     $cResultsInt = count($all);
 
                     $response['code']       = 200;

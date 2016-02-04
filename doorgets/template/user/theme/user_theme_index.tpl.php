@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -40,7 +40,8 @@
     <div class="doorGets-rubrique-center-content">
         <legend>
             [{?(!SAAS_ENV || (SAAS_ENV && SAAS_THEME_ADD)):}]
-            <span class="create" ><a href="?controller=theme&action=add"class="violet" ><b class="glyphicon glyphicon-plus"></b>  [{!$this->doorGets->__('Générer un nouveau thème')!}]</a></span>
+            <span class="create" ><a href="?controller=theme&action=add"class="violet" ><b class="glyphicon glyphicon-plus"> </b>  [{!$this->doorGets->__('Générer un nouveau thème')!}]</a></span>
+            <span class="create" ><a href="?controller=theme&action=import"class="violet" ><i class="fa fa-download"></i> </b>  [{!$this->doorGets->__('Importer un nouveau thème')!}]</a></span>
             [?]
             <b class="glyphicon glyphicon-tint"></b> <a href="?controller=theme">[{!$this->doorGets->__('Thème')!}] </a> 
         </legend>

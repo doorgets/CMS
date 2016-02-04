@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -70,7 +70,12 @@
                     [{!$this->doorGets->Form->checkbox($this->doorGets->__('Activer Facebook Singin'),'oauth_facebook_active',1,$isFacebookActive)!}]
                 </div>
                 <div class="panel-body">
-                    <label>[{!$this->doorGets->__('Domaine')!}]</label> : [{!URL!}]
+                    <label>[{!$this->doorGets->__('Origines JavaScript autorisées')!}]</label> : [{!URL!}]
+                    <div class="separateur-tb"></div>
+                    <label>[{!$this->doorGets->__('URI de redirection autorisés')!}]</label> : [{!URL!}]oauth2/facebook/connexion/
+                    <div class="separateur-tb"></div>
+                    <label>[{!$this->doorGets->__('URI de redirection autorisés')!}]</label> : [{!URL!}]oauth2/facebook/login/
+                    <div class="separateur-tb"></div>
                     <div class="separateur-tb"></div>
                     [{!$this->doorGets->Form->input($this->doorGets->__('Facebook Id').' <span class="cp-obli">*</span>','oauth_facebook_id','text',$this->doorGets->configWeb['oauth_facebook_id'])!}]
                     <div class="separateur-tb"></div>

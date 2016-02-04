@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -52,16 +52,25 @@ class SendMailAlert {
 
         $this->doorGets = $doorGets;
 
-        $this->email = $email;
-        $this->Subject = $subject;
-        
-        $this->messageHtml = $this->getContentHtml($content);
+        $emails = $doorGets->_toArray($email);
+        if (!empty($emails)) {
 
-        $this->sendMailByPHPMailer();
-        if ($this->isSended) {
+            foreach ($emails as $mail) {
+                
+                $this->email = $mail;
+                $this->Subject = $subject;
+                
+                $this->messageHtml = $this->getContentHtml($content);
+
+                $this->sendMailByPHPMailer();
+                if ($this->isSended) {
+                    //var_dump('message sended');
+                }else {
+                    //var_dump('message not sended');
+                }        
+            }
             
         }
-
     }
 
     private function sendMailByPHPMailer() {
@@ -74,8 +83,13 @@ class SendMailAlert {
         $mail->isHTML(true);
 
         $mail->Subject = $this->Subject;
-        $mail->Body    = $this->messageHtml;
+        $mail->Body    = Template::get('mail/wrapper',array(
+            'title' => $this->Subject,
+            'message' => $this->messageHtml,
+            'doorGets' => $this->doorGets
+        ));
         //$mail->AltBody = $this->messageTxt;
+        //$mail->addAttachment(BASE_IMG.'logo_mail.png','logo_mail.png');
 
         if($mail->send()) {
             $this->isSended = true;
@@ -86,7 +100,7 @@ class SendMailAlert {
     private function getContentHtml($content) {
         
         $msHtml = '<br /><br /><b>'.$this->doorGets->__('Connexion').' :</b> <br />';
-        $msHtml .= '<ul><li><a href="'.URL.'dg-admin/">'.URL.'dg-admin/</a></li></ul>';
+        $msHtml .= '<ul><li><a href="'.URL.'dg-user/">'.URL.'dg-user/</a></li></ul>';
         
         if (!empty($content)) {
             $msHtml .= '<br />------------------------------------';

@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -138,6 +138,7 @@ class ConfigurationController extends doorGetsUserController {
         $this->doorGets->Form['configuration_media_logo_authentification'] = new Formulaire('configuration_media_logo_authentification');
         $this->doorGets->Form['configuration_media_logo'] = new Formulaire('configuration_media_logo');
         $this->doorGets->Form['configuration_media_logo_backoffice'] = new Formulaire('configuration_media_logo_backoffice');
+        $this->doorGets->Form['configuration_media_logo_mail'] = new Formulaire('configuration_media_logo_mail');
         $this->doorGets->Form['configuration_media_icone'] = new Formulaire('configuration_media_icone');
         
         // Generate the model
@@ -175,7 +176,33 @@ class ConfigurationController extends doorGetsUserController {
 
         }
 
-        $this->doorGets->Form = new Formulaire('configuration_adresse');
+        if (!empty($this->doorGets->configWeb['addresses']) && is_array($this->doorGets->configWeb['addresses'])) {
+            $addresses = $this->doorGets->configWeb['addresses'];
+            foreach ($addresses as $key => $addresse) {
+                $this->doorGets->Form['remove_'.$key] = new Formulaire('configuration_adresse_remove_'.$key);
+                $this->doorGets->Form[$key] = new Formulaire('configuration_adresse_'.$key);
+            }
+        }
+
+        $this->doorGets->Form['new'] = new Formulaire('configuration_adresse');
+        
+        // Generate the model
+        $this->getRequest();
+        
+        // return the view
+        return $this->getView();
+    }
+
+    public function emailAction() {
+        
+        if (!in_array('adresse',$this->doorGets->user['liste_module_interne'])) {
+
+            FlashInfo::set($this->doorGets->__("Vous n'avez pas les droits pour afficher ce module"),"error");
+            header('Location:./'); exit();
+
+        }
+
+        $this->doorGets->Form = new Formulaire('configuration_email');
         
         // Generate the model
         $this->getRequest();
@@ -236,6 +263,101 @@ class ConfigurationController extends doorGetsUserController {
         // Generate the model
         $this->getRequest();
         
+        // return the view
+        return $this->getView();
+    }
+
+    public function stripeAction() {
+        
+        if (!in_array('stripe',$this->doorGets->user['liste_module_interne'])
+            || (in_array('stripe',$this->doorGets->user['liste_module_interne']) && SAAS_ENV && !SAAS_CONFIG_STRIPE)) {
+
+            FlashInfo::set($this->doorGets->__("Vous n'avez pas les droits pour afficher ce module"),"error");
+            header('Location:./'); exit();
+
+        }
+
+        $this->doorGets->Form = new Formulaire('configuration_stripe');
+
+        // Generate the model
+        $this->getRequest();
+
+        // return the view
+        return $this->getView();
+    }
+
+    public function paypalAction() {
+        
+        if (!in_array('paypal',$this->doorGets->user['liste_module_interne'])
+            || (in_array('paypal',$this->doorGets->user['liste_module_interne']) && SAAS_ENV && !SAAS_CONFIG_PAYPAL)) {
+
+            FlashInfo::set($this->doorGets->__("Vous n'avez pas les droits pour afficher ce module"),"error");
+            header('Location:./'); exit();
+
+        }
+
+        $this->doorGets->Form = new Formulaire('configuration_paypal');
+
+        // Generate the model
+        $this->getRequest();
+
+        // return the view
+        return $this->getView();
+    }
+
+    public function transferAction() {
+        
+        if (!in_array('transfer',$this->doorGets->user['liste_module_interne'])
+            || (in_array('transfer',$this->doorGets->user['liste_module_interne']) && SAAS_ENV && !SAAS_CONFIG_TRANSFER)) {
+
+            FlashInfo::set($this->doorGets->__("Vous n'avez pas les droits pour afficher ce module"),"error");
+            header('Location:./'); exit();
+
+        }
+
+        $this->doorGets->Form = new Formulaire('configuration_transfer');
+
+        // Generate the model
+        $this->getRequest();
+
+        // return the view
+        return $this->getView();
+    }
+
+    public function checkAction() {
+        
+        if (!in_array('check',$this->doorGets->user['liste_module_interne'])
+            || (in_array('check',$this->doorGets->user['liste_module_interne']) && SAAS_ENV && !SAAS_CONFIG_CHECK)) {
+
+            FlashInfo::set($this->doorGets->__("Vous n'avez pas les droits pour afficher ce module"),"error");
+            header('Location:./'); exit();
+
+        }
+
+        $this->doorGets->Form = new Formulaire('configuration_check');
+
+        // Generate the model
+        $this->getRequest();
+
+        // return the view
+        return $this->getView();
+    }
+
+    public function cashAction() {
+        
+        if (!in_array('cash',$this->doorGets->user['liste_module_interne'])
+            || (in_array('cash',$this->doorGets->user['liste_module_interne']) && SAAS_ENV && !SAAS_CONFIG_CASH)) {
+
+            FlashInfo::set($this->doorGets->__("Vous n'avez pas les droits pour afficher ce module"),"error");
+            header('Location:./'); exit();
+
+        }
+
+        $this->doorGets->Form = new Formulaire('configuration_cash');
+
+        // Generate the model
+        $this->getRequest();
+
         // return the view
         return $this->getView();
     }
@@ -341,6 +463,27 @@ class ConfigurationController extends doorGetsUserController {
            
     }
 
+    public function saasAction()
+    {
+        
+        if (!in_array('saas_config',$this->doorGets->user['liste_module_interne'])
+            || (in_array('saas_config',$this->doorGets->user['liste_module_interne']) && SAAS_ENV && !SAAS_CONFIG_CLOUD)) {
+
+            FlashInfo::set($this->doorGets->__("Vous n'avez pas les droits pour afficher ce module"),"error");
+            header('Location:./'); exit();
+
+        }
+
+        $this->doorGets->Form = new Formulaire('configuration_saas');
+        
+        // Generate the model
+        $this->getRequest();
+        
+        // return the view
+        return $this->getView();
+           
+    }
+    
     public function setupAction() {
 
         if (!in_array('setup',$this->doorGets->user['liste_module_interne']) 

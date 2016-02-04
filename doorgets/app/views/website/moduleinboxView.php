@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -44,7 +44,7 @@ class moduleInboxView extends doorgetsWebsiteView{
         
         $Website = $this->Website;
         $Module = $Website->getModule();
-        $moduleInfo = $Website->getActiveModules();
+        $moduleInfo = $Website->activeModules;
         
         $tplPassword = $this->checkModulePassword(
             $moduleInfo[$Module]['all']['with_password'],
@@ -58,14 +58,12 @@ class moduleInboxView extends doorgetsWebsiteView{
         
         $templateDefault = 'modules/inbox/inbox_form';
         if (array_key_exists($Module,$moduleInfo)) {
-            
-            
             if (!empty($moduleInfo[$Module]['all']['template_index'])) {
                 $templateDefault = $moduleInfo[$Module]['all']['template_index'];
                 $templateDefault = str_replace('.tpl.php','',$templateDefault);
             }
-            
         }
+        
         $content = $Website->getContent();
         
         $user = ($Website->isUser)  ? $Website->_User : array() ;

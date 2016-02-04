@@ -1,4 +1,35 @@
-<?php
+<?php 
+
+/*******************************************************************************
+/*******************************************************************************
+    doorGets 7.0 - 01, February 2016
+    doorGets it's free PHP Open Source CMS PHP & MySQL
+    Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
+    
+/*******************************************************************************
+
+    Website : http://www.doorgets.com
+    Contact : http://www.doorgets.com/t/en/?contact
+    
+/*******************************************************************************
+    -= One life, One code =-
+/*******************************************************************************
+    
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    
+******************************************************************************
+******************************************************************************/
 
 class DgPageEntity extends AbstractEntity
 {
@@ -148,289 +179,208 @@ class DgPageEntity extends AbstractEntity
  
 	
 
-	public function setId($Id)
-	{
-		
+	public function setId($Id) {
 		$this->Id = $Id;
-
 		return $this;
 	} 
 	
 
-	public function setIdUser($IdUser)
-	{
-		
+	public function setIdUser($IdUser) {
 		$this->IdUser = $IdUser;
-
 		return $this;
 	} 
 	
 
-	public function setIdGroupe($IdGroupe)
-	{
-		
+	public function setIdGroupe($IdGroupe) {
 		$this->IdGroupe = $IdGroupe;
-
 		return $this;
 	} 
 	
 
-	public function setUri($Uri)
-	{
-		
+	public function setUri($Uri) {
 		$this->Uri = $Uri;
-
 		return $this;
 	} 
 	
 
-	public function setActive($Active)
-	{
-		
+	public function setActive($Active) {
 		$this->Active = $Active;
-
 		return $this;
 	} 
 	
 
-	public function setComments($Comments)
-	{
-		
+	public function setComments($Comments) {
 		$this->Comments = $Comments;
-
 		return $this;
 	} 
 	
 
-	public function setPartage($Partage)
-	{
-		
+	public function setPartage($Partage) {
 		$this->Partage = $Partage;
-
 		return $this;
 	} 
 	
 
-	public function setFacebook($Facebook)
-	{
-		
+	public function setFacebook($Facebook) {
 		$this->Facebook = $Facebook;
-
 		return $this;
 	} 
 	
 
-	public function setIdFacebook($IdFacebook)
-	{
-		
+	public function setIdFacebook($IdFacebook) {
 		$this->IdFacebook = $IdFacebook;
-
 		return $this;
 	} 
 	
 
-	public function setDisqus($Disqus)
-	{
-		
+	public function setDisqus($Disqus) {
 		$this->Disqus = $Disqus;
-
 		return $this;
 	} 
 	
 
-	public function setIdDisqus($IdDisqus)
-	{
-		
+	public function setIdDisqus($IdDisqus) {
 		$this->IdDisqus = $IdDisqus;
-
 		return $this;
 	} 
 	
 
-	public function setMailsender($Mailsender)
-	{
-		
+	public function setMailsender($Mailsender) {
 		$this->Mailsender = $Mailsender;
-
 		return $this;
 	} 
 	
 
-	public function setSendto($Sendto)
-	{
-		
+	public function setSendto($Sendto) {
 		$this->Sendto = $Sendto;
-
 		return $this;
 	} 
 	
 
-	public function setInRss($InRss)
-	{
-		
+	public function setInRss($InRss) {
 		$this->InRss = $InRss;
-
 		return $this;
 	} 
 	
 
-	public function setOrdre($Ordre)
-	{
-		
+	public function setOrdre($Ordre) {
 		$this->Ordre = $Ordre;
-
 		return $this;
 	} 
 	
 
-	public function setGroupeTraduction($GroupeTraduction)
-	{
-		
+	public function setGroupeTraduction($GroupeTraduction) {
 		$this->GroupeTraduction = $GroupeTraduction;
-
 		return $this;
 	} 
 	
 
-	public function setDateCreation($DateCreation)
-	{
-		
+	public function setDateCreation($DateCreation) {
 		$this->DateCreation = $DateCreation;
-
 		return $this;
 	} 
 	
 
-	public function setIdModo($IdModo)
-	{
-		
+	public function setIdModo($IdModo) {
 		$this->IdModo = $IdModo;
-
 		return $this;
 	} 
 	
 
-	public function setValModo($ValModo)
-	{
-		
+	public function setValModo($ValModo) {
 		$this->ValModo = $ValModo;
-
 		return $this;
 	} 
 	
 
-	public function setDateModo($DateModo)
-	{
-		
+	public function setDateModo($DateModo) {
 		$this->DateModo = $DateModo;
-
 		return $this;
 	} 
 
-		
-	public function getId()
-	{
+
+	public function getId() {
 		return $this->Id ;
 	} 
-		
-	public function getIdUser()
-	{
+
+	public function getIdUser() {
 		return $this->IdUser ;
 	} 
-		
-	public function getIdGroupe()
-	{
+
+	public function getIdGroupe() {
 		return $this->IdGroupe ;
 	} 
-		
-	public function getUri()
-	{
+
+	public function getUri() {
 		return $this->Uri ;
 	} 
-		
-	public function getActive()
-	{
+
+	public function getActive() {
 		return $this->Active ;
 	} 
-		
-	public function getComments()
-	{
+
+	public function getComments() {
 		return $this->Comments ;
 	} 
-		
-	public function getPartage()
-	{
+
+	public function getPartage() {
 		return $this->Partage ;
 	} 
-		
-	public function getFacebook()
-	{
+
+	public function getFacebook() {
 		return $this->Facebook ;
 	} 
-		
-	public function getIdFacebook()
-	{
+
+	public function getIdFacebook() {
 		return $this->IdFacebook ;
 	} 
-		
-	public function getDisqus()
-	{
+
+	public function getDisqus() {
 		return $this->Disqus ;
 	} 
-		
-	public function getIdDisqus()
-	{
+
+	public function getIdDisqus() {
 		return $this->IdDisqus ;
 	} 
-		
-	public function getMailsender()
-	{
+
+	public function getMailsender() {
 		return $this->Mailsender ;
 	} 
-		
-	public function getSendto()
-	{
+
+	public function getSendto() {
 		return $this->Sendto ;
 	} 
-		
-	public function getInRss()
-	{
+
+	public function getInRss() {
 		return $this->InRss ;
 	} 
-		
-	public function getOrdre()
-	{
+
+	public function getOrdre() {
 		return $this->Ordre ;
 	} 
-		
-	public function getGroupeTraduction()
-	{
+
+	public function getGroupeTraduction() {
 		return $this->GroupeTraduction ;
 	} 
-		
-	public function getDateCreation()
-	{
+
+	public function getDateCreation() {
 		return $this->DateCreation ;
 	} 
-		
-	public function getIdModo()
-	{
+
+	public function getIdModo() {
 		return $this->IdModo ;
 	} 
-		
-	public function getValModo()
-	{
+
+	public function getValModo() {
 		return $this->ValModo ;
 	} 
-		
-	public function getDateModo()
-	{
+
+	public function getDateModo() {
 		return $this->DateModo ;
 	} 
 
 		
-	public function getValidationId()
-	{
+	public function getValidationId() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 11, 
@@ -441,8 +391,7 @@ class DgPageEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationIdUser()
-	{
+	public function getValidationIdUser() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 11, 
@@ -453,8 +402,7 @@ class DgPageEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationIdGroupe()
-	{
+	public function getValidationIdGroupe() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 11, 
@@ -465,8 +413,7 @@ class DgPageEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationUri()
-	{
+	public function getValidationUri() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -477,8 +424,7 @@ class DgPageEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationActive()
-	{
+	public function getValidationActive() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 11, 
@@ -489,8 +435,7 @@ class DgPageEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationComments()
-	{
+	public function getValidationComments() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 11, 
@@ -501,8 +446,7 @@ class DgPageEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationPartage()
-	{
+	public function getValidationPartage() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 11, 
@@ -513,8 +457,7 @@ class DgPageEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationFacebook()
-	{
+	public function getValidationFacebook() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 11, 
@@ -525,8 +468,7 @@ class DgPageEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationIdFacebook()
-	{
+	public function getValidationIdFacebook() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -537,8 +479,7 @@ class DgPageEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationDisqus()
-	{
+	public function getValidationDisqus() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 11, 
@@ -549,8 +490,7 @@ class DgPageEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationIdDisqus()
-	{
+	public function getValidationIdDisqus() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -561,8 +501,7 @@ class DgPageEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationMailsender()
-	{
+	public function getValidationMailsender() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 11, 
@@ -573,8 +512,7 @@ class DgPageEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationSendto()
-	{
+	public function getValidationSendto() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -585,8 +523,7 @@ class DgPageEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationInRss()
-	{
+	public function getValidationInRss() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 11, 
@@ -597,8 +534,7 @@ class DgPageEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationOrdre()
-	{
+	public function getValidationOrdre() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 11, 
@@ -609,8 +545,7 @@ class DgPageEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationGroupeTraduction()
-	{
+	public function getValidationGroupeTraduction() {
 		return array(
 			'type'	         => 'text', 
 			'size'			 => 0, 
@@ -621,8 +556,7 @@ class DgPageEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationDateCreation()
-	{
+	public function getValidationDateCreation() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 11, 
@@ -633,8 +567,7 @@ class DgPageEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationIdModo()
-	{
+	public function getValidationIdModo() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 111, 
@@ -645,8 +578,7 @@ class DgPageEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationValModo()
-	{
+	public function getValidationValModo() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 11, 
@@ -657,8 +589,7 @@ class DgPageEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationDateModo()
-	{
+	public function getValidationDateModo() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 11, 
@@ -669,13 +600,9 @@ class DgPageEntity extends AbstractEntity
 		);
 	} 
 
-	
 
 	public function _getMap() { 
-
-		
 		$parentMap = parent::_getMap();
-
 		return array_merge($parentMap, array(            
 		    'Id' =>  'id',            
 		    'IdUser' =>  'id_user',            
@@ -697,8 +624,7 @@ class DgPageEntity extends AbstractEntity
 		    'IdModo' =>  'id_modo',            
 		    'ValModo' =>  'val_modo',            
 		    'DateModo' =>  'date_modo',		
-		)); 
-
+		));
 	} 
 
 

@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -49,6 +49,7 @@ class themeView extends doorGetsUserView{
             
             'index'         => $this->doorGets->__('Index de la page'),
             'add'           => $this->doorGets->__('Ajouter'),
+            'import'        => $this->doorGets->__('Importer'),
             'edit'          => $this->doorGets->__('Modifier'),
             'delete'        => $this->doorGets->__('Supprimer'),
             
@@ -79,6 +80,7 @@ class themeView extends doorGetsUserView{
                     }
                     
                     break;
+                
                 
                 case 'edit':
                     

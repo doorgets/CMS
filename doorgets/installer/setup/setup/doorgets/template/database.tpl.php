@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 20, February 2014
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -34,7 +34,7 @@
 ?>
 <div class="doorGets-content-wrapper">
     <div class="doorGets-top-title-content">
-        doorGets 7.0 <small>Free OpenSource CMS PHP/MySQL</small>
+        <img src="[{!BASE_IMG!}]doorgets.png">
     </div>
     <div class="doorGets-title-content">
         3/5 - [{!$doorgets->l("Connecter votre base de données")!}]
@@ -45,7 +45,8 @@
     </div>
     [?]
     <div id="show-after-click" style="display: none;text-align: center;">
-        <img src="[{!BASE_IMG!}]loader.gif" style="vertical-align: middle;width: 25px;" > [{!$doorgets->l("Installation en cours")!}]... 
+        <img src="[{!BASE_IMG!}]loader.gif" style="margin: 10px;" ><br /><br /> 
+        [{!$doorgets->l("Installation en cours")!}]... 
     </div>
     <div id="hide-after-click">
     [{!$doorgets->form['doorgets_database']->open('post','','')!}]

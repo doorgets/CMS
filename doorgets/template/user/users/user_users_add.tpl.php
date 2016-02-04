@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 20, February 2014
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -42,7 +42,7 @@ $cGroupes = count($groupes) - 1;
 
         </div>
         <legend>
-            <span class="create" ><a class="doorGets-comebackform" href="?controller=users"><img src="[{!BASE_IMG!}]retour.png" class="Retour-img"> [{!$this->doorGets->__('Retour');}]</a></span>
+            <span class="create" ><a class="doorGets-comebackform" href="?controller=users"><i class="fa fa-undo fa-lg green-c"></i> [{!$this->doorGets->__('Retour');}]</a></span>
             <b class="glyphicon glyphicon-user"></b> <a href="?controller=users">[{!$this->doorGets->__('Utilisateur')!}] </a> 
              / [{!$this->doorGets->__('Créer un utilisateur')!}] 
         </legend>

@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -50,7 +50,7 @@ class moduleVideoView extends doorgetsWebsiteUserView{
         $hasMe                  = $Website->isMyProfile($User,$Profile);
 
         $Module = $Website->getModule();
-        $moduleInfo = $Website->getActiveModules();
+        $moduleInfo = $Website->activeModules;
         $templateDefault = 'modules/video/video_listing';
         $templateDefaultContent = 'modules/video/video_content';
         
@@ -105,7 +105,7 @@ class moduleVideoView extends doorgetsWebsiteUserView{
             $outSqlGroupe .= $nameTable.".id_user = '".$this->Website->profile['id']."'";
             $outSqlGroupe .= " AND ".$nameTable."_traduction.id_content = ".$nameTable.".id
             AND ".$nameTable."_traduction.langue = '".$Website->myLanguage()."'
-            ORDER BY ".$nameTable.".date_creation DESC ";
+            ORDER BY ".$nameTable.".ordre DESC ";
             
             $outRub = $Website->getModule();
             $categoryLabel = '';
@@ -126,7 +126,7 @@ class moduleVideoView extends doorgetsWebsiteUserView{
                     $outSqlGroupe .= " AND ".$nameTable."_traduction.id_content = ".$nameTable.".id
                     AND ".$nameTable.".categorie LIKE '%".$isCategorie['id_cat'].",%'
                     AND ".$nameTable."_traduction.langue = '".$Website->myLanguage()."'
-                    ORDER BY ".$nameTable.".date_creation DESC ";
+                    ORDER BY ".$nameTable.".ordre DESC ";
                     
                     $outRub = 'doorgets='.$getCategory;
                     if (array_key_exists($getCategory,$categories)) {
@@ -192,7 +192,17 @@ class moduleVideoView extends doorgetsWebsiteUserView{
             $getPagination = '';
             if ($totalContents > $per) { $getPagination = Pagination::pagePublic($totalContents,$p,$per,$urlPage); }
             
-            $all = $Website->dbQ('SELECT * FROM '.$nameTable.', '.$nameTable.'_traduction '.$sqlLimit);
+            $nameTableTrad = $nameTable.'_traduction';
+            $all = $Website->dbQ("
+                SELECT ".$nameTableTrad.".id as id , ".$nameTable.".id as id_content 
+                FROM ".$nameTable.', '.$nameTableTrad.' '.$sqlLimit
+            );
+
+            foreach ($all as $k => $content) {
+                $isContent = $Website->dbQS($content['id_content'],$nameTable);
+                $isContentTrad = $Website->dbQS($content['id'],$nameTableTrad);
+                $all[$k] = array_merge($isContent,$isContentTrad);
+            }
             $cAll = count($all);
             
             $finalPer = $ini+$per;
@@ -217,7 +227,7 @@ class moduleVideoView extends doorgetsWebsiteUserView{
                     $lenArticle = strlen($contents[$k]['article']);
                     
                     if ($lenArticle > $iMaxDescription - 1) {
-                        $contents[$k]['article'] = substr(strip_tags($contents[$k]['article']),0,$iMaxDescription).'...';
+                        $contents[$k]['article'] = $Website->_truncate($contents[$k]['article'],$iMaxDescription);;
                     }
                     
                     $contents[$k]['order'] = $data['ordre'];
@@ -229,13 +239,13 @@ class moduleVideoView extends doorgetsWebsiteUserView{
             $groupeBy = $par;
             if (!empty($contents)) {$ini = $ini+1;}
 
-            $labelModuleGroup = $Website->getActiveModules();
+            $labelModuleGroup = $Website->activeModules;
             $labelModule = $labelModuleGroup[$Website->getModule()]['all']['nom'];
 
             $urlAfterAction     = urlencode($Website->getCurrentUrl());
-            $urlAdd             = URL_USER.$Website->_lgUrl.'?controller=modulevideo&uri='.$Website->getModule().'&action=add&back='.$urlAfterAction;
+            $urlAdd             = URL_USER.$Website->_lgUrl.'?controller=modulevideo&uri='.$Website->getModule().'&action=add';
 
-            $tplModuleNewsListing = Template::getWebsiteUserView($templateDefault,$Website->getTheme());
+            $tplModuleNewsListing = Template::getWebsiteView($templateDefault,$Website->getTheme());
             ob_start(); if (is_file($tplModuleNewsListing)) { include $tplModuleNewsListing; }  $out .= ob_get_clean();
             
         }else{
@@ -250,7 +260,7 @@ class moduleVideoView extends doorgetsWebsiteUserView{
                 
                 if (!empty($isContentActive)) {
 
-                    $isContent['article'] = htmlspecialchars_decode(html_entity_decode($isContent['article_tinymce']));
+                    $isContent['article'] = html_entity_decode($isContent['article_tinymce']);
                     $isContent['article'] = $Website->_convertMethod($isContent['article']);
                     $isContent['title'] = $isContent['titre'];
                     
@@ -262,6 +272,11 @@ class moduleVideoView extends doorgetsWebsiteUserView{
                     unset($isContent['meta_keys']);
                     unset($isContent['langue']);
                     
+                    $isContent['stars'] = 0; $isContent['stars_count']   = $isContentActive['stars_count'];
+                    if (!empty($isContentActive['stars_count'])) {
+                        $isContent['stars']         = number_format(($isContentActive['stars'] / $isContentActive['stars_count']),'1' );
+                    }
+
                     $isContent['active']        = $isContentActive['active'];
                     $isContent['author_badge']  = $isContentActive['author_badge'];
                     $isContent['id_user']       = $isContentActive['id_user'];
@@ -273,7 +288,8 @@ class moduleVideoView extends doorgetsWebsiteUserView{
                     
                     $isContent['image_gallery'] = $Website->_toArray($isContent['image_gallery'],';');
                     
-                    $isContent['date_creation'] = GetDate::in($isContent['date_modification'],2,$Website->myLanguage);
+                    $isContent['date_creation'] = GetDate::in($isContentActive['date_creation'],2,$Website->myLanguage);
+                    $isContent['date_modification'] = GetDate::in($isContent['date_modification'],2,$Website->myLanguage);
                     
                     $aCategories = $Website->_toArray($isContentActive['categorie']);
                     if (!empty($aCategories)) {
@@ -291,7 +307,7 @@ class moduleVideoView extends doorgetsWebsiteUserView{
 
                     if (!empty($isContentActive)) {
 
-                        $isContent['article'] = htmlspecialchars_decode(html_entity_decode($isContentActiveVersion['article_tinymce']));
+                        $isContent['article'] = html_entity_decode($isContentActiveVersion['article_tinymce']);
                         $isContent['article'] = $Website->_convertMethod($isContent['article']);
                         $isContent['title'] = $isContentActiveVersion['titre'];
                         
@@ -303,6 +319,11 @@ class moduleVideoView extends doorgetsWebsiteUserView{
                         unset($isContent['meta_keys']);
                         unset($isContent['langue']);
                         
+                        $isContent['stars'] = 0; $isContent['stars_count']   = $isContentActive['stars_count'];
+                        if (!empty($isContentActive['stars_count'])) {
+                            $isContent['stars']         = number_format(($isContentActive['stars'] / $isContentActive['stars_count']),'1' );
+                        }
+
                         $isContent['active']        = $isContentActive['active'];
                         $isContent['author_badge']  = $isContentActive['author_badge'];
                         $isContent['id_user']       = $isContentActive['id_user'];
@@ -314,7 +335,8 @@ class moduleVideoView extends doorgetsWebsiteUserView{
                         
                         $isContent['image_gallery'] = $Website->_toArray($isContent['image_gallery'],';');
                         
-                        $isContent['date_creation'] = GetDate::in($isContent['date_modification'],2,$Website->myLanguage);
+                        $isContent['date_creation'] = GetDate::in($isContentActive['date_creation'],2,$Website->myLanguage);
+                        $isContent['date_modification'] = GetDate::in($isContent['date_modification'],2,$Website->myLanguage);
                         
                         $aCategories = $Website->_toArray($isContentActive['categorie']);
                         if (!empty($aCategories)) {
@@ -341,10 +363,10 @@ class moduleVideoView extends doorgetsWebsiteUserView{
 
             $urlEdition         = URL_USER.$Website->_lgUrl.'?controller=modulevideo&uri='.$Website->getModule().'&action=edit&id='.$isContent['id_content'].'&lg='.$Website->getLangueTradution().'&back='.$urlAfterAction;
             $urlDelete          = URL_USER.$Website->_lgUrl.'?controller=modulevideo&uri='.$Website->getModule().'&action=delete&id='.$isContent['id_content'].'&lg='.$Website->getLangueTradution();
-            $urlAdd             = URL_USER.$Website->_lgUrl.'?controller=modulevideo&uri='.$Website->getModule().'&action=add&back='.$urlAfterAction;
+            $urlAdd             = URL_USER.$Website->_lgUrl.'?controller=modulevideo&uri='.$Website->getModule().'&action=add';
             
             
-            $labelModuleGroup = $Website->getActiveModules();
+            $labelModuleGroup = $Website->activeModules;
             $labelModule = $labelModuleGroup[$Website->getModule()]['all']['nom'];
 
             $this->userPrivilege['modo']  =  ( $Website->isUser && 
@@ -378,7 +400,7 @@ class moduleVideoView extends doorgetsWebsiteUserView{
             ) ? true : false ;
             extract($isContent);
             
-            $tplModuleNewsContent = Template::getWebsiteUserView($templateDefaultContent,$Website->getTheme());
+            $tplModuleNewsContent = Template::getWebsiteView($templateDefaultContent,$Website->getTheme());
             ob_start(); if (is_file($tplModuleNewsContent)) { include $tplModuleNewsContent; }  $out .= ob_get_clean();
             
         }

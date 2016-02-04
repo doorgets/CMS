@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -427,9 +427,10 @@ class doorGetsUser extends Langue{
     public function __destruct() {
         
         parent::__destruct();
-
         $timeend=microtime(true);
         $this->timeExecution = number_format($timeend - $this->timeExecution, 3);
-        //echo $this->timeExecution;
+        // echo '<div class="container" style="z-index:99999;margin:30px auto;text-align:right;">';
+        // echo $this->timeExecution;
+        // echo '</div>';
     }
 }

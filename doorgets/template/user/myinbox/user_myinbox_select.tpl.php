@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 20, February 2014
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2013 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -41,7 +41,7 @@
     </div>
     <div class="doorGets-rubrique-center-content">
         <legend>
-            <span class="create" ><a class="doorGets-comebackform" href="?controller=[{!$this->doorGets->controllerNameNow()!}]"><img src="[{!BASE_IMG!}]retour.png" class="Retour-img"> [{!$this->doorGets->__('Retour')!}]</a></span>
+            <span class="create" ><a class="doorGets-comebackform" href="?controller=[{!$this->doorGets->controllerNameNow()!}]"><i class="fa fa-undo fa-lg green-c"></i> [{!$this->doorGets->__('Retour')!}]</a></span>
             <span class="create">
                 <a href="?controller=[{!$this->doorGets->controllerNameNow()!}]&action=delete&id=[{!$isContent['id']!}]"  title="[{!$this->doorGets->__("Supprimer")!}]" >
                     <img src="[{!BASE_IMG.'supprimer.png'!}]" alt="[{!$this->doorGets->__("Supprimer")!}]" class="ico-image" />
@@ -76,7 +76,7 @@
                 <p>[{!$isContent['message']!}]</p>
                 <hr />
                 [{?($hasSender):}] [{!$isLabelVisible!}] [{!$isVisibleMessage!}] / [?] 
-                <small >[{!$this->doorGets->__("Date d'envoi")!}] : <b>[{!GetDate::in($isContent['date_modification'],1,$this->doorGets->myLanguage)!}]</b></small>
+                <small >[{!$this->doorGets->__("Date d'envoi")!}] : <b>[{!GetDate::in($isContent['date_creation'],1,$this->doorGets->myLanguage)!}]</b></small>
             </div>
         </div>
         

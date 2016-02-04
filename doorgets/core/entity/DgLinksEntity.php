@@ -1,4 +1,35 @@
-<?php
+<?php 
+
+/*******************************************************************************
+/*******************************************************************************
+    doorGets 7.0 - 01, February 2016
+    doorGets it's free PHP Open Source CMS PHP & MySQL
+    Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
+    
+/*******************************************************************************
+
+    Website : http://www.doorgets.com
+    Contact : http://www.doorgets.com/t/en/?contact
+    
+/*******************************************************************************
+    -= One life, One code =-
+/*******************************************************************************
+    
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    
+******************************************************************************
+******************************************************************************/
 
 class DgLinksEntity extends AbstractEntity
 {
@@ -57,107 +88,78 @@ class DgLinksEntity extends AbstractEntity
  
 	
 
-	public function setId($Id)
-	{
-		
+	public function setId($Id) {
 		$this->Id = $Id;
-
 		return $this;
 	} 
 	
 
-	public function setLangue($Langue)
-	{
-		
+	public function setLangue($Langue) {
 		$this->Langue = $Langue;
-
 		return $this;
 	} 
 	
 
-	public function setUriModule($UriModule)
-	{
-		
+	public function setUriModule($UriModule) {
 		$this->UriModule = $UriModule;
-
 		return $this;
 	} 
 	
 
-	public function setLabel($Label)
-	{
-		
+	public function setLabel($Label) {
 		$this->Label = $Label;
-
 		return $this;
 	} 
 	
 
-	public function setLink($Link)
-	{
-		
+	public function setLink($Link) {
 		$this->Link = $Link;
-
 		return $this;
 	} 
 	
 
-	public function setDateCreation($DateCreation)
-	{
-		
+	public function setDateCreation($DateCreation) {
 		$this->DateCreation = $DateCreation;
-
 		return $this;
 	} 
 	
 
-	public function setDateModification($DateModification)
-	{
-		
+	public function setDateModification($DateModification) {
 		$this->DateModification = $DateModification;
-
 		return $this;
 	} 
 
-		
-	public function getId()
-	{
+
+	public function getId() {
 		return $this->Id ;
 	} 
-		
-	public function getLangue()
-	{
+
+	public function getLangue() {
 		return $this->Langue ;
 	} 
-		
-	public function getUriModule()
-	{
+
+	public function getUriModule() {
 		return $this->UriModule ;
 	} 
-		
-	public function getLabel()
-	{
+
+	public function getLabel() {
 		return $this->Label ;
 	} 
-		
-	public function getLink()
-	{
+
+	public function getLink() {
 		return $this->Link ;
 	} 
-		
-	public function getDateCreation()
-	{
+
+	public function getDateCreation() {
 		return $this->DateCreation ;
 	} 
-		
-	public function getDateModification()
-	{
+
+	public function getDateModification() {
 		return $this->DateModification ;
 	} 
 
 		
-	public function getValidationId()
-	{
+	public function getValidationId() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 11, 
@@ -168,8 +170,7 @@ class DgLinksEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationLangue()
-	{
+	public function getValidationLangue() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -180,8 +181,7 @@ class DgLinksEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationUriModule()
-	{
+	public function getValidationUriModule() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -192,8 +192,7 @@ class DgLinksEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationLabel()
-	{
+	public function getValidationLabel() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -204,8 +203,7 @@ class DgLinksEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationLink()
-	{
+	public function getValidationLink() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -216,8 +214,7 @@ class DgLinksEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationDateCreation()
-	{
+	public function getValidationDateCreation() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 11, 
@@ -228,8 +225,7 @@ class DgLinksEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationDateModification()
-	{
+	public function getValidationDateModification() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 11, 
@@ -240,13 +236,9 @@ class DgLinksEntity extends AbstractEntity
 		);
 	} 
 
-	
 
 	public function _getMap() { 
-
-		
 		$parentMap = parent::_getMap();
-
 		return array_merge($parentMap, array(            
 		    'Id' =>  'id',            
 		    'Langue' =>  'langue',            
@@ -255,8 +247,7 @@ class DgLinksEntity extends AbstractEntity
 		    'Link' =>  'link',            
 		    'DateCreation' =>  'date_creation',            
 		    'DateModification' =>  'date_modification',		
-		)); 
-
+		));
 	} 
 
 

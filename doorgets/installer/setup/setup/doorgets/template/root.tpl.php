@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 20, February 2014
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -30,17 +30,31 @@
     
 ******************************************************************************
 ******************************************************************************/
+
+$extentions = $doorgets->getNeededApacheModulesAndPHPExtensions();
 ?>
 <div class="doorGets-content-wrapper">
     [{!$doorgets->form['doorgets_root']->open('post','','')!}]
         <div class="doorGets-top-title-content">
-            doorGets 7.0 <small>Free OpenSource CMS PHP/MySQL</small>
+            <img src="[{!BASE_IMG!}]doorgets.png">
         </div>
-        <div class="separateur-tb"></div>
-        [{!$doorgets->form['doorgets_root']->select($doorgets->l('Choisir votre langue').'<br >','language',$doorgets->getAllLanguages(),$doorgets->getLanguage())!}]
-        <div class="separateur-tb"></div>
-        [{!$doorgets->form['doorgets_root']->select($doorgets->l('Choisir votre fuseau horaire').'<br >','time_zone',$this->getArrayZones(),$doorgets->getTimeZone())!}]
-        <div class="separateur-tb"></div>
-        [{!$doorgets->form['doorgets_root']->submit($doorgets->l('Etape suivante'),'','submit-next')!}]
+        [{?(empty($extentions)):}]
+            <div class="separateur-tb"></div>
+            [{!$doorgets->form['doorgets_root']->select($doorgets->l('Choisir votre langue').'<br >','language',$doorgets->getAllLanguages(),$doorgets->getLanguage())!}]
+            <div class="separateur-tb"></div>
+            [{!$doorgets->form['doorgets_root']->select($doorgets->l('Choisir votre fuseau horaire').'<br >','time_zone',$this->getArrayZones(),$doorgets->getTimeZone())!}]
+            <div class="separateur-tb"></div>
+            [{!$doorgets->form['doorgets_root']->submit($doorgets->l('Etape suivante'),'','submit-next')!}]
+        [??]
+            <div class="info-no-ok">
+                Please install the following extensions to continue
+            </div>
+            <ul style="text-align:left;background: #000000;color: #FFFFFF;padding:0px;font-size: 10px;">
+            [{/($extentions as $ext):}]
+                <li style="padding:5px 10px;font-size: 12px;">[{!$ext!}]</li>    
+            [/]
+            </ul>
+        [?]
+        </div>
     [{!$doorgets->form['doorgets_root']->close()!}]
 </div>

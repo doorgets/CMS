@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -360,32 +360,32 @@ class EmailingView extends doorGetsUserView{
                     $arFilterActivation = $this->doorGets->getArrayForms('activation');
                     
                     $valFilterNom = '';
-                    if (array_key_exists('doorGets_search_filter_q_nom',$aGroupeFilter)) {
+                    if (array_key_exists('q_nom',$aGroupeFilter)) {
                         $valFilterNom = $aGroupeFilter['q_nom'];
                     }
                     
                     $valFilterEmail = '';
-                    if (array_key_exists('doorGets_search_filter_q_email',$aGroupeFilter)) {
+                    if (array_key_exists('q_email',$aGroupeFilter)) {
                         $valFilterEmail = $aGroupeFilter['q_email'];
                     }
                     
                     $valFilterActive = 0;
-                    if (array_key_exists('doorGets_search_filter_q_active',$aGroupeFilter)) {
+                    if (array_key_exists('q_active',$aGroupeFilter)) {
                         $valFilterActive = $aGroupeFilter['q_active'];
                     }
                     
                     $valFilterGroupe = 0;
-                    if (array_key_exists('doorGets_search_filter_q_network',$aGroupeFilter)) {
+                    if (array_key_exists('q_network',$aGroupeFilter)) {
                         $valFilterGroupe = $aGroupeFilter['q_network'];
                     }
                     
                     $valFilterDateStart = '';
-                    if (array_key_exists('doorGets_search_filter_q_date_creation_start',$aGroupeFilter)) {
+                    if (array_key_exists('q_date_creation_start',$aGroupeFilter)) {
                         $valFilterDateStart = $aGroupeFilter['q_date_creation_start'];
                     }
                     
                     $valFilterDateEnd = '';
-                    if (array_key_exists('doorGets_search_filter_q_date_creation_end',$aGroupeFilter)) {
+                    if (array_key_exists('q_date_creation_end',$aGroupeFilter)) {
                         $valFilterDateEnd = $aGroupeFilter['q_date_creation_end'];
                     }
                     
@@ -443,8 +443,8 @@ class EmailingView extends doorGetsUserView{
                         $block->addContent('sel_mass',$urlMassdelete );
                         $block->addContent('nom',$urlNom );
                         $block->addContent('email',$urlEmail );
-                        $block->addContent('date_creation',$dateCreation,'center');
-                        $block->addContent('edit',$urlEdit,'tb-30 center');
+                        $block->addContent('date_creation',$dateCreation,'tb-70 text-center');
+                        $block->addContent('edit',$urlEdit,'tb-30 text-center');
                         $block->addContent('delete',$urlDelete,'tb-30 center');
                         
                     }

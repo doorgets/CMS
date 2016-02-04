@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -34,23 +34,22 @@ if (!array_key_exists('titre', $isContent) && array_key_exists('question', $isCo
     $isContent['titre'] = $isContent['question'];   
 }
 
-$imgStatut = BASE_IMG.'puce-rouge.png';
-
-if ($isContent['active'] == '2') { 
-    $imgStatut = BASE_IMG.'puce-verte.png';   
-}elseif ($isContent['active'] == '3') { 
-    $imgStatut = BASE_IMG.'puce-orange.png';   
-}elseif ($isContent['active'] == '4') { 
-    $imgStatut = BASE_IMG.'icone_redaction.png'; 
+$ImageStatut = 'fa-ban red';
+if ($isContent['active'] == '2') {
+    $ImageStatut = 'fa-eye green-c';
+} elseif ($isContent['active'] == '3') {
+    $ImageStatut = 'fa-hourglass-start orange-c';
+} elseif ($isContent['active'] == '4') {
+    $ImageStatut = 'fa-pencil gris-c';
 }
 
+$urlStatut = '<i class="fa '.$ImageStatut.' fa-lg" ></i>';
 ?>
-<span class="create" ><a class="doorGets-comebackform" href="[{!$this->doorGets->goBackUrl()!}]"><img src="[{!BASE_IMG!}]retour.png" class="Retour-img"> [{!$this->doorGets->__('Retour')!}]</a></span>
+<span class="create" ><a class="doorGets-comebackform" href="[{!$this->doorGets->goBackUrl()!}]"><i class="fa fa-undo fa-lg green-c"></i> [{!$this->doorGets->__('Retour')!}]</a></span>
 [{?($is_modo):}]
 <span class="create">[{!$this->doorGets->genLangueMenuAdmin()!}]</span>
 [?]
 <a href="?controller=module[{!$moduleInfos['type']!}]&uri=[{!$moduleInfos['uri']!}]&lg=[{!$lgActuel!}]"><img src="[{!BASE_IMG.'mod_'.$moduleInfos['type'].'.png'!}]" title="[{!$moduleInfos['nom']!}]" class="doorGets-img-ico px25" /> [{!$moduleInfos['nom']!}]</a> 
-/ [{!$isContent['titre']!}] 
 
 [{?($is_modo && $isVersionActive):}]
 <span class="badge create">
@@ -58,4 +57,4 @@ if ($isContent['active'] == '2') {
     <a href="?controller=module[{!$moduleInfos['type']!}]&uri=[{!$moduleInfos['uri']!}]&action=edit&id=[{!$isContent['id_content']!}]&lg=[{!$lgActuel!}]" class="red">[{!$this->doorGets->__('Annuler')!}]</a>
 </span>
 [?] 
-<img src="[{!$imgStatut!}]"  class="doorGets-img-ico px25" />
+<small><i class="fa fa-chevron-right" ></i> [{!$isContent['titre']!}]  [{!$urlStatut!}]</small>

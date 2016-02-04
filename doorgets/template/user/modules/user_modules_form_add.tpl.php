@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -32,7 +32,7 @@
 ******************************************************************************/
 
 ?>
-[{?(array_key_exists($_uri_module,$listeInfos)):}]
-    <span class="create" ><a class="doorGets-comebackform" href="?controller=modules&action=type"><img src="[{!BASE_IMG!}]retour.png" class="Retour-img"> [{!$this->doorGets->__('Retour')!}]</a></span>
+[{?(array_key_exists($_uri_module,$listeInfos) && array_key_exists($_uri_module,$liste)):}]
+    <span class="create" ><a class="doorGets-comebackform" href="?controller=modules&action=type"><i class="fa fa-undo fa-lg green-c"></i> [{!$this->doorGets->__('Retour')!}]</a></span>
     <img src="[{!$listeInfos[$_uri_module]['image']!}]" class="px25" /> [{!$liste[$_uri_module]!}] / [{!$this->doorGets->__("Nouveau module")!}]
 [?]

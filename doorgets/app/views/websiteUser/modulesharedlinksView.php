@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -50,7 +50,7 @@ class moduleSharedlinksView extends doorgetsWebsiteUserView{
         $hasMe                  = $Website->isMyProfile($User,$Profile);
 
         $Module = $Website->getModule();
-        $moduleInfo = $Website->getActiveModules();
+        $moduleInfo = $Website->activeModules;
         $templateDefault = 'modules/sharedlinks/sharedlinks_listing';
         $templateDefaultContent = 'modules/sharedlinks/sharedlinks_content';
         
@@ -94,13 +94,13 @@ class moduleSharedlinksView extends doorgetsWebsiteUserView{
             
             $outSqlGroupe = " WHERE ".$nameTable.".active = 2 AND ";
             if ($hasMe) {
-                $outSqlGroupe = " WHERE ";
+                //$outSqlGroupe = " WHERE ";
             }
             
             $outSqlGroupe .= $nameTable.".id_user = '".$this->Website->profile['id']."'";
             $outSqlGroupe .= " AND ".$nameTable."_traduction.id_content = ".$nameTable.".id
             AND ".$nameTable."_traduction.langue = '".$Website->myLanguage()."'
-            ORDER BY ".$nameTable.".date_creation DESC ";
+            ORDER BY ".$nameTable.".ordre DESC ";
             
             $outRub = $Website->getModule();
             $categoryLabel = '';
@@ -114,14 +114,14 @@ class moduleSharedlinksView extends doorgetsWebsiteUserView{
                     
                     $outSqlGroupe = " WHERE ".$nameTable.".active = 2 AND ";
                     if ($hasMe) {
-                        $outSqlGroupe = " WHERE ";
+                        //$outSqlGroupe = " WHERE ";
                     }
 
                     $outSqlGroupe .= " ".$nameTable.".id_user = '".$this->Website->profile['id']."'";
                     $outSqlGroupe .= " AND ".$nameTable."_traduction.id_content = ".$nameTable.".id
                     AND ".$nameTable.".categorie LIKE '%".$isCategorie['id_cat'].",%'
                     AND ".$nameTable."_traduction.langue = '".$Website->myLanguage()."'
-                    ORDER BY ".$nameTable.".date_creation DESC ";
+                    ORDER BY ".$nameTable.".ordre DESC ";
                     
                     $outRub = 'doorgets='.$getCategory;
                     if (array_key_exists($getCategory,$categories)) {
@@ -139,7 +139,7 @@ class moduleSharedlinksView extends doorgetsWebsiteUserView{
                 
                 $outSqlGroupe = " WHERE ".$nameTable.".active = 2 AND ";
                 if ($hasMe) {
-                    $outSqlGroupe = " WHERE ";
+                    //$outSqlGroupe = " WHERE ";
                 }
 
                 $outSqlGroupe .= $nameTable."_traduction.id_content = ".$nameTable.".id
@@ -187,7 +187,18 @@ class moduleSharedlinksView extends doorgetsWebsiteUserView{
             $getPagination = '';
             if ($totalContents > $per) { $getPagination = Pagination::pagePublic($totalContents,$p,$per,$urlPage); }
             
-            $all = $Website->dbQ('SELECT * FROM '.$nameTable.', '.$nameTable.'_traduction '.$sqlLimit);
+            $nameTableTrad = $nameTable.'_traduction';
+            $all = $Website->dbQ("
+                SELECT ".$nameTableTrad.".id as id , ".$nameTable.".id as id_content 
+                FROM ".$nameTable.', '.$nameTableTrad.' '.$sqlLimit
+            );
+
+            foreach ($all as $k => $content) {
+                $isContent = $Website->dbQS($content['id_content'],$nameTable);
+                $isContentTrad = $Website->dbQS($content['id'],$nameTableTrad);
+                $all[$k] = array_merge($isContent,$isContentTrad);
+            }
+            
             $cAll = count($all);
             
             $finalPer = $ini+$per;
@@ -205,13 +216,7 @@ class moduleSharedlinksView extends doorgetsWebsiteUserView{
                     $contents[$k]['uri'] = $data['uri'];
                     $contents[$k]['title'] = $data['titre'];
                     $contents[$k]['description'] = $data['description'];
-                    $contents[$k]['article'] = html_entity_decode($data['url']);
-                    $lenArticle = strlen($contents[$k]['article']);
-                    
-                    if ($lenArticle > $iMaxDescription - 1) {
-                        $contents[$k]['article'] = substr(strip_tags($contents[$k]['article']),0,$iMaxDescription).'...';
-                    }
-                    
+                    $contents[$k]['article'] = $data['url'];
                     $contents[$k]['order'] = $data['ordre'];
                     $contents[$k]['categories'] = $data['categorie'];
                     $contents[$k]['date'] = GetDate::in($data['date_creation'],2,$Website->myLanguage);
@@ -221,13 +226,13 @@ class moduleSharedlinksView extends doorgetsWebsiteUserView{
             $groupeBy = $par;
             if (!empty($contents)) {$ini = $ini+1;}
 
-            $labelModuleGroup  = $Website->getActiveModules();
+            $labelModuleGroup  = $Website->activeModules;
             $labelModule       = $labelModuleGroup[$Website->getModule()]['all']['nom'];
 
             $urlAfterAction    = urlencode($Website->getCurrentUrl());
-            $urlAdd            = URL_USER.$Website->_lgUrl.'?controller=modulesharedlinks&uri='.$Website->getModule().'&action=add&back='.$urlAfterAction;
+            $urlAdd            = URL_USER.$Website->_lgUrl.'?controller=modulesharedlinks&uri='.$Website->getModule().'&action=add';
 
-            $tplModuleNewsListing = Template::getWebsiteUserView('modules/sharedlinks/sharedlinks_listing',$Website->getTheme());
+            $tplModuleNewsListing = Template::getWebsiteView('modules/sharedlinks/sharedlinks_listing',$Website->getTheme());
             ob_start(); if (is_file($tplModuleNewsListing)) { include $tplModuleNewsListing; }  $out .= ob_get_clean();
             
         }else{
@@ -243,8 +248,7 @@ class moduleSharedlinksView extends doorgetsWebsiteUserView{
                 
                 if (!empty($isContentActive)) {
 
-                    $isContent['article'] = htmlspecialchars_decode(html_entity_decode($isContent['url']));
-                    $isContent['article'] = $Website->_convertMethod($isContent['article']);
+                    $isContent['article'] = $isContent['url'];
                     $isContent['title'] = $isContent['titre'];
                     
                     unset($isContent['titre']);
@@ -255,6 +259,12 @@ class moduleSharedlinksView extends doorgetsWebsiteUserView{
                     unset($isContent['meta_keys']);
                     unset($isContent['langue']);
                     
+                    $isContent['stars']         = 0;
+                    $isContent['stars'] = 0; $isContent['stars_count']   = $isContentActive['stars_count'];
+                    if (!empty($isContentActive['stars_count'])) {
+                        $isContent['stars']         = number_format(($isContentActive['stars'] / $isContentActive['stars_count']),'1' );
+                    }
+
                     $isContent['active']        = $isContentActive['active'];
                     $isContent['author_badge']  = $isContentActive['author_badge'];
                     $isContent['id_user']       = $isContentActive['id_user'];
@@ -266,8 +276,9 @@ class moduleSharedlinksView extends doorgetsWebsiteUserView{
                     
                     $isContent['image_gallery'] = $Website->_toArray($isContent['image_gallery'],';');
                     
-                    $isContent['date_creation'] = GetDate::in($isContent['date_modification'],2,$Website->myLanguage);
-                    
+                    $isContent['date_creation'] = GetDate::in($isContentActive['date_creation'],2,$Website->myLanguage);
+                    $isContent['date_modification'] = GetDate::in($isContent['date_modification'],2,$Website->myLanguage);
+                        
                     $aCategories = $Website->_toArray($isContentActive['categorie']);
                     if (!empty($aCategories)) {
                         foreach($aCategories as $id_category) {
@@ -284,8 +295,7 @@ class moduleSharedlinksView extends doorgetsWebsiteUserView{
 
                     if (!empty($isContentActive)) {
 
-                        $isContent['article'] = htmlspecialchars_decode(html_entity_decode($isContentActiveVersion['url']));
-                        $isContent['article'] = $Website->_convertMethod($isContent['article']);
+                        $isContent['article'] = $isContentActiveVersion['url'];
                         $isContent['title'] = $isContentActiveVersion['titre'];
                         
                         unset($isContent['titre']);
@@ -296,6 +306,12 @@ class moduleSharedlinksView extends doorgetsWebsiteUserView{
                         unset($isContent['meta_keys']);
                         unset($isContent['langue']);
                         
+                        $isContent['stars']         = 0;
+                        $isContent['stars'] = 0; $isContent['stars_count']   = $isContentActive['stars_count'];
+                        if (!empty($isContentActive['stars_count'])) {
+                            $isContent['stars']         = number_format(($isContentActive['stars'] / $isContentActive['stars_count']),'1' );
+                        }
+
                         $isContent['active']        = $isContentActive['active'];
                         $isContent['author_badge']  = $isContentActive['author_badge'];
                         $isContent['id_user']       = $isContentActive['id_user'];
@@ -307,7 +323,8 @@ class moduleSharedlinksView extends doorgetsWebsiteUserView{
                         
                         $isContent['image_gallery'] = $Website->_toArray($isContent['image_gallery'],';');
                         
-                        $isContent['date_creation'] = GetDate::in($isContent['date_modification'],2,$Website->myLanguage);
+                        $isContent['date_creation'] = GetDate::in($isContentActive['date_creation'],2,$Website->myLanguage);
+                        $isContent['date_modification'] = GetDate::in($isContent['date_modification'],2,$Website->myLanguage);
                         
                         $aCategories = $Website->_toArray($isContentActive['categorie']);
                         if (!empty($aCategories)) {
@@ -335,7 +352,7 @@ class moduleSharedlinksView extends doorgetsWebsiteUserView{
             $urlDelete          = URL_USER.$Website->_lgUrl.'?controller=modulesharedlinks&uri='.$Website->getModule().'&action=delete&id='.$isContent['id_content'].'&lg='.$Website->getLangueTradution();
             $urlAdd             = URL_USER.$Website->_lgUrl.'?controller=modulesharedlinks&uri='.$Website->getModule().'&action=add';
             
-            $labelModuleGroup = $Website->getActiveModules();
+            $labelModuleGroup = $Website->activeModules;
             $labelModule = $labelModuleGroup[$Website->getModule()]['all']['nom'];
             
             $this->userPrivilege['modo']  =  ( $Website->isUser && 
@@ -370,7 +387,7 @@ class moduleSharedlinksView extends doorgetsWebsiteUserView{
 
             extract($isContent);
             
-            $tplModuleNewsContent = Template::getWebsiteUserView('modules/sharedlinks/sharedlinks_content',$Website->getTheme());
+            $tplModuleNewsContent = Template::getWebsiteView('modules/sharedlinks/sharedlinks_content',$Website->getTheme());
             ob_start(); if (is_file($tplModuleNewsContent)) { include $tplModuleNewsContent; }  $out .= ob_get_clean();
             
         }

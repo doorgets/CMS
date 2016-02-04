@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -42,8 +42,7 @@
     <div class="doorGets-rubrique-center-content">
         <div class="doorGets-rubrique-left-center-title page-header">
             <h2>
-                <b class="glyphicon glyphicon-euro"></b> Stripe
-                <small>[{!$this->doorGets->__('Configurer les informations de connexion smtp')!}].</small>
+                <i class="fa fa-cc-stripe"></i> [{!$this->doorGets->__('Paiement avec Stripe')!}]
             </h2>
         </div>
         [{!$this->doorGets->Form->open('post')!}]

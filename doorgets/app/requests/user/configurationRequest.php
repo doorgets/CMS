@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -91,7 +91,12 @@ class ConfigurationRequest extends doorGetsUserRequest{
                         $this->doorGets->Form->i['smtp_mandrill_active'] = 0;
                     }
 
+                    if (!array_key_exists('smtp_mandrill_ssl',$this->doorGets->Form->i)) {
+                        $this->doorGets->Form->i['smtp_mandrill_ssl'] = 0;
+                    }
+
                     $dDefault['smtp_mandrill_active']    = $this->doorGets->Form->i['smtp_mandrill_active'];
+                    $dDefault['smtp_mandrill_ssl']      = $this->doorGets->Form->i['smtp_mandrill_ssl'];
                     $dDefault['smtp_mandrill_host']      = $this->doorGets->Form->i['smtp_mandrill_host'];
                     $dDefault['smtp_mandrill_port']      = $this->doorGets->Form->i['smtp_mandrill_port'];
                     $dDefault['smtp_mandrill_username']  = $this->doorGets->Form->i['smtp_mandrill_username'];
@@ -107,8 +112,119 @@ class ConfigurationRequest extends doorGetsUserRequest{
                 
                 break;
 
+            // case 'stripe':
+                 
+            //     if (!empty($this->doorGets->Form->i) ) {
+
+            //         $this->doorGets->checkMode();
+
+            //         if (!array_key_exists('stripe_active',$this->doorGets->Form->i)) {
+            //             $this->doorGets->Form->i['stripe_active'] = 0;
+            //         }
+
+            //         $dDefault['stripe_active']    = $this->doorGets->Form->i['stripe_active'];
+            //         $dDefault['stripe_secret_key']      = $this->doorGets->Form->i['stripe_secret_key'];
+            //         $dDefault['stripe_publishable_key']      = $this->doorGets->Form->i['stripe_publishable_key'];
+
+            //         $this->doorGets->dbQU(1,$dDefault,'_website');
+
+            //         FlashInfo::set($this->doorGets->__("Vos informations ont bien été mises à jour"));
+            //         header("Location:".$_SERVER['REQUEST_URI']); exit();
+
+            //     }
+            //     break;
+
+            // case 'paypal':
+                 
+            //     if (!empty($this->doorGets->Form->i) ) {
+
+            //         $this->doorGets->checkMode();
+
+            //         if (!array_key_exists('paypal_active',$this->doorGets->Form->i)) {
+            //             $this->doorGets->Form->i['paypal_active'] = 0;
+            //         }
+
+            //         if (!array_key_exists('paypal_demo',$this->doorGets->Form->i)) {
+            //             $this->doorGets->Form->i['paypal_demo'] = 0;
+            //         }
+                    
+            //         $dDefault['paypal_demo']         = $this->doorGets->Form->i['paypal_demo'];
+            //         $dDefault['paypal_active']       = $this->doorGets->Form->i['paypal_active'];
+            //         $dDefault['paypal_user']         = $this->doorGets->Form->i['paypal_user'];
+            //         $dDefault['paypal_password']     = $this->doorGets->Form->i['paypal_password'];
+            //         $dDefault['paypal_signature']    = $this->doorGets->Form->i['paypal_signature'];
+            //         $dDefault['paypal_returnurl']    = $this->doorGets->Form->i['paypal_returnurl'];
+            //         $dDefault['paypal_cancelurl']    = $this->doorGets->Form->i['paypal_cancelurl'];
+
+            //         $this->doorGets->dbQU(1,$dDefault,'_website');
+
+            //         FlashInfo::set($this->doorGets->__("Vos informations ont bien été mises à jour"));
+            //         header("Location:".$_SERVER['REQUEST_URI']); exit();
+
+            //     }
+            //     break;
+
+            // case 'transfer':
+                 
+            //     if (!empty($this->doorGets->Form->i) ) {
+
+            //         $this->doorGets->checkMode();
+
+            //         if (!array_key_exists('transfer_active',$this->doorGets->Form->i)) {
+            //             $this->doorGets->Form->i['transfer_active'] = 0;
+            //         }
+
+            //         $dDefault['transfer_active']    = $this->doorGets->Form->i['transfer_active'];
+            //         $dDefault['transfer_tinymce']    = $this->doorGets->Form->i['transfer_tinymce'];
+            //         $this->doorGets->dbQU(1,$dDefault,'_website');
+
+            //         FlashInfo::set($this->doorGets->__("Vos informations ont bien été mises à jour"));
+            //         header("Location:".$_SERVER['REQUEST_URI']); exit();
+
+            //     }
+            //     break;
+
+            // case 'check':
+                 
+            //     if (!empty($this->doorGets->Form->i) ) {
+
+            //         $this->doorGets->checkMode();
+
+            //         if (!array_key_exists('check_active',$this->doorGets->Form->i)) {
+            //             $this->doorGets->Form->i['check_active'] = 0;
+            //         }
+
+            //         $dDefault['check_active']    = $this->doorGets->Form->i['check_active'];
+            //         $dDefault['check_tinymce']    = $this->doorGets->Form->i['check_tinymce'];
+            //         $this->doorGets->dbQU(1,$dDefault,'_website');
+
+            //         FlashInfo::set($this->doorGets->__("Vos informations ont bien été mises à jour"));
+            //         header("Location:".$_SERVER['REQUEST_URI']); exit();
+
+            //     }
+            //     break;
+
+            // case 'cash':
+                 
+            //     if (!empty($this->doorGets->Form->i) ) {
+
+            //         $this->doorGets->checkMode();
+
+            //         if (!array_key_exists('cash_active',$this->doorGets->Form->i)) {
+            //             $this->doorGets->Form->i['cash_active'] = 0;
+            //         }
+
+            //         $dDefault['cash_active']    = $this->doorGets->Form->i['cash_active'];
+            //         $dDefault['cash_tinymce']    = $this->doorGets->Form->i['cash_tinymce'];
+            //         $this->doorGets->dbQU(1,$dDefault,'_website');
+
+            //         FlashInfo::set($this->doorGets->__("Vos informations ont bien été mises à jour"));
+            //         header("Location:".$_SERVER['REQUEST_URI']); exit();
+
+            //     }
+            //     break;
             
-            case 'siteweb':
+            case 'saas':
                 
                 if (!empty($this->doorGets->Form->i) ) {
                     
@@ -116,17 +232,51 @@ class ConfigurationRequest extends doorGetsUserRequest{
                     
                     // vérification champ vide
                     foreach($this->doorGets->Form->i as $k=>$v) {
-                        if (
-                            empty($v)
-                            && $k !== 'statut'
-                            && $k !== 'statut_ip'
-                            && $k !== 'statut_tinymce'
-                            && $k !== 'id_facebook'
-                            && $k !== 'id_disqus'
-                        ) {
-                            
+                        if (empty($v) && $k !== 'saas_name') {
+                            $this->doorGets->Form->e['configuration_saas_'.$k] = 'ok';
+                        }
+                    }
+                    
+                    $dDefault = array(
+                        'saas_host'             => $this->doorGets->Form->i['saas_host'],
+                        'saas_user'             => $this->doorGets->Form->i['saas_user'],
+                        'saas_password'         => $this->doorGets->Form->i['saas_password'],
+                        'saas_archive'          => $this->doorGets->Form->i['saas_archive'],
+                        'saas_position'         => $this->doorGets->Form->i['saas_position'],
+                    );
+
+                    if (empty($this->doorGets->Form->e)) {
+                        
+                        $this->doorGets->dbQU(1,$dDefault,'_website');
+
+                        FlashInfo::set($this->doorGets->__("Vos informations ont bien été mises à jour"));
+                        header("Location:".$_SERVER['REQUEST_URI']); exit();
+                    }
+                    
+                    FlashInfo::set($this->doorGets->__("Veuillez remplir correctement le formulaire"),"error");
+                    
+                }
+                break;  
+
+            case 'siteweb':
+                
+                if (!empty($this->doorGets->Form->i) ) {
+                    
+                    $this->doorGets->checkMode();
+                    
+                    $excludedFields = array(
+                        'statut','statut_ip','statut_tinymce','id_facebook','id_disqus','id_disqus',
+                        'signature_tinymce','cgu_tinymce','privacy_tinymce','terms_tinymce'
+                        //'shipping_free_active','shipping_free_info',
+                        //'shipping_slow_active','shipping_slow_amount','shipping_slow_info',
+                        //'shipping_fast_active','shipping_fast_amount','shipping_fast_info',
+                        //'store_vat',
+                    );
+                    
+                    // vérification champ vide
+                    foreach($this->doorGets->Form->i as $k=>$v) {
+                        if (empty($v) && !in_array($k,$excludedFields)) {
                             $this->doorGets->Form->e['configuration_siteweb_'.$k] = 'ok';
-                            
                         }
                     }
                     
@@ -146,6 +296,7 @@ class ConfigurationRequest extends doorGetsUserRequest{
                         $dDefault['id_disqus']   = $this->doorGets->Form->i['id_disqus'];
                         
                         $dDefaultTraduction = array(
+                            //'currency'          => $this->doorGets->Form->i['currency'],
                             'title'             => $this->doorGets->Form->i['title'],
                             'slogan'            => $this->doorGets->Form->i['slogan'],
                             'description'       => $this->doorGets->Form->i['description'],
@@ -153,7 +304,22 @@ class ConfigurationRequest extends doorGetsUserRequest{
                             'year'              => $this->doorGets->Form->i['year'],
                             'keywords'          => $this->doorGets->Form->i['keywords'],
                             'statut_tinymce'    => $this->doorGets->Form->i['statut_tinymce'],
+                            'signature_tinymce' => $this->doorGets->Form->i['signature_tinymce'],
+                            'cgu_tinymce'       => $this->doorGets->Form->i['cgu_tinymce'],
+                            'terms_tinymce'     => $this->doorGets->Form->i['terms_tinymce'],
+                            'privacy_tinymce'   => $this->doorGets->Form->i['privacy_tinymce'],
                         );
+
+                        // $dDefaultTraduction['store_vat']              = (float) $this->doorGets->Form->i['store_vat'];
+                        // $dDefaultTraduction['shipping_free_info']     = $this->doorGets->Form->i['shipping_free_info'];
+                        // $dDefaultTraduction['shipping_free_active']   = $this->doorGets->Form->i['shipping_free_active'];
+                        // $dDefaultTraduction['shipping_slow_info']     = $this->doorGets->Form->i['shipping_slow_info'];
+                        // $dDefaultTraduction['shipping_slow_amount']   = $this->doorGets->Form->i['shipping_slow_amount'];
+                        // $dDefaultTraduction['shipping_slow_active']   = $this->doorGets->Form->i['shipping_slow_active'];
+                        // $dDefaultTraduction['shipping_fast_info']     = $this->doorGets->Form->i['shipping_fast_info'];
+                        // $dDefaultTraduction['shipping_fast_amount']   = $this->doorGets->Form->i['shipping_fast_amount'];
+                        // $dDefaultTraduction['shipping_fast_active']   = $this->doorGets->Form->i['shipping_fast_active'];
+                        
 
                         $this->doorGets->dbQU(1,$dDefault,'_website');
                         $this->doorGets->dbQU($lgTraduction,$dDefaultTraduction,'_website_traduction','langue');
@@ -262,6 +428,8 @@ class ConfigurationRequest extends doorGetsUserRequest{
                         
                         FlashInfo::set($this->doorGets->__("Vos informations ont bien été mises à jour"));
                         header("Location:".$_SERVER['REQUEST_URI']); exit();
+                    } else {
+                        FlashInfo::set($this->doorGets->__("Veuillez remplir correctement le formulaire"),'error');
                     }
                 
                 }
@@ -280,6 +448,28 @@ class ConfigurationRequest extends doorGetsUserRequest{
                         
                         FlashInfo::set($this->doorGets->__("Vos informations ont bien été mises à jour"));
                         header("Location:".$_SERVER['REQUEST_URI']); exit();
+                    } else {
+                        FlashInfo::set($this->doorGets->__("Veuillez remplir correctement le formulaire"),'error');
+                    }
+                
+                }
+
+                // Update logo auth image, png image only.
+                if (isset($_FILES['configuration_media_logo_mail_img_logo'])) {
+                    
+                    $this->doorGets->checkMode();
+                    
+                    if (
+                        $_FILES['configuration_media_logo_mail_img_logo']['type'] === 'image/png'
+                   ) {
+                        list($fichier_larg, $fichier_haut, $fichier_type)= getimagesize($_FILES['configuration_media_logo_mail_img_logo']['tmp_name']);
+                        $newFileName = BASE_IMG.'logo_mail.png';
+                        @copy($_FILES['configuration_media_logo_mail_img_logo']['tmp_name'],$newFileName);
+                        
+                        FlashInfo::set($this->doorGets->__("Vos informations ont bien été mises à jour"));
+                        header("Location:".$_SERVER['REQUEST_URI']); exit();
+                    } else {
+                        FlashInfo::set($this->doorGets->__("Veuillez remplir correctement le formulaire"),'error');
                     }
                 
                 }
@@ -289,18 +479,20 @@ class ConfigurationRequest extends doorGetsUserRequest{
                 if (isset($_FILES['configuration_media_logo_icone_logo'])) {
                     
                     $this->doorGets->checkMode();
-                    
                     if (
                         $_FILES['configuration_media_logo_icone_logo']['type'] === 'image/x-icon'
-                   ) {
+                        || $_FILES['configuration_media_logo_icone_logo']['type'] === 'image/vnd.microsoft.icon'
+                    ) {
                         
                         list($fichier_larg, $fichier_haut, $fichier_type)= getimagesize($_FILES['configuration_media_logo_icone_logo']['tmp_name']);
                         $newFileName = BASE.'favicon.ico';
-                        @copy($_FILES['configuration_media_logo_icone_logo']['tmp_name'],$newFileName);
+                        copy($_FILES['configuration_media_logo_icone_logo']['tmp_name'],$newFileName);
                         
                         FlashInfo::set($this->doorGets->__("Vos informations ont bien été mises à jour"));
                         header("Location:".$_SERVER['REQUEST_URI']); exit();
                         
+                    } else {
+                        FlashInfo::set($this->doorGets->__("Veuillez remplir correctement le formulaire"),'error');
                     }
                 
                 }
@@ -334,12 +526,15 @@ class ConfigurationRequest extends doorGetsUserRequest{
                         
                         if ($iForm['cache'] == 1) { $val_cache = 'true'; }
                         
+                        $saasEnv = (SAAS_ENV) ? 'true' : 'false';
+                        $activeDemo = (ACTIVE_DEMO) ? 'true' : 'false';
+                        
                         $iOut = '';
                         $iOut .= "<?php".PHP_EOL;
                         
-                        $iOut .= "define('SAAS_ENV',".SAAS_ENV.");".PHP_EOL;
+                        $iOut .= "define('SAAS_ENV',".$saasEnv.");".PHP_EOL;
                         $iOut .= "define('ACTIVE_CACHE',".$val_cache.");".PHP_EOL;
-                        $iOut .= "define('ACTIVE_DEMO',".ACTIVE_DEMO.");".PHP_EOL;
+                        $iOut .= "define('ACTIVE_DEMO',".$activeDemo.");".PHP_EOL;
                         $iOut .= "define('KEY_SECRET','".KEY_SECRET."');".PHP_EOL;
                         $iOut .= "define('KEY_DOORGETS','".KEY_DOORGETS."');".PHP_EOL;
                         
@@ -382,6 +577,7 @@ class ConfigurationRequest extends doorGetsUserRequest{
                         $iOut .= "define('SQL_LOGIN','".SQL_LOGIN."');".PHP_EOL;
                         $iOut .= "define('SQL_PWD','".SQL_PWD."');".PHP_EOL;
                         $iOut .= "define('SQL_DB','".SQL_DB."');".PHP_EOL;
+                        $iOut .= "define('SQL_VERSION','".SQL_VERSION."');".PHP_EOL;
                         
                         $iOut .= "require_once CONFIGURATION.'includes.php';".PHP_EOL;
                         
@@ -439,22 +635,161 @@ class ConfigurationRequest extends doorGetsUserRequest{
             
             case 'adresse':
                 
+                $allAddress = $this->doorGets->configWeb['addresses'];
+                $iAddress = count($allAddress);
+                if ($iAddress > 0) {
+                    $iAddress--;
+                    for($i=0;$i<3;$i++){
+
+                        if (!empty($this->doorGets->Form['remove_'.$i]->i)) {
+                            unset($allAddress[$i]);
+                            sort($allAddress);
+                            $allAddress = serialize($allAddress);
+                                
+                            $dataUp = array('addresses'=>$allAddress);
+                            FlashInfo::set($this->doorGets->__("Vos informations ont bien été mises à jour"));
+                            $this->doorGets->dbQU(1,$dataUp,'_website');
+                            //$this->doorGets->clearDBCache();
+
+                            header("Location:".$_SERVER['REQUEST_URI']); exit();
+                        }
+                        if (!empty($this->doorGets->Form[$i]->i)) {
+                            
+                            $this->doorGets->checkMode();
+                            
+                            $required = array(
+                                'title',
+                                'country',
+                                'city',
+                                'zipcode',
+                                'address'
+                            );
+                            foreach($this->doorGets->Form[$i]->i as $k=>$v) {
+                                $this->doorGets->Form[$i]->i[$k] = filter_input(INPUT_POST,'configuration_adresse_'.$i.'_'.$k,FILTER_SANITIZE_STRING);
+                                if (empty($v) && in_array($k,$required)) {
+                                    $this->doorGets->Form[$i]->e['configuration_adresse_'.$i.'_'.$k] = 'ok';
+                                }
+                            }
+                            if (empty($this->doorGets->Form[$i]->e)) {
+                                
+                                $data = $this->doorGets->Form[$i]->i;
+                                $dataToSave = array(
+                                    'id_address' => $data['id_address'],
+                                    'title' => $data['title'],
+                                    'country' => $data['country'],
+                                    'region' => $data['region'],
+                                    'city' => $data['city'],
+                                    'zipcode' => $data['zipcode'],
+                                    'address' => $data['address'],
+                                    'phone' => $data['phone'],
+                                    'email' => $data['email'],
+                                    'url' => $data['address'].', '.$data['zipcode'].', '.$data['city'].', '.$data['region'].', '.$data['country']
+                                );
+                                
+                                $allAddress[$i] = $dataToSave;
+                                $allAddress = serialize($allAddress);
+                                
+                                $dataUp = array('addresses'=>$allAddress);
+                                FlashInfo::set($this->doorGets->__("Vos informations ont bien été mises à jour"));
+                                $this->doorGets->dbQU(1,$dataUp,'_website');
+                                //$this->doorGets->clearDBCache();
+
+                                header("Location:".$_SERVER['REQUEST_URI']); exit();
+                                
+                            }
+                            
+                            FlashInfo::set($this->doorGets->__("Veuillez saisir correctement votre adresse e-mail"),"error");
+                        }
+                    }
+                }
+                
+
+                if (!empty($this->doorGets->Form['new']->i)) {
+                    
+                    $this->doorGets->checkMode();
+                    
+                    $required = array(
+                        'title',
+                        'country',
+                        'city',
+                        'zipcode',
+                        'address'
+                    );
+                    foreach($this->doorGets->Form['new']->i as $k=>$v) {
+                        $this->doorGets->Form['new']->i[$k] = filter_input(INPUT_POST,'configuration_adresse_'.$k,FILTER_SANITIZE_STRING);
+                        if (empty($v) && in_array($k,$required)) {
+                            $this->doorGets->Form['new']->e['configuration_adresse_'.$k] = 'ok';
+                        }
+                    }
+                    if (empty($this->doorGets->Form['new']->e)) {
+                        
+                        $data = $this->doorGets->Form['new']->i;
+                        $dataToSave = array(
+                            'id_address' => $data['id_address'],
+                            'title' => $data['title'],
+                            'country' => $data['country'],
+                            'region' => $data['region'],
+                            'city' => $data['city'],
+                            'zipcode' => $data['zipcode'],
+                            'address' => $data['address'],
+                            'phone' => $data['phone'],
+                            'email' => $data['email'],
+                            'url' => $data['address'].', '.$data['zipcode'].', '.$data['city'].', '.$data['region'].', '.$data['country']
+                        );
+                        if (is_array($this->doorGets->configWeb['addresses'])) {
+                            $allAddress = $this->doorGets->configWeb['addresses'];
+                            array_push($allAddress,$dataToSave);
+                        } else {
+                            $allAddress = array($dataToSave);
+                        }
+
+                        $allAddress = serialize($allAddress);
+                        
+                        $dataUp = array('addresses'=>$allAddress);
+                        FlashInfo::set($this->doorGets->__("Vos informations ont bien été mises à jour"));
+                        $this->doorGets->dbQU(1,$dataUp,'_website');
+                        //$this->doorGets->clearDBCache();
+
+                        header("Location:".$_SERVER['REQUEST_URI']); exit();
+                        
+                    }
+                    
+                    FlashInfo::set($this->doorGets->__("Veuillez saisir correctement votre adresse e-mail"),"error");
+                }
+                
+                break;
+
+            case 'email':
+                
                 if (
                     !empty($this->doorGets->Form->i)
-               ) {
+                ) {
                     
                     $this->doorGets->checkMode();
                     
                     foreach($this->doorGets->Form->i as $k=>$v) {
-                        $this->doorGets->Form->i[$k] = filter_input(INPUT_POST,'configuration_adresse_'.$k,FILTER_SANITIZE_STRING);
+                        $this->doorGets->Form->i[$k] = filter_input(INPUT_POST,'configuration_email_'.$k,FILTER_SANITIZE_STRING);
                     }
-                    
-                    $var = $this->doorGets->Form->i['email'];
-                    $isEmail = filter_var($var, FILTER_VALIDATE_EMAIL);
-                    if (empty($isEmail)) { $this->doorGets->Form->e['configuration_adresse_email'] = 'ok'; }
+                    $emailsToSave = '';
+                    $emails = $this->doorGets->_toArray($this->doorGets->Form->i['email'],',','');
+                    if (!empty($emails)) {
+                        foreach ($emails as $key => $email) {
+                            $isEmail = filter_var($email, FILTER_VALIDATE_EMAIL);
+                            if (empty($isEmail)) {
+                                unset($emails[$key]);
+                            }
+                        }
+                    }
+
+                    if (!empty($emails)) { 
+                        $emailsToSave = $this->doorGets->_toArrayInv($emails,',','');
+                     } else {
+                        $this->doorGets->Form->e['configuration_adresse_email'] = 'ok'; 
+                    }
                     
                     if (empty($this->doorGets->Form->e)) {
                         
+                        $this->doorGets->Form->i['email'] = $emailsToSave;
                         FlashInfo::set($this->doorGets->__("Vos informations ont bien été mises à jour"));
                         $this->doorGets->dbQU(1,$this->doorGets->Form->i,'_website','id');
                         //$this->doorGets->clearDBCache();
@@ -792,6 +1127,11 @@ class ConfigurationRequest extends doorGetsUserRequest{
         }
         
         $dir = BASE.'cache/template';
+        if (is_dir($dir)) {
+            $this->destroy_dir($dir);
+        }
+
+        $dir = BASE.'cache/_tempDatabase';
         if (is_dir($dir)) {
             $this->destroy_dir($dir);
         }

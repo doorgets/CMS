@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -101,15 +101,15 @@
                
                 [{?(isset($_GET['categorie'])):}]
                     <div class="alert alert-info">
-                        [{!$this->doorGets->__("Il n'y a actuellement aucun partenaire pour cette catégorie")!}]
+                        <i class="fa fa-exclamation-triangle"></i> [{!$this->doorGets->__("Il n'y a actuellement aucun partenaire pour cette catégorie")!}]
                     </div>
                 [{???(!empty($aGroupeFilter)):}]
                     <div class="alert alert-info">
-                        [{!$this->doorGets->__("Aucun partenaire trouvé pour votre recherche");}]
+                        <i class="fa fa-exclamation-triangle"></i> [{!$this->doorGets->__("Aucun partenaire trouvé pour votre recherche");}]
                     </div>
                 [??]
                     <div class="alert alert-info">
-                        [{!$this->doorGets->__("Il n'y a actuellement aucun partenaire")!}] 
+                        <i class="fa fa-exclamation-triangle"></i> [{!$this->doorGets->__("Il n'y a actuellement aucun partenaire")!}] 
                     </div>
                 [?]
                 

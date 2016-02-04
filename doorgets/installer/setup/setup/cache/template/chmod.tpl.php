@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 20, February 2014
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -30,11 +30,14 @@
     
 ******************************************************************************
 ******************************************************************************/
+
+
+
 ?>
 <div class="doorGets-content-wrapper">
     <div class="doorGets-top-title-content">
-            doorGets 7.0 <small>Free OpenSource CMS PHP/MySQL</small>
-        </div>
+        <img src="<?php echo BASE_IMG; ?>doorgets.png">
+    </div>
     <div class="doorGets-title-content">
         2/5 - <?php echo $doorgets->l("Vérification de vos droits d'écriture"); ?>
     </div>
@@ -50,6 +53,11 @@
         <div class="info-no-ok">
             <?php echo $doorgets->l("Votre dossier n'a pas les droits d'écriture..."); ?>
         </div>
+        <div class="separateur-tb"></div>
+        Solution :
+        <ul style="text-align:left;background: #000000;color: #FFFFFF;padding:0px;font-size: 14px;">
+            <li style="padding:10px;font-size: 14px;font-weight: 600;">sudo chmod -R 777 <?php echo getcwd(); ?></li>
+        </ul>
         <div class="separateur-tb"></div>
     <?php endif;  echo $doorgets->getHtmlGoBack(); ?>
 </div>

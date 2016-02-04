@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -31,6 +31,13 @@
 ******************************************************************************
 ******************************************************************************/
 
+function vdump($var){
+    echo '<pre>';
+    var_dump($var);
+    exit();
+}
+
+
 
 class doorgetsFunctions{
     
@@ -45,30 +52,33 @@ class doorgetsFunctions{
         // check if is user
         if ($isAdminPanel && empty($this->user)) {  header('Location:./');exit(); }
 
-        if (SAAS_ENV || ACTIVE_DEMO) {
-            $l = new Langue();
-            if (isset($this->thisController)) {
-                $l = $this->thisController;    
-            }
-        }
-
         // Check Size Folders
         if (SAAS_ENV) {
-
             $sizeFolders = $this->getTotalPathSize(BASE);
             if ( $sizeFolders > SAAS_SIZE_LIMIT) {
-                FlashInfo::set($l->l("Espace disque insuffisant"),'error'); 
+                FlashInfo::set($this->__("Espace disque insuffisant"),'error'); 
                 header('Location:'.$_SERVER['REQUEST_URI']);exit();
             }
         }
-        
+        // check if is demo mode
+        if (ACTIVE_DEMO) {
+            FlashInfo::set($this->__("Mode démo").', '.$this->__("Aucune modification n'est autorisée").' !','info');
+            header('Location:'.$_SERVER['REQUEST_URI']);exit();
+        }   
+    }
+
+    public function checkAjaxMode() {
 
         // check if is demo mode
         if (ACTIVE_DEMO) {
+            $response = array(
+                'code' => 404,
+                'data' => array('message'=>'Demo mode')
+            );
             
-            FlashInfo::set($l->l("Mode démo").', '.$l->l("Aucune modification n'est autorisée").' !','info');
-            header('Location:'.$_SERVER['REQUEST_URI']);exit();
-        }   
+            echo json_encode($response, JSON_FORCE_OBJECT);
+            exit();
+        }
     }
 
     public function clearDBCache() {
@@ -235,6 +245,28 @@ class doorgetsFunctions{
         return $this->getCountTable('_dg_comments',$filter,$userSqlCount);  
     }
     
+    public function getCountMessageNotRead() {
+        
+        $id_user = 0;
+        if (property_exists($this, 'user') && !is_null($this->user)) {
+            $id_user = $this->user['id'];
+        } elseif (property_exists($this, '_User')  && !is_null($this->_User) && array_key_exists('id',$this->_User)) {
+            $id_user = $this->_User['id'];
+        } 
+
+        if ($id_user === 0) {
+            return $id_user;
+        }
+
+        $filter = array(
+            
+            array('key'=>'readed','type'=>'=','value'=>'2'),
+            array('key'=>'id_user','type'=>'=','value'=>$id_user),
+        );
+        
+        return $this->getCountTable('_users_inbox',$filter);  
+    }
+
     public function getCountCommentNotRead() {
         
         $userSqlCount = ($this->getUserSqlCount()) ? ' AND '.$this->getUserSqlCount() : '';
@@ -275,6 +307,26 @@ class doorgetsFunctions{
         $userSqlCount = ($this->getUserSqlCount(true)) ? ' WHERE '.$this->getUserSqlCount(true) : '';
         
         return $this->getCountTable('_moderation',array(),$userSqlCount);  
+    }
+
+    public function getCountSupportNotRead() {
+        
+        $filter = array(
+            array('key'=>'readed_support','type'=>'=','value'=>'1'),
+        );
+        
+        return $this->getCountTable('_support',$filter);  
+    }
+
+    public function getCountUserSupportNotRead() {
+        
+        $filter = array(
+            
+            array('key'=>'readed_user','type'=>'=','value'=>'1'),
+            array('key'=>'id_user','type'=>'=','value'=>$this->user['id']),
+        );
+        
+        return $this->getCountTable('_support',$filter);  
     }
     
     public function loadUserCategories($module='',$userId) {
@@ -320,7 +372,7 @@ class doorgetsFunctions{
     public function loadCategories($module='') {
         
         $out = array(0=>'Choisir...');
-        $outs = $outIds = $outs_ = array();
+        $outs = $outIds = $outs_ = $outs__ = array();
         
         $Categories = $this->getCategories($module);
         if (!empty($Categories)) {
@@ -336,11 +388,18 @@ class doorgetsFunctions{
                 $outs_[$Categorie['uri']]['level']  = $Categorie['level'];
                 $outs_[$Categorie['uri']]['id']     = $Categorie['id'];
                 $outs_[$Categorie['uri']]['count']  = $iCategorie;
-                
+
+                $outs__[$Categorie['id']]['id']     = $Categorie['id'];
+                $outs__[$Categorie['id']]['name']   = $Categorie['name'];
+                $outs__[$Categorie['id']]['level']  = $Categorie['level'];
+                $outs__[$Categorie['id']]['uri']    = $Categorie['uri'];
+                $outs__[$Categorie['id']]['count']  = $iCategorie;
                 
             }
         }
+
         $this->categorieSimple_ = $outs_;
+        $this->categorieSimple__ = $outs__;
         $this->categorieSimple = $out;
         $this->categoriesIds = $outIds;
         return $outs;
@@ -608,7 +667,7 @@ class doorgetsFunctions{
             unset($value['groupe_traduction']);
             unset($value['groupe_traduction']);
             
-            $value['params'] = unserialize($value['params']);
+            $value['params'] = unserialize(base64_decode($value['params']));
             
             $out[$value['id_attribute']] = $value;
 
@@ -658,7 +717,7 @@ class doorgetsFunctions{
 
                     $isTraduction = $this->dbQS($traductions[$this->getLangueTradution()],'_users_groupes_traduction');
                     if ($isTraduction) {
-                        $out[$isContent[$i]['id']] = unserialize($isContent[$i]['attributes']);
+                        $out[$isContent[$i]['id']] = unserialize(base64_decode($isContent[$i]['attributes']));
                     }
                     
                 }
@@ -724,6 +783,7 @@ class doorgetsFunctions{
                         $out[$isAllContent[$i]['uri']]['title'] = $isTraduction['title'];
                         $out[$isAllContent[$i]['uri']]['uri'] = $isAllContent[$i]['uri'];
                         $out[$isAllContent[$i]['uri']]['id'] = $isAllContent[$i]['id'];
+                        $out[$isAllContent[$i]['uri']]['verification'] = ($isAllContent[$i]['register_verification'] == 1) ? true: false;
                     }
                     
                 }
@@ -759,11 +819,20 @@ class doorgetsFunctions{
         return $out;  
     }
     
-    public function loadGroupesOptionToSelect($table = '_dg_inbox',$key ='uri_module') {
+    public function loadGroupesOptionToSelect($table = '_dg_inbox',$key ='uri_module',$include = array()) {
         
         $out = array('--');
-        
-        $isContent = $this->dbQ("SELECT * FROM $table GROUP BY $key ");
+        $query = "SELECT * FROM $table GROUP BY $key ";
+        if (!empty($include)) {
+            $next = ' WHERE (';
+            foreach ($include as $field) {
+               $next .= " type = '$field' OR ";
+            }
+            $next = substr($next,0,-3);
+            $next .= ')';
+            $query = "SELECT * FROM $table $next GROUP BY $key ";
+        }
+        $isContent = $this->dbQ($query);
         
         $cContent = count($isContent);
         if ($cContent > 0) {
@@ -777,11 +846,25 @@ class doorgetsFunctions{
         return $out; 
     }
     
-    public function loadModules($with_type = false,$isUser = false) {
+    public function loadModules($with_type = false,$isUser = false, $onlyType = '') {
         
         $out = array();
-
-        $isContent = $this->dbQ("SELECT * FROM _modules  WHERE type != 'block' AND type != 'genform' ");
+        if (empty($onlyType)) {
+            $isContent = $this->dbQ("SELECT * FROM _modules  WHERE type != 'block' AND type != 'genform' AND type != 'carousel' AND type != 'survey' ");
+        } else {
+            if (is_array($onlyType) && !empty($onlyType)) {
+                $sql = ' (';
+                foreach ($onlyType as $type) {
+                    $sql .= " type = '$type' OR ";
+                }
+                $sql = substr($sql,0,-3);
+                $sql .= ') ';
+                $isContent = $this->dbQ("SELECT * FROM _modules  WHERE $sql ");
+            } else {
+                $isContent = $this->dbQ("SELECT * FROM _modules  WHERE type = '$onlyType' ");
+            }
+            
+        }
         $cContent = count($isContent);
 
         if ($cContent > 0) {
@@ -845,11 +928,57 @@ class doorgetsFunctions{
         $out = array();
 
         $out['blok']        = $this->loadModulesBlocks($isUser);
+        $out['carousel']    = $this->loadModulesCarousel($isUser);
         $out['genform']     = $this->loadModulesGenforms($isUser);
+        $out['survey']     = $this->loadModulesSurvey($isUser);
 
         return $out;
     }
     
+    public function loadModulesSurvey($isUser = false) {
+        
+        $out = array();
+        
+        $isContent = $this->dbQ("SELECT * FROM _modules  WHERE type = 'survey'  ");
+        
+        $cContent = count($isContent);
+        if ($cContent > 0) {
+
+            for($i=0;$i<$cContent;$i++) {
+                
+                $isModuleTrad = $this->dbQS($isContent[$i]['id'],'_modules_traduction','id_module'," AND langue = '".$this->myLanguage()."' LIMIT 1");
+                
+                if (!empty($isModuleTrad)) {
+
+                    if (!$isUser) {
+
+                        $out[$isContent[$i]['id']]['id']        = $isContent[$i]['id'];
+                        $out[$isContent[$i]['id']]['active']    = $isContent[$i]['active'];  
+                        $out[$isContent[$i]['id']]['uri']       = $isContent[$i]['uri'];
+                        $out[$isContent[$i]['id']]['type']      = $isContent[$i]['type'];
+                        $out[$isContent[$i]['id']]['label']     = $isModuleTrad['titre'];    
+                    
+                    }else{
+
+                        if (array_key_exists('liste_widget',$this->user) && in_array($isContent[$i]['id'], $this->user['liste_widget'])) {
+
+                            $out[$isContent[$i]['id']]['id']        = $isContent[$i]['id'];
+                            $out[$isContent[$i]['id']]['active']    = $isContent[$i]['active'];  
+                            $out[$isContent[$i]['id']]['uri']       = $isContent[$i]['uri'];
+                            $out[$isContent[$i]['id']]['type']      = $isContent[$i]['type'];
+                            $out[$isContent[$i]['id']]['label']     = $isModuleTrad['titre'];  
+
+                        }
+
+                    }
+                                        
+                }
+            }
+        }
+        
+        return $out;  
+    }
+
     public function loadModulesBlocks($isUser = false) {
         
         $out = array();
@@ -894,6 +1023,43 @@ class doorgetsFunctions{
         return $out;  
     }
     
+    public function loadModulesCarousel($isUser = false) {
+       
+       $out = array();
+       
+       $isContent = $this->dbQ("SELECT * FROM _modules  WHERE type = 'carousel'  ");
+       
+       $cContent = count($isContent);
+       if ($cContent > 0) {
+           for($i=0;$i<$cContent;$i++) {
+               
+               $isModuleTrad = $this->dbQS($isContent[$i]['id'],'_modules_traduction','id_module'," AND langue = '".$this->myLanguage()."' LIMIT 1");
+               if (!empty($isModuleTrad)) {
+                   
+                   if (!$isUser) {
+
+                       $out[$isContent[$i]['id']]['id']        = $isContent[$i]['id'];
+                       $out[$isContent[$i]['id']]['active']    = $isContent[$i]['active'];  
+                       $out[$isContent[$i]['id']]['uri']       = $isContent[$i]['uri'];
+                       $out[$isContent[$i]['id']]['type']      = $isContent[$i]['type'];
+                       $out[$isContent[$i]['id']]['label']     = $isModuleTrad['titre'];    
+                   
+                   }else{
+
+                       if (array_key_exists('liste_widget',$this->user) && in_array($isContent[$i]['id'], $this->user['liste_widget'])) {
+                           $out[$isContent[$i]['id']]['id']        = $isContent[$i]['id'];
+                           $out[$isContent[$i]['id']]['active']    = $isContent[$i]['active'];  
+                           $out[$isContent[$i]['id']]['uri']       = $isContent[$i]['uri'];
+                           $out[$isContent[$i]['id']]['type']      = $isContent[$i]['type'];
+                           $out[$isContent[$i]['id']]['label']     = $isModuleTrad['titre'];  
+                       }
+                   }                        
+               }
+           }
+       }
+       
+       return $out; 
+    }
     public function loadModulesGenforms($isUser = false) {
         
         $out = array();
@@ -939,17 +1105,22 @@ class doorgetsFunctions{
         
         $out = array();
         
+        $lgActuel = $this->getLangueTradution();
+
         $isContent = $this->dbQ("SELECT * FROM _modules WHERE active = 1 ");
         
         $cContent = count($isContent);
         if ($cContent > 0) {
             for($i=0;$i<$cContent;$i++) {
                 
-                $isModuleTrad = $this->dbQS($isContent[$i]['id'],'_modules_traduction','id_module'," AND langue = '".$this->myLanguage()."' LIMIT 1");
+                $lgGroupe = @unserialize($isContent[$i]['groupe_traduction']);
+                $idLgGroupe = $lgGroupe[$lgActuel];
+                $isModuleTrad = $this->dbQS($idLgGroupe,'_modules_traduction');
                 if (!empty($isModuleTrad)) {
-                    
+
                     $out[$isContent[$i]['uri']]['id']     = (int) $isContent[$i]['id'];
                     $out[$isContent[$i]['uri']]['type']   = $isContent[$i]['type'];
+                    $out[$isContent[$i]['uri']]['title']   = $isModuleTrad['titre'];
                     $out[$isContent[$i]['uri']]['is_home']   = (bool)$isContent[$i]['is_first'];
                     unset($isContent[$i]['extras']);
                     if($withAllData) {
@@ -1119,28 +1290,6 @@ class doorgetsFunctions{
         return $out;
     }
 
-    public function updateNewListToParent($table,$idContent,$idParent,$action =  'add') {
-
-        $isContent = $this->dbQS($idContent,$table);
-        if (!empty($isContent)) {
-        
-            $holdListe  = $isContent['liste_parent'];
-            $holdListe  = str_replace($idParent.',', '', $holdListe);
-            
-            $newListeParent = $holdListe;
-            
-            if ($action === 'add') {
-                
-                $newListeParent   = $holdListe.$idParent.',';
-                
-            }
-            
-            $data['liste_parent'] = $newListeParent;
-            
-            $this->dbQU($idContent,$data,$table);
-        }
-    }
-    
     public function getArrayForms($nameKey = 'yesno') {
         
         $array = array();
@@ -1150,6 +1299,13 @@ class doorgetsFunctions{
            0 => '--',
            1 => $this->l('Oui'),
            2 => $this->l('Non')
+            
+        );
+
+        $array['yn'] =  array(
+            
+           1 => $this->l('Oui'),
+           0 => $this->l('Non')
             
         );
         
@@ -1176,6 +1332,20 @@ class doorgetsFunctions{
            2 => $this->l('Désactiver')
             
         );
+
+        $array['content_activation'] =  array(
+            '' => '--',
+           1 => $this->l('Activer'),
+           2 => $this->l('Désactiver')
+            
+        );
+
+        $array['activation_mod'] =  array(
+            '' => '--',
+            0 => $this->l('Désactiver'),
+            1 => $this->l('Activer')
+            
+        );
         
         $array['activation'] =  array(
             
@@ -1186,7 +1356,23 @@ class doorgetsFunctions{
             4 => $this->l('En cours de rédaction')
             
         );
+
+        $array['product_activation'] =  array(
+            
+            0 => '--',
+            1 => $this->l('Inactive'),
+            2 => $this->l('Active'),
+            3 => $this->l('En attente de modération'),
+            4 => $this->l('En cours de création')
+            
+        );
         
+        $array['product_stock'] =  array(
+            '' => $this->l('Gérer le stock'),
+            'up' => $this->l('Augmenter le stock'),
+            'down' => $this->l('Diminuer le stock'),
+        );
+
         $array['comment_activation'] =  array(
             
             0 => '--',
@@ -1893,6 +2079,47 @@ class doorgetsFunctions{
         
         return $out;
     }
+
+    public function getUrlProfile($type = '',$value = '') {
+        
+        $out = '';
+        
+        if (empty($type) || empty($value)) { return $out; }
+        
+        switch($type) {
+            
+            case 'facebook':
+                $out = 'http://www.facebook.com/'.$value;   
+                break;
+            
+            case 'twitter':
+                $out = 'http://www.twitter.com/'.$value;   
+                break;
+            
+            case 'pinterest':
+                $out = 'https://www.pinterest.com/'.$value;   
+                break;
+            
+            case 'linkedin':
+                $out = 'http://www.linkedin.com/in/'.$value;  
+                break;
+            
+            case 'youtube':
+                $out = 'http://www.youtube.com/user/'.$value;   
+                break;
+            
+            case 'google':
+                $out = 'https://plus.google.com/u/0/'.$value;  
+                break;
+            
+            case 'myspace':
+                $out = 'http://www.myspace.com/'.$value;   
+                break;
+            
+        }
+        
+        return $out;
+    }
     
     public function getImageSkin($type = '') {
         
@@ -1943,14 +2170,14 @@ class doorgetsFunctions{
     public function varDumpArray(&$array = array(),$removedKeys = array()) {
 
         $return = '$array = array('."<br />";
-
+        
         if (is_array($array)) {
             foreach ($array as $key => $value) {
                 if (!array_key_exists($key, $removedKeys)) {
                     (is_numeric($key))? $k = $key : $k = "'$key'";
                     (is_numeric($value))? $v = $value : $v = "'$value'";
 
-                    $return .= $k.' => $this->doorGets->Form->i['.$k."],<br />";  
+                    $return .= $k.' => $this->doorGets->Form->i['.$k."],<br />"; 
                 }
             }
         }
@@ -1960,7 +2187,42 @@ class doorgetsFunctions{
         return $return;
     }
 
-    public function _toArray($list,$delimiter = ',') {
+    public function varDumpArrayToTable(&$array = array(),$removedKeys = array()) {
+
+        $return = "<br />";
+        
+        if (is_array($array)) {
+            foreach ($array as $key => $value) {
+                if (!array_key_exists($key, $removedKeys)) {
+                    (is_numeric($key))? $k = $key : $k = "$key";
+                    (is_numeric($value))? $v = $value : $v = "'$value'";
+
+                    $return .= "`$k` varchar(255) DEFAULT NULL, <br />";  
+                }
+            }
+        }
+
+        return $return;
+    }
+    
+    public function _cleanPHP($var){
+        
+        $phpOpen = '[[php/o]]';
+        $phpClose = '[[php/c]]';
+        
+        $var = str_replace(";?",$phpOpen,$var);
+        $var = str_replace("?&",$phpClose,$var);
+        $var = html_entity_decode($var);
+        $var = str_replace($phpOpen,"; ?",$var); 
+        $var = str_replace($phpClose,"? &",$var); 
+        
+        // $var = str_replace('&lt;','<',$var);
+        // $var = str_replace('&gt;','>;',$var);
+        //vdump($var);
+        return $var;
+    }
+
+    public function _toArray($list,$delimiter = ',',$prefix = '#') {
         
         $out = array();
         $ListeArray = array();
@@ -1972,20 +2234,20 @@ class doorgetsFunctions{
 
         foreach ($ListeArray as $key => $value) {
             if ($value !== '') {
-                $out[$key] = trim($value);
+                $out[$key] = trim(str_replace($prefix, '', $value));
             }
         }
         
         return $out;
     }
 
-    public function _toArrayInv($listeArray,$delimiter = ',') {
+    public function _toArrayInv($listeArray,$delimiter = ',',$prefix = '#') {
         
         $out = '';
         
         if (is_array($listeArray)) {
             foreach ($listeArray as $value) {
-                $out .= $value.$delimiter;
+                $out .= $prefix.$value.$delimiter;
             }
         }
         
@@ -2002,7 +2264,7 @@ class doorgetsFunctions{
             $ListeArray = explode(',',$list); 
         }
         foreach ($ListeArray as $key => $value) {
-            $value = trim($value);
+            $value = trim(str_replace('#', '', $value));
             $vKey = strstr($value,'|',true);
             $vValue = str_replace('|','',strstr($value,'|'));
             if (!empty($value)) {
@@ -2011,6 +2273,28 @@ class doorgetsFunctions{
         }
         
         return $out;
+    }
+
+    public function updateNewListToParent($table,$idContent,$idParent,$action =  'add') {
+
+        $isContent = $this->dbQS($idContent,$table);
+        if (!empty($isContent)) {
+        
+            $holdListe  = $isContent['liste_parent'];
+            $holdListe  = str_replace('#'.$idParent.',', '', $holdListe);
+            
+            $newListeParent = $holdListe;
+            
+            if ($action === 'add') {
+                
+                $newListeParent   = $holdListe.'#'.$idParent.',';
+                
+            }
+            
+            $data['liste_parent'] = $newListeParent;
+            
+            $this->dbQU($idContent,$data,$table);
+        }
     }
     
     public function _genKey($t) {
@@ -2046,9 +2330,10 @@ class doorgetsFunctions{
         return $randkey;
     }
     
-    public function _trackMe($idUser) {
+    public function _trackMe($idUser,$idGroup) {
         
         $dataTrack['id_user']       = $idUser;
+        $dataTrack['id_groupe']     = $idGroup;
         $dataTrack['id_session']    = session_id();
         $dataTrack['ip_session']    = $_SERVER['REMOTE_ADDR'];
         $dataTrack['url_page']      = $_SERVER['REQUEST_URI'];
@@ -2137,8 +2422,10 @@ class doorgetsFunctions{
     public function _truncate($string,$lenMax = 100) {
         $len = strlen($string);
         if ($len > $lenMax - 1) {
-            $string = substr(strip_tags($string),0,$lenMax).'...';
+            $string = substr(strip_tags($string),0,$lenMax);
+            $string = substr($string,0,strrpos($string," ")).'...';
         }
+
         return $string;
     }
     
@@ -2158,9 +2445,9 @@ class doorgetsFunctions{
                 case 'tag-title':
                     
                     if ($data[$i]['active'] === 'yes') {
-                        $out .= '<div class="row"><div class="col-xs-12">';
+                        $out .= '<div class="col-xs-12">';
                         $out .= '<'.$data[$i]['filtre'].' class="'.$data[$i]['css'].'">'.$data[$i]['label'].'</'.$data[$i]['filtre'].'>';
-                        $out .= '</div></div>';                        
+                        $out .= '</div>';                        
                     }
 
                     break;
@@ -2168,9 +2455,9 @@ class doorgetsFunctions{
                 case 'tag-quotte':
                     
                     if ($data[$i]['active'] === 'yes') {
-                        $out .= '<div class="row"><div class="col-xs-12">';
+                        $out .= '<div class="col-xs-12">';
                         $out .= '<blockquote class="'.$data[$i]['css'].'">'.$data[$i]['label'].'</blockquote>';
-                        $out .= '</div></div>';                        
+                        $out .= '</div>';                        
                     }
 
                     break;
@@ -2178,9 +2465,9 @@ class doorgetsFunctions{
                 case 'tag-separateur':
                     
                     if ($data[$i]['active'] === 'yes') {
-                        $out .= '<div class="row"><div class="col-xs-12">';
+                        $out .= '<div class="col-xs-12">';
                         $out .= '<hr class="'.$data[$i]['css'].'" />';
-                        $out .= '</div></div>';                        
+                        $out .= '</div>';                        
                     }
 
                     break;
@@ -2188,10 +2475,10 @@ class doorgetsFunctions{
                 case 'text':
                     
                     if ($data[$i]['active'] === 'yes') {
-                        $out .= '<div class="row"><div class="col-xs-12">';
+                        $out .= '<div class="col-xs-12">';
                         $out .= '<div class="input-group '.$data[$i]['css'].'">';
                         $out .= $form->input($data[$i]['label'].$valObli.' <div class="in-label"></div> ',$data[$i]['value'],'text','','form-control '.$data[$i]['css']);
-                        $out .= '<small>'.$data[$i]['info'].'</small></div></div></div>';                        
+                        $out .= '<small>'.$data[$i]['info'].'</small></div></div>';                        
                     }
 
                     break;
@@ -2199,10 +2486,10 @@ class doorgetsFunctions{
                 case 'textarea':
                     
                     if ($data[$i]['active'] === 'yes') {
-                        $out .= '<div class="row"><div class="col-xs-12">';
+                        $out .= '<div class="col-xs-12">';
                         $out .= '<div class="input-group '.$data[$i]['css'].'">';
                         $out .= $form->textarea($data[$i]['label'].$valObli.' <div class="in-label"></div> ',$data[$i]['value'],'','form-control '.$data[$i]['css']);
-                        $out .= '<small>'.$data[$i]['info'].'</small></div></div></div>';
+                        $out .= '<small>'.$data[$i]['info'].'</small></div></div>';
                     }
                     break;
                 
@@ -2216,10 +2503,10 @@ class doorgetsFunctions{
                                 $r[$v] = trim($v);
                             }
                         }
-                        $out .= '<div class="row"><div class="col-xs-12"><div class="input-group '.$data[$i]['css'].'">';
+                        $out .= '<div class="col-xs-12"><div class="input-group '.$data[$i]['css'].'">';
                         $out .= '';
                         $out .= $form->select($data[$i]['label'].$valObli.'<div class="in-label"></div> ',$data[$i]['value'],$r,'form-control '.$data[$i]['css']);
-                        $out .= '<small>'.$data[$i]['info'].'</small></div></div></div>';
+                        $out .= '<small>'.$data[$i]['info'].'</small></div></div>';
                     }
                     break;
                 
@@ -2227,16 +2514,16 @@ class doorgetsFunctions{
                     
                     if ($data[$i]['active'] === 'yes') {
                         $e = explode(',',$data[$i]['liste']);
-                        $out .= '<div class="row"><div class="col-xs-12"><div class="input-group '.$data[$i]['css'].'">';
+                        $out .= '<div class="col-xs-12"><div class="input-group '.$data[$i]['css'].'">';
                         $out .= $form->checkbox($data[$i]['label'].$valObli,$data[$i]['value'],1,'','checkbox-inline');
-                        $out .= '<small>'.$data[$i]['info'].'</small></div></div></div>';
+                        $out .= '<small>'.$data[$i]['info'].'</small></div></div>';
                     }
                     break;
                 
                 case 'radio':
                     
                     if ($data[$i]['active'] === 'yes') {
-                        $out .= '<div class="row"><div class="col-xs-12"><div class="input-group '.$data[$i]['css'].'">';
+                        $out .= '<div class="col-xs-12"><div class="input-group '.$data[$i]['css'].'">';
                         $e = explode(',',$data[$i]['liste']);
                         $out .= '<label>'.$data[$i]['label'].$valObli.'</label>';
                         foreach($e as $v) {
@@ -2245,16 +2532,16 @@ class doorgetsFunctions{
                                 $out .= $form->radio($v,$data[$i]['value'],$v,'','radio-inline');
                             }
                         }
-                        $out .= '<small>'.$data[$i]['info'].'</small></div></div></div>';
+                        $out .= '<small>'.$data[$i]['info'].'</small></div></div>';
                     }
                     break;
                 
                 case 'file':
                     
                     if ($data[$i]['active'] === 'yes') {
-                        $out .= '<div class="row"><div class="col-xs-12"><div class="input-group '.$data[$i]['css'].'">';
+                        $out .= '<div class="col-xs-12"><div class="input-group '.$data[$i]['css'].'">';
                         $out .= $form->file($data[$i]['label'].$valObli,$data[$i]['value']);
-                        $out .= '<small>'.$data[$i]['info'].'</small></div></div></div>';
+                        $out .= '<small>'.$data[$i]['info'].'</small></div></div>';
                     }
                     break;
             }
@@ -2424,7 +2711,7 @@ class doorgetsFunctions{
         $lgActuel       = $this->getLangueTradution();
         $moduleInfos    = $this->moduleInfos($this->Uri,$lgActuel);
         
-        (in_array($moduleInfos['id'], $User['liste_module_modo'])) ? $is_modo = true : $is_modo = false;
+        $is_modo = (in_array($moduleInfos['id'], $User['liste_module_modo']))?true:false;
         
         $sqlUserOther       = '';
         if ($is_modo) {
@@ -2721,7 +3008,9 @@ class doorgetsFunctions{
 
     public function redirectToErrorHeader() {
 
-        header("HTTP/1.0 404 Not Found");
+        header('Status : 404 Not Found');
+        header('HTTP/1.0 404 Not Found');
+        include BASE.'404.php';
         exit();
 
     }
@@ -2748,7 +3037,7 @@ class doorgetsFunctions{
                 
                 $isUriExist = $this->dbQS($_uri,$table,'uri');
 
-                if (is_array($content) && array_key_exists('uri', $content) && $content['uri'] === $uri) {
+                if (is_array($content) && array_key_exists('uri', $content) && $content['uri'] === $_uri) {
                     $isMyContent = true;
                 } 
                 if ( !empty($isUriExist) && $isMyContent) {
@@ -3012,7 +3301,7 @@ class doorgetsFunctions{
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -3056,7 +3345,7 @@ require_once ROUTER.'websiteUserRouter.php';".PHP_EOL;
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -3207,7 +3496,7 @@ require_once ROUTER.'websiteUserRouter.php';".PHP_EOL;
                 
                 $profile['liste_enfant']                  =  $this->_toArray($userDataGroupe['liste_enfant']);
                 
-                $profile['attributes']                    =  @unserialize($userDataGroupe['attributes']);
+                $profile['attributes']                    =  unserialize(base64_decode($userDataGroupe['attributes']));
                 
                 $profile['editor_group']                  = array('-- '.$this->__('Aucun').' --');
                 
@@ -3221,6 +3510,17 @@ require_once ROUTER.'websiteUserRouter.php';".PHP_EOL;
                 if (!empty($userDataGroupe['editor_tinymce'])) {
 
                     $profile['editor_group']['editor_tinymce']    = 'editor_tinymce';
+                }
+
+                if (empty($userDataGroupe['saas_options'])) {
+                    $profile['saas_options'] = array(
+                        'saas_add' => false,
+                        'saas_delete' => false,
+                        'saas_limit' => 0,
+                        'saas_date_end' => 0,
+                    );
+                } else {
+                    $profile['saas_options'] = @unserialize($userDataGroupe['saas_options']);
                 }
             }
         }
@@ -3387,6 +3687,16 @@ require_once ROUTER.'websiteUserRouter.php';".PHP_EOL;
 
     }
 
+    public function getIdContentTraduction($isContent) {
+        $lg = $this->myLanguage;
+        if ($traductions = unserialize($isContent['groupe_traduction'])) {
+            if (array_key_exists($lg, $traductions)) {
+                return $traductions[$lg];
+            }
+        }
+        return null;
+    }
+
     public function getTotalPathSize($path){
         $bytestotal = 0;
         $path = realpath($path);
@@ -3416,4 +3726,38 @@ require_once ROUTER.'websiteUserRouter.php';".PHP_EOL;
         }
     }
 
+    public function setCurrencyIcon($amount,$currency = null) {
+
+        $amount = (float)$amount;
+        if (is_null($currency)) {
+            $currency = $this->configWeb['currency'];
+        }
+        $currenyCode = strtolower($currency);
+        // vdump($currenyCode);
+        switch ($currenyCode) {
+            case 'eur':
+                $currency = '€';
+                $currencyBefore = '';
+                $currencyAfter = $currency;
+                break;
+            case 'usd':
+                $currency = '$';
+                $currencyBefore = $currency;
+                $currencyAfter = '';
+                break;
+            case 'gbp':
+                $currency = '£';
+                $currencyBefore = $currency;
+                $currencyAfter = '';
+                break;
+            
+            default:
+                $currency = '€';
+                $currencyBefore = '';
+                $currencyAfter = $currency;
+                break;
+        }
+        
+        return $currencyBefore.number_format($amount,2,',',' ').$currencyAfter;
+    }
 }

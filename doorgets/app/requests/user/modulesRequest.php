@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -34,18 +34,18 @@
 
 class ModulesRequest extends doorGetsUserRequest{
     
-    use TraitDatabaseInstaller;
+    public $installDB;
     
     public function __construct(&$doorGets) {
         
+        $this->installDB = new DoDatabaseInstaller($doorGets);
+
         parent::__construct($doorGets);
-        
     }
     
     public function doAction() {
         
         $out = '';
-
         $lgActuel = $this->doorGets->getLangueTradution();
         
         // get Content for edit / delete
@@ -159,7 +159,7 @@ class ModulesRequest extends doorGetsUserRequest{
                         $data['type']               = 'genform';
                         $data['active']             = $Form['active'];
                         $data['notification_mail']  = $Form['send_mail'];
-                        $data['extras']             = serialize($dataForm);
+                        $data['extras']             = base64_encode(serialize($dataForm));
                         $data['redirection']        = $Form['redirection'];
                         $data['recaptcha']          = $Form['recaptcha'];
                         $data['date_creation']      = time();
@@ -174,7 +174,7 @@ class ModulesRequest extends doorGetsUserRequest{
                             
                             $dataNext['id_module']          = $idModule;
                             $dataNext['langue']             = $k;
-                            $dataNext['extras']             = serialize($dataForm);
+                            $dataNext['extras']             = base64_encode(serialize($dataForm));
                             $dataNext['date_modification']  = time();
                             $idTraduction[$k]               = $this->doorGets->dbQI($dataNext,'_modules_traduction');
                             
@@ -183,12 +183,12 @@ class ModulesRequest extends doorGetsUserRequest{
                         $dataModification['groupe_traduction'] = serialize($idTraduction);
                         $this->doorGets->dbQU($idModule,$dataModification,'_modules');
                         
-                        $this->doorGets->dbQL($this->createGenformInstance($data['uri'],$dataForm));
+                        $this->doorGets->dbQL($this->installDB->createGenformInstance($data['uri'],$dataForm));
                         
                         $this->addModuleToGroupeList($idModule,'widget');
 
                         FlashInfo::set($this->doorGets->__("Vos informations ont bien été mises à jour"));
-                        header('Location:./?controller=modules');
+                        header('Location:./?controller=modulegenform&uri='.$Form['uri']);
                         exit();
                         
                     }
@@ -198,6 +198,146 @@ class ModulesRequest extends doorGetsUserRequest{
                 }
                 break;
             
+            case 'addcarousel':
+               
+               $Form = $this->doorGets->Form->i;
+               
+               if (!empty($Form)) {
+                   
+                   $this->doorGets->checkMode();
+                   
+                   foreach($Form as $k=>$v) {
+                       if (empty($v) && !in_array($k,$nonObligatoire)) {
+                           $this->doorGets->Form->e['modules_addcarousel_'.$k] = 'ok';
+                       }
+                   }
+                 
+                   // gestion de l'uri
+                   $Form['uri'] = $uri = strtolower($Form['uri']);
+ -
+                   $isValidUri = $this->doorGets->isValidUri($uri,'_modules');
+                   if (!$isValidUri) {
+                       $this->doorGets->Form->e['modules_addcarousel_uri'] = 'ok';
+                   }
+                   
+                   if (strtolower($Form['uri']) === 'doorgets') {
+                       $this->doorGets->Form->e['modules_addcarousel_uri'] = 'ok';
+                   }
+                   
+                   if (empty($this->doorGets->Form->e)) {
+                       
+                       if (!array_key_exists('active',$Form)) {
+                           $Form['active'] = 0;
+                       }
+                       
+                       $data['uri']            = $Form['uri'];
+                       $data['type']           = 'carousel';
+                       $data['active']         = $Form['active'];
+                       $data['date_creation']  = time();
+                       
+                       $idModule = $this->doorGets->dbQI($data,'_modules');
+                       
+                       $dataNext = array(
+                           'titre' => $Form['titre'],
+                       );
+                       
+                       foreach($this->doorGets->getAllLanguages() as $k=>$v) {
+                           
+                           $dataNext['id_module']          = $idModule;
+                           $dataNext['langue']             = $k;
+                           $dataNext['date_modification']  = time();
+                           $idTraduction[$k]               = $this->doorGets->dbQI($dataNext,'_modules_traduction');
+                           
+                       }
+                       
+                       $dataModification['groupe_traduction'] = serialize($idTraduction);
+                       $this->doorGets->dbQU($idModule,$dataModification,'_modules');
+                       
+                       $this->installDB->createCarouselInstance($data['uri'],$Form['titre']);
+                       
+                       $this->addModuleToGroupeList($idModule,'widget');
+ -
+                       FlashInfo::set($this->doorGets->__("Vos informations ont bien été mises à jour"));
+                       header('Location:./?controller=modulecarousel&uri='.$Form['uri']);
+                       exit();
+                       
+                   }
+                   
+                   FlashInfo::set($this->doorGets->__("Veuillez remplir correctement le formulaire"),"error");
+                   
+                }
+                break;
+            
+            case 'addsurvey':
+
+                $Form = $this->doorGets->Form->i;
+                
+                if (!empty($Form)) {
+                    
+                    $this->doorGets->checkMode();
+                    
+                    foreach($Form as $k=>$v) {
+                        if (empty($v) && !in_array($k,$nonObligatoire)) {
+                            $this->doorGets->Form->e['modules_addsurvey_'.$k] = 'ok';
+                        }
+                    }
+
+                    // gestion de l'uri
+                    $Form['uri'] = $uri = strtolower($Form['uri']);
+
+                    $isValidUri = $this->doorGets->isValidUri($uri,'_modules');
+                    if (!$isValidUri) {
+                        $this->doorGets->Form->e['modules_addsurvey_uri'] = 'ok';
+                    }
+
+                    if (strtolower($Form['uri']) === 'doorgets') {
+                        $this->doorGets->Form->e['modules_addsurvey_uri'] = 'ok';
+                    }
+                    
+                    if (empty($this->doorGets->Form->e)) {
+                        
+                        if (!array_key_exists('active',$Form)) {
+                            $Form['active'] = 0;
+                        }
+                        
+                        $data['uri']            = $Form['uri'];
+                        $data['type']           = 'survey';
+                        $data['active']         = $Form['active'];
+                        $data['date_creation']  = time();
+                        
+                        $idModule = $this->doorGets->dbQI($data,'_modules');
+                        
+                        $dataNext = array(
+                            'titre' => $Form['titre'],
+                        );
+                        
+                        foreach($this->doorGets->getAllLanguages() as $k=>$v) {
+                            
+                            $dataNext['id_module']          = $idModule;
+                            $dataNext['langue']             = $k;
+                            $dataNext['date_modification']  = time();
+                            $idTraduction[$k]               = $this->doorGets->dbQI($dataNext,'_modules_traduction');
+                            
+                        }
+                        
+                        $dataModification['groupe_traduction'] = serialize($idTraduction);
+                        $this->doorGets->dbQU($idModule,$dataModification,'_modules');
+                        
+                        $this->installDB->createSurveyInstance($data['uri'],$Form['titre']);
+                        
+                        $this->addModuleToGroupeList($idModule,'widget');
+
+                        FlashInfo::set($this->doorGets->__("Vos informations ont bien été mises à jour"));
+                        header('Location:./?controller=modulesurvey&uri='.$Form['uri']);
+                        exit();
+                        
+                    }
+                    
+                    FlashInfo::set($this->doorGets->__("Veuillez remplir correctement le formulaire"),"error");
+                    
+                }
+                break;
+
             case 'addblock':
                 
                 $Form = $this->doorGets->Form->i;
@@ -253,7 +393,7 @@ class ModulesRequest extends doorGetsUserRequest{
                         $dataModification['groupe_traduction'] = serialize($idTraduction);
                         $this->doorGets->dbQU($idModule,$dataModification,'_modules');
                         
-                        $this->createBlockInstance($data['uri'],$Form['titre']);
+                        $this->installDB->createBlockInstance($data['uri'],$Form['titre']);
                         
                         $this->addModuleToGroupeList($idModule,'widget');
 
@@ -266,7 +406,7 @@ class ModulesRequest extends doorGetsUserRequest{
                     FlashInfo::set($this->doorGets->__("Veuillez remplir correctement le formulaire"),"error");
                     
                 }
-            break;
+                break;
             
             case 'addpage':
                 
@@ -404,7 +544,7 @@ class ModulesRequest extends doorGetsUserRequest{
                         $dataModification['groupe_traduction'] = serialize($idTraduction);
                         $this->doorGets->dbQU($idModule,$dataModification,'_modules');
                         
-                        $this->createPageInstance($data['uri'],$Form);
+                        $this->installDB->createPageInstance($data['uri'],$Form);
                         
                         if ($newTopic) {
                             $dataRub['name'] = $Form['uri'];
@@ -419,6 +559,168 @@ class ModulesRequest extends doorGetsUserRequest{
                         
                         FlashInfo::set($this->doorGets->__("Vos informations ont bien été mises à jour"));
                         header('Location:./?controller=modulepage&uri='.$Form['uri']);
+                        exit();
+                        
+                    }
+                    
+                    FlashInfo::set($this->doorGets->__("Veuillez remplir correctement le formulaire"),"error");
+                    
+                }
+            break;
+
+            case 'addonepage':
+                
+                $Form = $this->doorGets->Form->i;
+                
+                $defaultTemplateIndex = 'modules/onepage/onepage_content.tpl.php';
+                
+                if (!empty($Form)) {
+                    
+                    $this->doorGets->checkMode();
+                    
+                    foreach($Form as $k=>$v) {
+                        if (empty($v) && !in_array($k,$nonObligatoire)) {
+                            $this->doorGets->Form->e['modules_addonepage_'.$k] = 'ok';
+                        }
+                    }
+                    
+                    // gestion de l'uri
+                    $Form['uri'] = $uri = strtolower($Form['uri']);
+                    
+                    $isValidUri = $this->doorGets->isValidUri($uri,'_modules');
+                    if (!$isValidUri) {
+                        $this->doorGets->Form->e['modules_addonepage_uri'] = 'ok';
+                    }
+
+                    if (strtolower($Form['uri']) === 'doorgets') {
+                        $this->doorGets->Form->e['modules_addonepage_uri'] = 'ok';
+                    }
+                    
+                    if (empty($this->doorGets->Form->e)) {
+                        
+                        if (!array_key_exists('active',$Form)) {
+                            $Form['active'] = 0;
+                        }
+                        if (!array_key_exists('notification_mail',$Form)) {
+                            $Form['notification_mail'] = 0;
+                        }
+                        if (!array_key_exists('with_password',$Form)) {
+                            $Form['with_password'] = 0;
+                        }
+                        if (!array_key_exists('public_module',$Form)) {
+                            $Form['public_module'] = 0;
+                        }
+                        if (!array_key_exists('public_comment',$Form)) {
+                            $Form['public_comment'] = 0;
+                        }
+                        if (!array_key_exists('public_add',$Form)) {
+                            $Form['public_add'] = 0;
+                        }
+                        if (!array_key_exists('is_first',$Form)) {
+                            $Form['is_first'] = 0;
+                        }
+                        
+                        if ($Form['type'] == 'block') {
+                            $Form['is_first'] = 0;
+                        }
+                        
+                        $newTopic  = false;
+                        if (array_key_exists('new_topic',$Form)) {
+                            $newTopic = true;
+                            unset($Form['new_topic']);
+                        }
+                        
+                        if ($Form['template_index'] !== $defaultTemplateIndex) {
+                            
+                            $fFrom = THEME.$this->doorGets->configWeb['theme'].'/website/template/'.$defaultTemplateIndex;
+                            $fTo = THEME.$this->doorGets->configWeb['theme'].'/website/template/'.$Form['template_index'];
+                            if (!is_file($fTo)) {
+                                copy($fFrom,$fTo);
+                            }
+                            
+                        }
+                        
+                        $Form['template_index'] = str_replace('.tpl.php','',$Form['template_index']);
+                        $Form['template_content'] = str_replace('.tpl.php','',$Form['template_content']);
+                        
+                        $data['with_password']      = $Form['with_password'];
+                        $data['public_module']      = $Form['public_module'];
+                        $data['public_comment']     = $Form['public_comment'];
+                        $data['public_add']         = $Form['public_add'];
+                        $data['password']           = $Form['password'];
+                        $data['uri']                = $Form['uri'];
+                        $data['type']               = 'onepage';
+                        $data['active']             = $Form['active'];
+                        $data['is_first']           = $Form['is_first'];
+                        $data['notification_mail']  = $Form['notification_mail'];
+                        $data['template_index']     = $Form['template_index'];
+                        $data['template_content']   = $Form['template_content'];
+                        $data['date_creation']      = time();
+                        
+                        if ($data['is_first'] == 1) {
+                            
+                            $this->doorGets->dbQL("UPDATE _modules SET is_first = 0 WHERE id >= 1");
+                        }
+                        
+                        $idModule = $this->doorGets->dbQI($data,'_modules');
+                        
+                        if ($data['is_first'] == 1) {
+                            
+                            $dataModuleWebsite['module_homepage'] = $data['uri'];
+                            $this->doorGets->dbQU(1,$dataModuleWebsite,'_website');
+                            
+                        }
+                        
+                        $dataNext = array(
+                            'nom' => $Form['nom'],
+                            'titre' => $Form['titre'],
+                            'description' => $Form['description'],
+                            'top_tinymce' => $Form['top_tinymce'],
+                            'bottom_tinymce' => $Form['bottom_tinymce'],
+                            'meta_titre' => $Form['meta_titre'],
+                            'meta_description' => $Form['meta_description'],
+                            'meta_keys' => $Form['meta_keys'],
+                            'meta_facebook_type' => $Form['meta_facebook_type'],
+                            'meta_facebook_titre' => $Form['meta_facebook_titre'],
+                            'meta_facebook_description' => $Form['meta_facebook_description'],
+                            'meta_facebook_image' => $Form['meta_facebook_image'],
+                            'meta_twitter_type' => $Form['meta_twitter_type'],
+                            'meta_twitter_titre' => $Form['meta_twitter_titre'],
+                            'meta_twitter_description' => $Form['meta_twitter_description'],
+                            'meta_twitter_image' => $Form['meta_twitter_image'],
+                            'meta_twitter_player' => $Form['meta_twitter_player'],
+                        );
+
+                        foreach($this->doorGets->getAllLanguages() as $k=>$v) {
+
+                            $dataNext['id_module'] = $idModule;
+                            $dataNext['langue'] = $k;
+                            $dataNext['date_modification'] = time();
+                            
+                            $idTraduction[$k] = $this->doorGets->dbQI($dataNext,'_modules_traduction');
+                            
+                        }
+                        
+                        $dataModification['groupe_traduction'] = serialize($idTraduction);
+                        $this->doorGets->dbQU($idModule,$dataModification,'_modules');
+                        
+                        $this->installDB->createOnepageInstance($data['uri'],$Form);
+                        
+                        if ($newTopic) {
+
+                            $dataRub['name'] = $Form['uri'];
+                            $dataRub['ordre'] = $cResultsInt + 1;
+                            $dataRub['idModule'] = $idModule;
+                            $dataRub['showinmenu'] = 1;
+                            $dataRub['date_creation'] = time();
+
+                            $this->doorGets->dbQI($dataRub,'_rubrique');
+                        }
+                        
+                        $this->addModuleToGroupeList($idModule);
+                        
+                        FlashInfo::set($this->doorGets->__("Vos informations ont bien été mises à jour"));
+                        header('Location:./?controller=moduleonepage&uri='.$Form['uri']);
                         exit();
                         
                     }
@@ -563,7 +865,7 @@ class ModulesRequest extends doorGetsUserRequest{
                         $dataModification['groupe_traduction'] = serialize($idTraduction);
                         $this->doorGets->dbQU($idModule,$dataModification,'_modules');
                         
-                        $this->doorGets->dbQL($this->createSqlMultipage($data['uri']));
+                        $this->doorGets->dbQL($this->installDB->createSqlMultipage($data['uri']));
                         
                         if ($newTopic) {
                             $dataRub['name'] = $Form['uri'];
@@ -744,7 +1046,7 @@ class ModulesRequest extends doorGetsUserRequest{
                         $dataModification['groupe_traduction'] = serialize($idTraduction);
                         $this->doorGets->dbQU($idModule,$dataModification,'_modules');
                         
-                        $this->doorGets->dbQL($this->createSqlSharedlinks($data['uri']));
+                        $this->doorGets->dbQL($this->installDB->createSqlSharedlinks($data['uri']));
                         
                         if ($newTopic) {
                             $dataRub['name'] = $Form['uri'];
@@ -925,7 +1227,7 @@ class ModulesRequest extends doorGetsUserRequest{
                         $dataModification['groupe_traduction'] = serialize($idTraduction);
                         $this->doorGets->dbQU($idModule,$dataModification,'_modules');
                         
-                        $this->doorGets->dbQL($this->createSqlNews($data['uri']));
+                        $this->doorGets->dbQL($this->installDB->createSqlNews($data['uri']));
                         
                         if ($newTopic) {
                             $dataRub['name'] = $Form['uri'];
@@ -1106,7 +1408,7 @@ class ModulesRequest extends doorGetsUserRequest{
                         $dataModification['groupe_traduction'] = serialize($idTraduction);
                         $this->doorGets->dbQU($idModule,$dataModification,'_modules');
 
-                        $this->doorGets->dbQL($this->createSqlBlog($data['uri']));
+                        $this->doorGets->dbQL($this->installDB->createSqlBlog($data['uri']));
                         
                         if ($newTopic) {
                             $dataRub['name'] = $Form['uri'];
@@ -1129,7 +1431,188 @@ class ModulesRequest extends doorGetsUserRequest{
                     
                 }
 
-            break;
+                break;
+
+            case 'addshop':
+                
+                $Form = $this->doorGets->Form->i;
+                
+                $defaultTemplateIndex = 'modules/shop/shop_listing.tpl.php';
+                $defaultTemplateContent = 'modules/shop/shop_content.tpl.php';
+                
+                if (!empty($Form)) {
+                    
+                    $this->doorGets->checkMode();
+                    
+                    foreach($Form as $k=>$v) {
+                        if (empty($v) && !in_array($k,$nonObligatoire)) {
+                            $this->doorGets->Form->e['modules_addshop_'.$k] = 'ok';
+                        }
+                    }
+                    
+                    // gestion de l'uri
+                    $Form['uri'] = $uri = strtolower($Form['uri']);
+
+                    $isValidUri = $this->doorGets->isValidUri($uri,'_modules');
+                    if (!$isValidUri) {
+                        $this->doorGets->Form->e['modules_addshop_uri'] = 'ok';
+                    }
+                                      
+                    if (strtolower($Form['uri']) === 'doorgets') {
+                        $this->doorGets->Form->e['modules_addshop_uri'] = 'ok';
+                    }
+                    
+                    if (empty($this->doorGets->Form->e)) {
+                        
+                        if (!array_key_exists('active',$Form)) {
+                            $Form['active'] = 0;
+                        }
+                        if (!array_key_exists('author_badge',$Form)) {
+                            $Form['author_badge'] = 0;
+                        }
+                        if (!array_key_exists('notification_mail',$Form)) {
+                            $Form['notification_mail'] = 0;
+                        }
+                        if (!array_key_exists('with_password',$Form)) {
+                            $Form['with_password'] = 0;
+                        }
+                        if (!array_key_exists('public_module',$Form)) {
+                            $Form['public_module'] = 0;
+                        }
+                        if (!array_key_exists('public_comment',$Form)) {
+                            $Form['public_comment'] = 0;
+                        }
+                        if (!array_key_exists('public_add',$Form)) {
+                            $Form['public_add'] = 0;
+                        }
+                        if (!array_key_exists('is_first',$Form)) {
+                            $Form['is_first'] = 0;
+                        }
+                        
+                        if ($Form['type'] == 'block') {
+                            $Form['is_first'] = 0;
+                        }
+                        
+                        $newTopic  = false;
+                        if (array_key_exists('new_topic',$Form)) {
+                            $newTopic = true;
+                            unset($Form['new_topic']);
+                        }
+                        
+                        if ($Form['template_index'] !== $defaultTemplateIndex) {
+                            
+                            $fFrom = THEME.$this->doorGets->configWeb['theme'].'/website/template/'.$defaultTemplateIndex;
+                            $fTo = THEME.$this->doorGets->configWeb['theme'].'/website/template/'.$Form['template_index'];
+                            if (!is_file($fTo)) {
+                                copy($fFrom,$fTo);
+                            }
+                            
+                        }
+                        
+                        if ($Form['template_content'] !== $defaultTemplateContent) {
+                            
+                            $fFrom = THEME.$this->doorGets->configWeb['theme'].'/website/template/'.$defaultTemplateIndex;
+                            $fTo = THEME.$this->doorGets->configWeb['theme'].'/website/template/'.$Form['template_content'];
+                            if (!is_file($fTo)) {
+                                copy($fFrom,$fTo);
+                            }
+                            
+                        }
+                        
+                        $Form['template_index'] = str_replace('.tpl.php','',$Form['template_index']);
+                        $Form['template_content'] = str_replace('.tpl.php','',$Form['template_content']);
+                        
+                        $data['with_password']      = $Form['with_password'];
+                        $data['public_module']      = $Form['public_module'];
+                        $data['public_comment']     = $Form['public_comment'];
+                        $data['public_add']         = $Form['public_add'];
+                        $data['password']           = $Form['password'];
+                        $data['uri']                    = $Form['uri'];
+                        $data['author_badge']           = $Form['author_badge'];
+                        $data['type']                   = 'shop';
+                        $data['active']                 = $Form['active'];
+                        $data['is_first']               = $Form['is_first'];
+                        $data['template_index']         = $Form['template_index'];
+                        $data['template_content']       = $Form['template_content'];
+                        $data['bynum']                  = $Form['bynum'];
+                        $data['avoiraussi']             = $Form['avoiraussi'];
+                        $data['notification_mail']      = $Form['notification_mail'];
+                        $data['date_creation']          = time();
+                        
+                        $data['uri_notification_moderator']      = $Form['uri_notification_moderator'];
+                        $data['uri_notification_user_success']   = $Form['uri_notification_user_success'];
+                        $data['uri_notification_user_error']     = $Form['uri_notification_user_error'];
+
+                        if ($data['is_first'] == 1) {
+                            
+                            $this->doorGets->dbQL("UPDATE _modules SET is_first = 0 WHERE id >= 1");
+                        }
+                        
+                        $idModule = $this->doorGets->dbQI($data,'_modules');
+                        
+                        if ($data['is_first'] == 1) {
+                            
+                            $dataModuleWebsite['module_homepage'] = $data['uri'];
+                            $this->doorGets->dbQU(1,$dataModuleWebsite,'_website');
+                            
+                        }
+
+                        $dataNext = array(
+                            'nom' => $Form['nom'],
+                            'titre' => $Form['titre'],
+                            'description' => $Form['description'],
+                            'top_tinymce' => $Form['top_tinymce'],
+                            'bottom_tinymce' => $Form['bottom_tinymce'],
+                            'meta_titre' => $Form['meta_titre'],
+                            'meta_description' => $Form['meta_description'],
+                            'meta_keys' => $Form['meta_keys'],
+                            'meta_facebook_type' => $Form['meta_facebook_type'],
+                            'meta_facebook_titre' => $Form['meta_facebook_titre'],
+                            'meta_facebook_description' => $Form['meta_facebook_description'],
+                            'meta_facebook_image' => $Form['meta_facebook_image'],
+                            'meta_twitter_type' => $Form['meta_twitter_type'],
+                            'meta_twitter_titre' => $Form['meta_twitter_titre'],
+                            'meta_twitter_description' => $Form['meta_twitter_description'],
+                            'meta_twitter_image' => $Form['meta_twitter_image'],
+                            'meta_twitter_player' => $Form['meta_twitter_player'],
+                        );
+                        
+                        foreach($this->doorGets->getAllLanguages() as $k=>$v) {
+                            
+                            $dataNext['id_module'] = $idModule;
+                            $dataNext['langue'] = $k;
+                            $dataNext['date_modification'] = time();
+                            $idTraduction[$k] = $this->doorGets->dbQI($dataNext,'_modules_traduction');
+                            
+                        }
+                        
+                        $dataModification['groupe_traduction'] = serialize($idTraduction);
+                        $this->doorGets->dbQU($idModule,$dataModification,'_modules');
+
+                        $this->doorGets->dbQL($this->installDB->createSqlShop($data['uri']));
+                        
+                        if ($newTopic) {
+                            $dataRub['name'] = $Form['uri'];
+                            $dataRub['ordre'] = $cResultsInt + 1;
+                            $dataRub['idModule'] = $idModule;
+                            $dataRub['showinmenu'] = 1;
+                            $dataRub['date_creation'] = time();
+                            $this->doorGets->dbQI($dataRub,'_rubrique');
+                        }
+                        
+                        $this->addModuleToGroupeList($idModule);
+
+                        FlashInfo::set($this->doorGets->__("Vos informations ont bien été mises à jour"));
+                        header('Location:./?controller=moduleshop&uri='.$Form['uri']);
+                        exit();
+                        
+                    }
+                    
+                    FlashInfo::set($this->doorGets->__("Veuillez remplir correctement le formulaire"),"error");
+                    
+                }
+
+                break;
 
             case 'addvideo':
                 
@@ -1287,7 +1770,7 @@ class ModulesRequest extends doorGetsUserRequest{
                         $dataModification['groupe_traduction'] = serialize($idTraduction);
                         $this->doorGets->dbQU($idModule,$dataModification,'_modules');
                         
-                        $this->doorGets->dbQL($this->createSqlVideo($data['uri']));
+                        $this->doorGets->dbQL($this->installDB->createSqlVideo($data['uri']));
                         
                         if ($newTopic) {
                             $dataRub['name'] = $Form['uri'];
@@ -1468,7 +1951,7 @@ class ModulesRequest extends doorGetsUserRequest{
                         $dataModification['groupe_traduction'] = serialize($idTraduction);
                         $this->doorGets->dbQU($idModule,$dataModification,'_modules');
                         
-                        $this->doorGets->dbQL($this->createSqlImage($data['uri']));
+                        $this->doorGets->dbQL($this->installDB->createSqlImage($data['uri']));
                         
                         if ($newTopic) {
                             $dataRub['name'] = $Form['uri'];
@@ -1785,7 +2268,7 @@ class ModulesRequest extends doorGetsUserRequest{
                         $dataModification['groupe_traduction'] = serialize($idTraduction);
                         $this->doorGets->dbQU($idModule,$dataModification,'_modules');
                         
-                        $this->doorGets->dbQL($this->createSqlFaq($data['uri']));
+                        $this->doorGets->dbQL($this->installDB->createSqlFaq($data['uri']));
                         
                         if ($newTopic) {
                             $dataRub['name'] = $Form['uri'];
@@ -1944,7 +2427,7 @@ class ModulesRequest extends doorGetsUserRequest{
                         $dataModification['groupe_traduction'] = serialize($idTraduction);
                         $this->doorGets->dbQU($idModule,$dataModification,'_modules');
                         
-                        $this->doorGets->dbQL($this->createSqlPartner($data['uri']));
+                        $this->doorGets->dbQL($this->installDB->createSqlPartner($data['uri']));
                         
                         if ($newTopic) {
                             $dataRub['name'] = $Form['uri'];
@@ -2034,7 +2517,7 @@ class ModulesRequest extends doorGetsUserRequest{
                         $dataModification['groupe_traduction'] = serialize($idTraduction);
                         $this->doorGets->dbQU($idModule,$dataModification,'_modules');
                         
-                        $this->createLinkInstance($data['uri']);
+                        $this->installDB->createLinkInstance($data['uri']);
                         
                         if ($newTopic) {
                             $dataRub['name'] = $Form['uri'];
@@ -2162,6 +2645,7 @@ class ModulesRequest extends doorGetsUserRequest{
             
 
             case 'editblog':
+            case 'editshop':
             case 'editnews':
             case 'editvideo':
             case 'editimage':
@@ -2278,6 +2762,8 @@ class ModulesRequest extends doorGetsUserRequest{
                 }
                 break;
 
+            case 'editcarousel':
+            case 'editsurvey':
             case 'editblock':
                 
                 $Form = $this->doorGets->Form->i;
@@ -2292,8 +2778,6 @@ class ModulesRequest extends doorGetsUserRequest{
                             $this->doorGets->Form->e['modules_'.$this->doorGets->Action.'_'.$k] = 'ok';
                         }
                     }
-                    
-                    
                     
                     if (empty($this->doorGets->Form->e)) {
                         
@@ -2568,7 +3052,7 @@ class ModulesRequest extends doorGetsUserRequest{
                         $data['date_creation']      = time();
 
                         $dataNext['titre']              = $Form['titre'];
-                        $dataNext['extras']             = serialize($dataForm);
+                        $dataNext['extras']             = base64_encode(serialize($dataForm));
                         $dataNext['date_modification']  = time();
                         
                         $this->doorGets->dbQU($isContent['id'],$data,'_modules','id');
@@ -2602,6 +3086,7 @@ class ModulesRequest extends doorGetsUserRequest{
                     }
 
                     $isContent['uri'] = $isContent['uri'];
+                    $ruri = $this->doorGets->getRealUri($isContent['uri']);
 
                     $this->doorGets->dbQD($isContent['id'],'_modules');
                     $this->doorGets->dbQL("DELETE FROM _modules_traduction WHERE id_module = '".$isContent['id']."'; ");
@@ -2613,16 +3098,22 @@ class ModulesRequest extends doorGetsUserRequest{
                     $this->doorGets->dbQL("DELETE FROM _dg_page WHERE uri = '".$isContent['uri']."'; ");
                     $this->doorGets->dbQL("DELETE FROM _dg_page_traduction WHERE uri_module = '".$isContent['uri']."'; ");
                     $this->doorGets->dbQL("DELETE FROM _dg_page_version WHERE uri_module = '".$isContent['uri']."'; ");
+                    $this->doorGets->dbQL("DELETE FROM _dg_onepage WHERE uri = '".$isContent['uri']."'; ");
+                    $this->doorGets->dbQL("DELETE FROM _dg_onepage_traduction WHERE uri_module = '".$isContent['uri']."'; ");
+                    $this->doorGets->dbQL("DELETE FROM _dg_onepage_version WHERE uri_module = '".$isContent['uri']."'; ");
                     $this->doorGets->dbQL("DELETE FROM _dg_block WHERE uri = '".$isContent['uri']."'; ");
                     $this->doorGets->dbQL("DELETE FROM _dg_block_traduction WHERE uri_module = '".$isContent['uri']."'; ");
+                    $this->doorGets->dbQL("DELETE FROM _dg_survey WHERE uri = '".$isContent['uri']."'; ");
+                    $this->doorGets->dbQL("DELETE FROM _dg_survey_traduction WHERE uri_module = '".$isContent['uri']."'; ");
+                    $this->doorGets->dbQL("DELETE FROM _dg_survey_response WHERE uri_module = '".$isContent['uri']."'; ");
                     $this->doorGets->dbQL("DELETE FROM _dg_carousel WHERE uri = '".$isContent['uri']."'; ");
                     $this->doorGets->dbQL("DELETE FROM _dg_carousel_traduction WHERE uri_module = '".$isContent['uri']."'; ");
                     $this->doorGets->dbQL("DELETE FROM _users_track WHERE uri_module = '".$isContent['uri']."'; ");
                     $this->doorGets->dbQL("DELETE FROM _moderation WHERE uri_module = '".$isContent['uri']."'; ");
-                    $this->doorGets->dbQL("DROP TABLE IF EXISTS _m_genform_".$this->doorGets->getRealUri($isContent['uri'])."  ");
-                    $this->doorGets->dbQL("DROP TABLE IF EXISTS _m_".$this->doorGets->getRealUri($isContent['uri'])."  ");
-                    $this->doorGets->dbQL("DROP TABLE IF EXISTS _m_".$this->doorGets->getRealUri($isContent['uri'])."_traduction  ");
-                    $this->doorGets->dbQL("DROP TABLE IF EXISTS _m_".$this->doorGets->getRealUri($isContent['uri'])."_version  ");
+                    $this->doorGets->dbQL("DROP TABLE IF EXISTS _m_".$ruri."  ");
+                    $this->doorGets->dbQL("DROP TABLE IF EXISTS _m_".$ruri."  ");
+                    $this->doorGets->dbQL("DROP TABLE IF EXISTS _m_".$ruri."_traduction  ");
+                    $this->doorGets->dbQL("DROP TABLE IF EXISTS _m_".$ruri."_version  ");
                     
                     $_rubrique = $this->doorGets->dbQS($isContent['id'],'_rubrique','idModule');
                     if (!empty($_rubrique)) {
@@ -2633,9 +3124,12 @@ class ModulesRequest extends doorGetsUserRequest{
                     $this->removeModuleFromGroupes($isContent['id']);
                     
                     //$this->doorGets->clearDBCache();
-                    
-                    FlashInfo::set($this->doorGets->__("Le module est maintenant supprimer"));
-                    header('Location:./?controller=modules&lg='.$lgActuel);
+                    $moduleRedirection = 'modules';
+                    if (in_array($isContent['type'],Constant::$widgets)) {
+                        $moduleRedirection = 'widgets';
+                    }
+                    FlashInfo::set($this->doorGets->__("Le widget est maintenant supprimer"));
+                    header('Location:./?controller='.$moduleRedirection.'&lg='.$lgActuel);
                     exit();
                     
                 }
@@ -2807,26 +3301,26 @@ class ModulesRequest extends doorGetsUserRequest{
         $isGroupe = $this->doorGets->dbQS($idGroupe,'_users_groupes');
         if (!empty($isGroupe)) {
 
+            $pref = "#";
             if ($type === 'widget') {
-                $this->doorGets->dbQU($idGroupe,array('liste_widget'=>$isGroupe['liste_widget'].$idModule.','),'_users_groupes');
+                $this->doorGets->dbQU($idGroupe,array('liste_widget'=>$pref.$isGroupe['liste_widget'].$idModule.','),'_users_groupes');
             }else{
                 $this->doorGets->dbQU($idGroupe,
                     array(
-                        'liste_module'          => $isGroupe['liste_module'].$idModule.',',
-                        'liste_module_list'     => $isGroupe['liste_module_list'].$idModule.',',
-                        'liste_module_add'      => $isGroupe['liste_module_add'].$idModule.',',
-                        'liste_module_show'     => $isGroupe['liste_module_show'].$idModule.',',
-                        'liste_module_edit'     => $isGroupe['liste_module_edit'].$idModule.',',
-                        'liste_module_delete'   => $isGroupe['liste_module_delete'].$idModule.',',
-                        'liste_module_modo'     => $isGroupe['liste_module_modo'].$idModule.',',
-                        'liste_module_admin'    => $isGroupe['liste_module_admin'].$idModule.','
+                        'liste_module'          => $isGroupe['liste_module'].$pref.$idModule.',',
+                        'liste_module_list'     => $isGroupe['liste_module_list'].$pref.$idModule.',',
+                        'liste_module_add'      => $isGroupe['liste_module_add'].$pref.$idModule.',',
+                        'liste_module_show'     => $isGroupe['liste_module_show'].$pref.$idModule.',',
+                        'liste_module_edit'     => $isGroupe['liste_module_edit'].$pref.$idModule.',',
+                        'liste_module_delete'   => $isGroupe['liste_module_delete'].$pref.$idModule.',',
+                        'liste_module_modo'     => $isGroupe['liste_module_modo'].$pref.$idModule.',',
+                        'liste_module_admin'    => $isGroupe['liste_module_admin'].$pref.$idModule.','
                     ),'_users_groupes');
             }
         }
     }
 
     private function removeModuleFromGroupes($idModule = '') {
-
 
         $groupes = $this->doorGets->loadGroupes();
         if (!empty($groupes) && is_numeric($idModule)) {
@@ -2835,18 +3329,18 @@ class ModulesRequest extends doorGetsUserRequest{
 
                 $isGroupe = $this->doorGets->dbQS($id,'_users_groupes');
                 if (!empty($isGroupe)) {
-
+                    $pref = "#";
                     $this->doorGets->dbQU($id,
                         array(
-                            'liste_widget'          => str_replace($idModule.',', '', $isGroupe['liste_widget']),
-                            'liste_module'          => str_replace($idModule.',', '', $isGroupe['liste_module']),
-                            'liste_module_list'     => str_replace($idModule.',', '', $isGroupe['liste_module_list']),
-                            'liste_module_add'      => str_replace($idModule.',', '', $isGroupe['liste_module_add']),
-                            'liste_module_show'     => str_replace($idModule.',', '', $isGroupe['liste_module_show']),
-                            'liste_module_edit'     => str_replace($idModule.',', '', $isGroupe['liste_module_edit']),
-                            'liste_module_delete'   => str_replace($idModule.',', '', $isGroupe['liste_module_delete']),
-                            'liste_module_modo'     => str_replace($idModule.',', '', $isGroupe['liste_module_modo']),
-                            'liste_module_admin'    => str_replace($idModule.',', '', $isGroupe['liste_module_admin'])
+                            'liste_widget'          => str_replace($pref.$idModule.',', '', $isGroupe['liste_widget']),
+                            'liste_module'          => str_replace($pref.$idModule.',', '', $isGroupe['liste_module']),
+                            'liste_module_list'     => str_replace($pref.$idModule.',', '', $isGroupe['liste_module_list']),
+                            'liste_module_add'      => str_replace($pref.$idModule.',', '', $isGroupe['liste_module_add']),
+                            'liste_module_show'     => str_replace($pref.$idModule.',', '', $isGroupe['liste_module_show']),
+                            'liste_module_edit'     => str_replace($pref.$idModule.',', '', $isGroupe['liste_module_edit']),
+                            'liste_module_delete'   => str_replace($pref.$idModule.',', '', $isGroupe['liste_module_delete']),
+                            'liste_module_modo'     => str_replace($pref.$idModule.',', '', $isGroupe['liste_module_modo']),
+                            'liste_module_admin'    => str_replace($pref.$idModule.',', '', $isGroupe['liste_module_admin'])
                         ) ,'_users_groupes'
                     );
                 }

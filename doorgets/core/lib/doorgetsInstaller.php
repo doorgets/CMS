@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -139,9 +139,9 @@ class doorgetsInstaller extends Langue{
 		    $allFiles = array_reverse($allFiles);
 		    
 		    foreach($allFiles as $k=>$v) {
+				$file = file_get_contents(BASE.'installer/'.$v);
+				$dataInfo = json_decode($file);
 				
-				$dataInfo = json_decode(file_get_contents(BASE.'installer/'.$v));
-
 			    $date = '<span class="pull-right">'.GetDate::in($dataInfo->date).'</span>';
 			    $sizeFile = 0;
 			    if (is_file(BASE.'installer/'.$dataInfo->file)) {  $sizeFile = filesize(BASE.'installer/'.$dataInfo->file); }

@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -43,7 +43,8 @@ class ThemeController extends doorGetsUserController{
             header('Location:./?controller=authentification&error-login=true&back='.urlencode($_SERVER['REQUEST_URI'])); exit();
         }
 
-        if (!in_array('themes',$doorGets->user['liste_module_interne'])) {
+        if (!in_array('themes',$doorGets->user['liste_module_interne'])
+            || ( in_array('themes',  $doorGets->user['liste_module_interne']) && SAAS_ENV && !SAAS_THEME)) {
 
             FlashInfo::set($this->doorGets->__("Vous n'avez pas les droits pour afficher ce module"),"error");
             header('Location:./'); exit();
@@ -80,6 +81,25 @@ class ThemeController extends doorGetsUserController{
         return $this->getView();
     
     }
+
+    public function importAction() {
+        
+
+        if (SAAS_ENV && !SAAS_THEME_ADD) {
+
+            FlashInfo::set($this->doorGets->__("Vous n'avez pas les droits pour afficher ce module"),"error");
+            header('Location:./'); exit();
+        }
+
+        $this->doorGets->Form  = new Formulaire('import_theme');
+        
+        // Generate the model
+        $this->getRequest();
+        
+        // return the view
+        return $this->getView();
+    
+    }
     
     public function editAction() {
         
@@ -89,7 +109,8 @@ class ThemeController extends doorGetsUserController{
             header('Location:./'); exit();
         }
 
-        $this->doorGets->Form  = new Formulaire('edit_theme');
+        $this->doorGets->Form['edit']  = new Formulaire('edit_theme');
+        $this->doorGets->Form['download']  = new Formulaire('download_theme');
         
         // Generate the model
         $this->getRequest();

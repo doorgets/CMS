@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -50,7 +50,7 @@
 <!-- doorGets:start:modules/news/news_content -->
 <div class="doorGets-news-content doorGets-module-[{!$Website->getModule()!}]">
     <div class="row">
-        <div class="col-md-9">
+        <div class="col-md-12">
             [{?($this->userPrivilege['add']):}]
             <div class="btn-group pull-right btn-add-content">
                 <a href="[{!$urlAdd!}]" class="btn btn-success btn-large">
@@ -61,7 +61,7 @@
             [?]
             <ol class="breadcrumb">
                 
-                <li><a href="[{!BASE_URL!}]?[{!$Website->getModule()!}]">[{!$labelModule!}]</a></li>
+                <li><a href="[{!$Website->getBaseUrl()!}]?[{!$Website->getModule()!}]">[{!$labelModule!}]</a></li>
             </ol>
             [{?(
                 ( !$this->modulePrivilege['public_module'] && $this->userPrivilege['show'] )
@@ -86,10 +86,20 @@
                         </ul>
                     </div>
                     [?]
-                    <h2>[{!$isContent['title']!}]</h2>
+                    <h2>
+                        [{!$isContent['title']!}]
+                        [{?($comments):}]
+                        <br />
+                        <small>[{!$isContent['stars']!}]/5 - <input type="hidden" class="rating green" data-fractions="1" disabled="disabled" value="[{!$isContent['stars']!}]"/> - [{!$isContent['stars_count']!}] 
+                        [{?($isContent['stars_count'] > 1):}][{!$Website->__('votes')!}][??][{!$Website->__('vote')!}][?]
+                        </small><br />
+                        [?]
+                    </h2>
                     <div class="infos-content-title">
-                        <span > <img alt="" src="[{!$_imgTime!}]" class="img-icone"  > [{!$isContent['temps']!}]m </span> &nbsp;&nbsp;
-                        <span > [{!$linksToCategories!}]</span>
+                        <i class="fa fa-calendar-plus-o"></i> [{!$isContent['date_creation']!}] 
+                        [{?($isContent['date_creation'] !== $isContent['date_modification']):}] <i class="fa fa-calendar-check-o"></i> [{!$isContent['date_modification']!}][?]
+                        [{?(!empty($linksToCategories)):}]<span class="pull-right"> <i class="fa fa-tags"></i> [{!$linksToCategories!}]</span>[?]
+                        <span class="pull-right"> <img alt="" src="[{!$_imgTime!}]" class="img-icone"  > [{!$isContent['temps']!}]m </span> &nbsp;&nbsp;
                     </div>
                     <div class="video-container hover-t" >
                         <iframe  src="http://www.youtube.com/embed/[{!$isContent['youtube']!}]" frameborder="0" width="560" height="315" ></iframe>            
@@ -106,9 +116,34 @@
                             [{!$Website->__('Image associée')!}]
                         [?]
                         </h3>
-                        [{/($isContent['image_gallery'] as $pathFile):}]
-                            <a href="[{!URL.'data/'.$Website->getModule().'//'.$pathFile!}]"><img src="[{!URL.'data/'.$Website->getModule().'//'.$pathFile!}]" alt="[{!URL.'data/'.$Website->getModule().'//'.$pathFile!}]" title="[{!URL.'data/'.$Website->getModule().'//'.$pathFile!}]"></a>
-                        [/]
+                        <div id="owl-[{!$Website->getModule()!}]" class="owl-carousel">
+                            [{/($isContent['image_gallery'] as $pathFile):}]
+                                <div class="item">
+                                     <a href="[{!URL.'data/'.$Website->getModule().'/'.$pathFile!}]"><img src="[{!URL.'data/'.$Website->getModule().'/'.$pathFile!}]" alt="[{!URL.'data/'.$Website->getModule().'/'.$pathFile!}]" title="[{!URL.'data/'.$Website->getModule().'/'.$pathFile!}]"></a>
+                                </div>
+                            [/]
+                        </div>
+                        <script type="text/javascript">
+                        window.addEventListener('load',function(){
+                            
+                            $("#owl-[{!$Website->getModule()!}]").owlCarousel({
+                                slideSpeed : 300,
+                                paginationSpeed : 400,
+                                paginationSpeed : 1000,
+                                goToFirstSpeed : 2000,
+                                items : 5,
+                                itemsDesktop : [1199,3],
+                                itemsDesktopSmall : [979,3],
+                                autoPlay: 3000,
+                                stopOnHover : true,
+                                navigation:true,
+                                navigationText: [
+                                  '<i class="fa fa-chevron-left"></i>',
+                                  '<i class="fa fa-chevron-right"></i>'
+                                ] 
+                            });
+                        })
+                        </script>
                     </div>
                     [?]
                     [{?($moduleInfo[$Module]['all']['author_badge'] && $isContent['author_badge']):}]
@@ -151,7 +186,9 @@
                             </li>
                         </ul>
                     </div>
-                    
+                    <div class="container"> 
+                        [{!$this->Website->getSimilarModuleTags(9);!}]
+                    </div>
                 [?]
             </div>
             [{???(empty($Website->isUser)):}]
@@ -163,17 +200,6 @@
                     [{!$Website->__('Vous ne pouvez pas voir ce contenu')!}]
                 </div>
             [?]
-        </div>
-        <div class="col-md-3">
-            [{!$Website->getHtmlModuleSearch($q)!}]
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                  <a href="[{!BASE_URL.'?'.$Website->getModule()!}]"><h3 class="panel-title">[{!$Website->__('Catégories')!}]</h3></a>
-                </div>
-                <div class="panel-body">
-                  [{!$Website->getHtmlModuleCategories()!}]
-                </div>
-            </div>
         </div>
     </div>
 </div>

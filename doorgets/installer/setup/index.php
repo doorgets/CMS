@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 20, February 2014
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -32,9 +32,15 @@
 ******************************************************************************/
 umask(0022);
 session_start();
+$ver = phpversion();
+if (version_compare($ver, '5.3.0', '>=')) {
 
-define('BASE','./setup/');
-define('DOORGETS','http://www.doorgets.com/'); // Ne pas supprimer
-require_once BASE.'config/config.php';
+    define('BASE','./setup/');
+    define('DOORGETS','http://www.doorgets.com/'); // Ne pas supprimer
+    require_once BASE.'config/config.php';
 
-require_once ROUTER.'installerRouter.php';
+    require_once ROUTER.'installerRouter.php';
+
+} else {
+    echo "Your version of PHP is too old (".$ver.") please upgrade to 5.4.0 or more";
+}

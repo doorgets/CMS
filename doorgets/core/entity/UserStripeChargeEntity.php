@@ -1,4 +1,35 @@
-<?php
+<?php 
+
+/*******************************************************************************
+/*******************************************************************************
+    doorGets 7.0 - 01, February 2016
+    doorGets it's free PHP Open Source CMS PHP & MySQL
+    Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
+    
+/*******************************************************************************
+
+    Website : http://www.doorgets.com
+    Contact : http://www.doorgets.com/t/en/?contact
+    
+/*******************************************************************************
+    -= One life, One code =-
+/*******************************************************************************
+    
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    
+******************************************************************************
+******************************************************************************/
 
 class UserStripeChargeEntity extends AbstractEntity
 {
@@ -85,163 +116,118 @@ class UserStripeChargeEntity extends AbstractEntity
  
 	
 
-	public function setId($Id)
-	{
-		
+	public function setId($Id) {
 		$this->Id = $Id;
-
 		return $this;
 	} 
 	
 
-	public function setIdUser($IdUser)
-	{
-		
+	public function setIdUser($IdUser) {
 		$this->IdUser = $IdUser;
-
 		return $this;
 	} 
 	
 
-	public function setIdStripe($IdStripe)
-	{
-		
+	public function setIdStripe($IdStripe) {
 		$this->IdStripe = $IdStripe;
-
 		return $this;
 	} 
 	
 
-	public function setIdCharge($IdCharge)
-	{
-		
+	public function setIdCharge($IdCharge) {
 		$this->IdCharge = $IdCharge;
-
 		return $this;
 	} 
 	
 
-	public function setIdOrder($IdOrder)
-	{
-		
+	public function setIdOrder($IdOrder) {
 		$this->IdOrder = $IdOrder;
-
 		return $this;
 	} 
 	
 
-	public function setStatus($Status)
-	{
-		
+	public function setStatus($Status) {
 		$this->Status = $Status;
-
 		return $this;
 	} 
 	
 
-	public function setAmount($Amount)
-	{
-		
+	public function setAmount($Amount) {
 		$this->Amount = $Amount;
-
 		return $this;
 	} 
 	
 
-	public function setCurrency($Currency)
-	{
-		
+	public function setCurrency($Currency) {
 		$this->Currency = $Currency;
-
 		return $this;
 	} 
 	
 
-	public function setData($Data)
-	{
-		
+	public function setData($Data) {
 		$this->Data = $Data;
-
 		return $this;
 	} 
 	
 
-	public function setDateCreation($DateCreation)
-	{
-		
+	public function setDateCreation($DateCreation) {
 		$this->DateCreation = $DateCreation;
-
 		return $this;
 	} 
 	
 
-	public function setDateModification($DateModification)
-	{
-		
+	public function setDateModification($DateModification) {
 		$this->DateModification = $DateModification;
-
 		return $this;
 	} 
 
-		
-	public function getId()
-	{
+
+	public function getId() {
 		return $this->Id ;
 	} 
-		
-	public function getIdUser()
-	{
+
+	public function getIdUser() {
 		return $this->IdUser ;
 	} 
-		
-	public function getIdStripe()
-	{
+
+	public function getIdStripe() {
 		return $this->IdStripe ;
 	} 
-		
-	public function getIdCharge()
-	{
+
+	public function getIdCharge() {
 		return $this->IdCharge ;
 	} 
-		
-	public function getIdOrder()
-	{
+
+	public function getIdOrder() {
 		return $this->IdOrder ;
 	} 
-		
-	public function getStatus()
-	{
+
+	public function getStatus() {
 		return $this->Status ;
 	} 
-		
-	public function getAmount()
-	{
+
+	public function getAmount() {
 		return $this->Amount ;
 	} 
-		
-	public function getCurrency()
-	{
+
+	public function getCurrency() {
 		return $this->Currency ;
 	} 
-		
-	public function getData()
-	{
+
+	public function getData() {
 		return $this->Data ;
 	} 
-		
-	public function getDateCreation()
-	{
+
+	public function getDateCreation() {
 		return $this->DateCreation ;
 	} 
-		
-	public function getDateModification()
-	{
+
+	public function getDateModification() {
 		return $this->DateModification ;
 	} 
 
 		
-	public function getValidationId()
-	{
+	public function getValidationId() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 11, 
@@ -252,8 +238,7 @@ class UserStripeChargeEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationIdUser()
-	{
+	public function getValidationIdUser() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 11, 
@@ -264,8 +249,7 @@ class UserStripeChargeEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationIdStripe()
-	{
+	public function getValidationIdStripe() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -276,8 +260,7 @@ class UserStripeChargeEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationIdCharge()
-	{
+	public function getValidationIdCharge() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -288,8 +271,7 @@ class UserStripeChargeEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationIdOrder()
-	{
+	public function getValidationIdOrder() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -300,8 +282,7 @@ class UserStripeChargeEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationStatus()
-	{
+	public function getValidationStatus() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -312,8 +293,7 @@ class UserStripeChargeEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationAmount()
-	{
+	public function getValidationAmount() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 11, 
@@ -324,8 +304,7 @@ class UserStripeChargeEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationCurrency()
-	{
+	public function getValidationCurrency() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -336,8 +315,7 @@ class UserStripeChargeEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationData()
-	{
+	public function getValidationData() {
 		return array(
 			'type'	         => 'text', 
 			'size'			 => 0, 
@@ -348,8 +326,7 @@ class UserStripeChargeEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationDateCreation()
-	{
+	public function getValidationDateCreation() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 11, 
@@ -360,8 +337,7 @@ class UserStripeChargeEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationDateModification()
-	{
+	public function getValidationDateModification() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 11, 
@@ -372,13 +348,9 @@ class UserStripeChargeEntity extends AbstractEntity
 		);
 	} 
 
-	
 
 	public function _getMap() { 
-
-		
 		$parentMap = parent::_getMap();
-
 		return array_merge($parentMap, array(            
 		    'Id' =>  'id',            
 		    'IdUser' =>  'id_user',            
@@ -391,8 +363,7 @@ class UserStripeChargeEntity extends AbstractEntity
 		    'Data' =>  'data',            
 		    'DateCreation' =>  'date_creation',            
 		    'DateModification' =>  'date_modification',		
-		)); 
-
+		));
 	} 
 
 

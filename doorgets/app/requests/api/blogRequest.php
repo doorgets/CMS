@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -44,9 +44,9 @@ class BlogRequest extends doorGetsApiRequest{
         
         $out    = '';
         $id     = 0;        
-        if (!$this->doorGets->getIsUserLogged()) {
-            $this->doorGets->_errorJson("Access Token required");
-        }
+        // if (!$this->doorGets->getIsUserLogged()) {
+        //     $this->doorGets->_errorJson("Access Token required");
+        // }
 
         $cName = $this->doorGets->controllerNameNow();
         $User = $this->doorGets->user;
@@ -56,66 +56,69 @@ class BlogRequest extends doorGetsApiRequest{
         $lgActuel       = $this->doorGets->getLangueTradution();
         $moduleInfos    = $this->doorGets->moduleInfos($this->doorGets->Uri,$lgActuel);
 
-        // Init url redirection 
-        $redirectUrl = './?controller=module'.$moduleInfos['type'].'&uri='.$this->doorGets->Uri.'&lg='.$lgActuel;
+        if (!empty($User)) {
 
-        // Check if is content modo
-        (in_array($moduleInfos['id'], $User['liste_module_modo'])) ? $is_modo = true : $is_modo = false;
+            // Init url redirection 
+            $redirectUrl = './?controller=module'.$moduleInfos['type'].'&uri='.$this->doorGets->Uri.'&lg='.$lgActuel;
 
-        // Check if is module modo
-        (
-            in_array('module', $User['liste_module_interne'])  
-            && in_array('module_'.$moduleInfos['type'],  $User['liste_module_interne'])
+            // Check if is content modo
+            $is_modo = (in_array($moduleInfos['id'], $User['liste_module_modo']))?true:false;
 
-        ) ? $is_modules_modo = true : $is_modules_modo = false;
+            // Check if is module modo
+            (
+                in_array('module', $User['liste_module_interne'])  
+                && in_array('module_'.$moduleInfos['type'],  $User['liste_module_interne'])
 
-        // check if user can edit content
-        (in_array($moduleInfos['id'], $User['liste_module_edit'])) ? $user_can_edit = true : $user_can_edit = false;
+            ) ? $is_modules_modo = true : $is_modules_modo = false;
 
-        // check if user can delete content
-        (in_array($moduleInfos['id'], $User['liste_module_delete'])) ? $user_can_delete = true : $user_can_delete = false;
-        
-        // Init count total contents
-        $countContents = 0;
-        $arrForCountSearchQuery[] = array('key'=>"id_user",'type'=>'=','value'=>$User['id']);
-        
-        $countContents = $this->doorGets->getCountTable($this->doorGets->Table,$arrForCountSearchQuery);
+            // check if user can edit content
+            $user_can_edit = (in_array($moduleInfos['id'], $User['liste_module_edit']))?true:false;
 
-        // Check limit to add content
-        $isLimited = 0;
-        if (array_key_exists($moduleInfos['id'], $User['liste_module_limit']) &&  $User['liste_module_limit'] !== '0') {
-            $isLimited = (int)$User['liste_module_limit'][$moduleInfos['id']];
-        }
-        
-        // get Content for edit / delete
-        $params = $this->doorGets->Params();
-        if (array_key_exists('id',$params['GET'])) {
+            // check if user can delete content
+            $user_can_delete = (in_array($moduleInfos['id'], $User['liste_module_delete']))?true:false;
             
-            $id = $params['GET']['id'];
-            $isContent = $this->doorGets->dbQS($id,$this->doorGets->Table);
+            // Init count total contents
+            $countContents = 0;
+            $arrForCountSearchQuery[] = array('key'=>"id_user",'type'=>'=','value'=>$User['id']);
+            
+            $countContents = $this->doorGets->getCountTable($this->doorGets->Table,$arrForCountSearchQuery);
 
-            if (!empty($isContent)) {
-
-                if ($lgGroupe = @unserialize($isContent['groupe_traduction'])) {
-                    
-                    $idLgGroupe = $lgGroupe[$lgActuel];
-                    
-                    $isContentTraduction = $this->doorGets->dbQS($idLgGroupe,$this->doorGets->Table.'_traduction');
-                    if (!empty($isContentTraduction)) {
-                        $this->isContent = $isContent = array_merge($isContent,$isContentTraduction);
-                    }
-                    
-                }
-
-                // test if user can edit content
-                if (
-                    $isContent['id_user'] !== $User['id']
-                    && !in_array($isContent['id_groupe'], $User['liste_enfant_modo'])
-                ) {
-                    $this->doorGets->_errorJson($this->doorGets->__("Vous n'avez pas les droits pour afficher ce contenu"));
-                }
+            // Check limit to add content
+            $isLimited = 0;
+            if (array_key_exists($moduleInfos['id'], $User['liste_module_limit']) &&  $User['liste_module_limit'] !== '0') {
+                $isLimited = (int)$User['liste_module_limit'][$moduleInfos['id']];
             }
             
+            // get Content for edit / delete
+            $params = $this->doorGets->Params();
+            if (array_key_exists('id',$params['GET'])) {
+                
+                $id = $params['GET']['id'];
+                $isContent = $this->doorGets->dbQS($id,$this->doorGets->Table);
+
+                if (!empty($isContent)) {
+
+                    if ($lgGroupe = @unserialize($isContent['groupe_traduction'])) {
+                        
+                        $idLgGroupe = $lgGroupe[$lgActuel];
+                        
+                        $isContentTraduction = $this->doorGets->dbQS($idLgGroupe,$this->doorGets->Table.'_traduction');
+                        if (!empty($isContentTraduction)) {
+                            $this->isContent = $isContent = array_merge($isContent,$isContentTraduction);
+                        }
+                        
+                    }
+
+                    // test if user can edit content
+                    if (
+                        $isContent['id_user'] !== $User['id']
+                        && !in_array($isContent['id_groupe'], $User['liste_enfant_modo'])
+                    ) {
+                        $this->doorGets->_errorJson($this->doorGets->__("Vous n'avez pas les droits pour afficher ce contenu"));
+                    }
+                }
+                
+            }
         }
 
         $messageSuccess = $this->doorGets->__("Vos informations ont bien été mises à jour");

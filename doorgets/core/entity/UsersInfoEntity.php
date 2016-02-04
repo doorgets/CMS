@@ -1,4 +1,35 @@
-<?php
+<?php 
+
+/*******************************************************************************
+/*******************************************************************************
+    doorGets 7.0 - 01, February 2016
+    doorGets it's free PHP Open Source CMS PHP & MySQL
+    Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
+    
+/*******************************************************************************
+
+    Website : http://www.doorgets.com
+    Contact : http://www.doorgets.com/t/en/?contact
+    
+/*******************************************************************************
+    -= One life, One code =-
+/*******************************************************************************
+    
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    
+******************************************************************************
+******************************************************************************/
 
 class UsersInfoEntity extends AbstractEntity
 {
@@ -53,6 +84,13 @@ class UsersInfoEntity extends AbstractEntity
 	* @type  : varchar
 	* @size  : 255  
 	*/
+	protected $Company; 
+	
+
+	/**
+	* @type  : varchar
+	* @size  : 255  
+	*/
 	protected $Email; 
 	
 
@@ -82,6 +120,13 @@ class UsersInfoEntity extends AbstractEntity
 	* @size  : 255  
 	*/
 	protected $Country; 
+	
+
+	/**
+	* @type  : varchar
+	* @size  : 255  
+	*/
+	protected $Region; 
 	
 
 	/**
@@ -253,499 +298,378 @@ class UsersInfoEntity extends AbstractEntity
  
 	
 
-	public function setId($Id)
-	{
-		
+	public function setId($Id) {
 		$this->Id = $Id;
-
 		return $this;
 	} 
 	
 
-	public function setProfileType($ProfileType)
-	{
-		
+	public function setProfileType($ProfileType) {
 		$this->ProfileType = $ProfileType;
-
 		return $this;
 	} 
 	
 
-	public function setActive($Active)
-	{
-		
+	public function setActive($Active) {
 		$this->Active = $Active;
-
 		return $this;
 	} 
 	
 
-	public function setIdUser($IdUser)
-	{
-		
+	public function setIdUser($IdUser) {
 		$this->IdUser = $IdUser;
-
 		return $this;
 	} 
 	
 
-	public function setLangue($Langue)
-	{
-		
+	public function setLangue($Langue) {
 		$this->Langue = $Langue;
-
 		return $this;
 	} 
 	
 
-	public function setNetwork($Network)
-	{
-		
+	public function setNetwork($Network) {
 		$this->Network = $Network;
-
 		return $this;
 	} 
 	
 
-	public function setEmail($Email)
-	{
-		
+	public function setCompany($Company) {
+		$this->Company = $Company;
+		return $this;
+	} 
+	
+
+	public function setEmail($Email) {
 		$this->Email = $Email;
-
 		return $this;
 	} 
 	
 
-	public function setPseudo($Pseudo)
-	{
-		
+	public function setPseudo($Pseudo) {
 		$this->Pseudo = $Pseudo;
-
 		return $this;
 	} 
 	
 
-	public function setLastName($LastName)
-	{
-		
+	public function setLastName($LastName) {
 		$this->LastName = $LastName;
-
 		return $this;
 	} 
 	
 
-	public function setFirstName($FirstName)
-	{
-		
+	public function setFirstName($FirstName) {
 		$this->FirstName = $FirstName;
-
 		return $this;
 	} 
 	
 
-	public function setCountry($Country)
-	{
-		
+	public function setCountry($Country) {
 		$this->Country = $Country;
-
 		return $this;
 	} 
 	
 
-	public function setCity($City)
-	{
-		
+	public function setRegion($Region) {
+		$this->Region = $Region;
+		return $this;
+	} 
+	
+
+	public function setCity($City) {
 		$this->City = $City;
-
 		return $this;
 	} 
 	
 
-	public function setZipcode($Zipcode)
-	{
-		
+	public function setZipcode($Zipcode) {
 		$this->Zipcode = $Zipcode;
-
 		return $this;
 	} 
 	
 
-	public function setAdresse($Adresse)
-	{
-		
+	public function setAdresse($Adresse) {
 		$this->Adresse = $Adresse;
-
 		return $this;
 	} 
 	
 
-	public function setTelFix($TelFix)
-	{
-		
+	public function setTelFix($TelFix) {
 		$this->TelFix = $TelFix;
-
 		return $this;
 	} 
 	
 
-	public function setTelMobil($TelMobil)
-	{
-		
+	public function setTelMobil($TelMobil) {
 		$this->TelMobil = $TelMobil;
-
 		return $this;
 	} 
 	
 
-	public function setTelFax($TelFax)
-	{
-		
+	public function setTelFax($TelFax) {
 		$this->TelFax = $TelFax;
-
 		return $this;
 	} 
 	
 
-	public function setIdFacebook($IdFacebook)
-	{
-		
+	public function setIdFacebook($IdFacebook) {
 		$this->IdFacebook = $IdFacebook;
-
 		return $this;
 	} 
 	
 
-	public function setIdTwitter($IdTwitter)
-	{
-		
+	public function setIdTwitter($IdTwitter) {
 		$this->IdTwitter = $IdTwitter;
-
 		return $this;
 	} 
 	
 
-	public function setIdGoogle($IdGoogle)
-	{
-		
+	public function setIdGoogle($IdGoogle) {
 		$this->IdGoogle = $IdGoogle;
-
 		return $this;
 	} 
 	
 
-	public function setIdLinkedin($IdLinkedin)
-	{
-		
+	public function setIdLinkedin($IdLinkedin) {
 		$this->IdLinkedin = $IdLinkedin;
-
 		return $this;
 	} 
 	
 
-	public function setIdPinterest($IdPinterest)
-	{
-		
+	public function setIdPinterest($IdPinterest) {
 		$this->IdPinterest = $IdPinterest;
-
 		return $this;
 	} 
 	
 
-	public function setIdMyspace($IdMyspace)
-	{
-		
+	public function setIdMyspace($IdMyspace) {
 		$this->IdMyspace = $IdMyspace;
-
 		return $this;
 	} 
 	
 
-	public function setIdYoutube($IdYoutube)
-	{
-		
+	public function setIdYoutube($IdYoutube) {
 		$this->IdYoutube = $IdYoutube;
-
 		return $this;
 	} 
 	
 
-	public function setNotificationMail($NotificationMail)
-	{
-		
+	public function setNotificationMail($NotificationMail) {
 		$this->NotificationMail = $NotificationMail;
-
 		return $this;
 	} 
 	
 
-	public function setNotificationNewsletter($NotificationNewsletter)
-	{
-		
+	public function setNotificationNewsletter($NotificationNewsletter) {
 		$this->NotificationNewsletter = $NotificationNewsletter;
-
 		return $this;
 	} 
 	
 
-	public function setBirthday($Birthday)
-	{
-		
+	public function setBirthday($Birthday) {
 		$this->Birthday = $Birthday;
-
 		return $this;
 	} 
 	
 
-	public function setGender($Gender)
-	{
-		
+	public function setGender($Gender) {
 		$this->Gender = $Gender;
-
 		return $this;
 	} 
 	
 
-	public function setAvatar($Avatar)
-	{
-		
+	public function setAvatar($Avatar) {
 		$this->Avatar = $Avatar;
-
 		return $this;
 	} 
 	
 
-	public function setDescription($Description)
-	{
-		
+	public function setDescription($Description) {
 		$this->Description = $Description;
-
 		return $this;
 	} 
 	
 
-	public function setWebsite($Website)
-	{
-		
+	public function setWebsite($Website) {
 		$this->Website = $Website;
-
 		return $this;
 	} 
 	
 
-	public function setHoraire($Horaire)
-	{
-		
+	public function setHoraire($Horaire) {
 		$this->Horaire = $Horaire;
-
 		return $this;
 	} 
 	
 
-	public function setEditorHtml($EditorHtml)
-	{
-		
+	public function setEditorHtml($EditorHtml) {
 		$this->EditorHtml = $EditorHtml;
-
 		return $this;
 	} 
 	
 
-	public function setDateCreation($DateCreation)
-	{
-		
+	public function setDateCreation($DateCreation) {
 		$this->DateCreation = $DateCreation;
-
 		return $this;
 	} 
 	
 
-	public function setDateModification($DateModification)
-	{
-		
+	public function setDateModification($DateModification) {
 		$this->DateModification = $DateModification;
-
 		return $this;
 	} 
 
-		
-	public function getId()
-	{
+
+	public function getId() {
 		return $this->Id ;
 	} 
-		
-	public function getProfileType()
-	{
+
+	public function getProfileType() {
 		return $this->ProfileType ;
 	} 
-		
-	public function getActive()
-	{
+
+	public function getActive() {
 		return $this->Active ;
 	} 
-		
-	public function getIdUser()
-	{
+
+	public function getIdUser() {
 		return $this->IdUser ;
 	} 
-		
-	public function getLangue()
-	{
+
+	public function getLangue() {
 		return $this->Langue ;
 	} 
-		
-	public function getNetwork()
-	{
+
+	public function getNetwork() {
 		return $this->Network ;
 	} 
-		
-	public function getEmail()
-	{
+
+	public function getCompany() {
+		return $this->Company ;
+	} 
+
+	public function getEmail() {
 		return $this->Email ;
 	} 
-		
-	public function getPseudo()
-	{
+
+	public function getPseudo() {
 		return $this->Pseudo ;
 	} 
-		
-	public function getLastName()
-	{
+
+	public function getLastName() {
 		return $this->LastName ;
 	} 
-		
-	public function getFirstName()
-	{
+
+	public function getFirstName() {
 		return $this->FirstName ;
 	} 
-		
-	public function getCountry()
-	{
+
+	public function getCountry() {
 		return $this->Country ;
 	} 
-		
-	public function getCity()
-	{
+
+	public function getRegion() {
+		return $this->Region ;
+	} 
+
+	public function getCity() {
 		return $this->City ;
 	} 
-		
-	public function getZipcode()
-	{
+
+	public function getZipcode() {
 		return $this->Zipcode ;
 	} 
-		
-	public function getAdresse()
-	{
+
+	public function getAdresse() {
 		return $this->Adresse ;
 	} 
-		
-	public function getTelFix()
-	{
+
+	public function getTelFix() {
 		return $this->TelFix ;
 	} 
-		
-	public function getTelMobil()
-	{
+
+	public function getTelMobil() {
 		return $this->TelMobil ;
 	} 
-		
-	public function getTelFax()
-	{
+
+	public function getTelFax() {
 		return $this->TelFax ;
 	} 
-		
-	public function getIdFacebook()
-	{
+
+	public function getIdFacebook() {
 		return $this->IdFacebook ;
 	} 
-		
-	public function getIdTwitter()
-	{
+
+	public function getIdTwitter() {
 		return $this->IdTwitter ;
 	} 
-		
-	public function getIdGoogle()
-	{
+
+	public function getIdGoogle() {
 		return $this->IdGoogle ;
 	} 
-		
-	public function getIdLinkedin()
-	{
+
+	public function getIdLinkedin() {
 		return $this->IdLinkedin ;
 	} 
-		
-	public function getIdPinterest()
-	{
+
+	public function getIdPinterest() {
 		return $this->IdPinterest ;
 	} 
-		
-	public function getIdMyspace()
-	{
+
+	public function getIdMyspace() {
 		return $this->IdMyspace ;
 	} 
-		
-	public function getIdYoutube()
-	{
+
+	public function getIdYoutube() {
 		return $this->IdYoutube ;
 	} 
-		
-	public function getNotificationMail()
-	{
+
+	public function getNotificationMail() {
 		return $this->NotificationMail ;
 	} 
-		
-	public function getNotificationNewsletter()
-	{
+
+	public function getNotificationNewsletter() {
 		return $this->NotificationNewsletter ;
 	} 
-		
-	public function getBirthday()
-	{
+
+	public function getBirthday() {
 		return $this->Birthday ;
 	} 
-		
-	public function getGender()
-	{
+
+	public function getGender() {
 		return $this->Gender ;
 	} 
-		
-	public function getAvatar()
-	{
+
+	public function getAvatar() {
 		return $this->Avatar ;
 	} 
-		
-	public function getDescription()
-	{
+
+	public function getDescription() {
 		return $this->Description ;
 	} 
-		
-	public function getWebsite()
-	{
+
+	public function getWebsite() {
 		return $this->Website ;
 	} 
-		
-	public function getHoraire()
-	{
+
+	public function getHoraire() {
 		return $this->Horaire ;
 	} 
-		
-	public function getEditorHtml()
-	{
+
+	public function getEditorHtml() {
 		return $this->EditorHtml ;
 	} 
-		
-	public function getDateCreation()
-	{
+
+	public function getDateCreation() {
 		return $this->DateCreation ;
 	} 
-		
-	public function getDateModification()
-	{
+
+	public function getDateModification() {
 		return $this->DateModification ;
 	} 
 
 		
-	public function getValidationId()
-	{
+	public function getValidationId() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 11, 
@@ -756,8 +680,7 @@ class UsersInfoEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationProfileType()
-	{
+	public function getValidationProfileType() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 11, 
@@ -768,8 +691,7 @@ class UsersInfoEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationActive()
-	{
+	public function getValidationActive() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 11, 
@@ -780,8 +702,7 @@ class UsersInfoEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationIdUser()
-	{
+	public function getValidationIdUser() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 11, 
@@ -792,8 +713,7 @@ class UsersInfoEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationLangue()
-	{
+	public function getValidationLangue() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -804,8 +724,7 @@ class UsersInfoEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationNetwork()
-	{
+	public function getValidationNetwork() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 11, 
@@ -816,8 +735,7 @@ class UsersInfoEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationEmail()
-	{
+	public function getValidationCompany() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -828,8 +746,7 @@ class UsersInfoEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationPseudo()
-	{
+	public function getValidationEmail() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -840,8 +757,7 @@ class UsersInfoEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationLastName()
-	{
+	public function getValidationPseudo() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -852,8 +768,7 @@ class UsersInfoEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationFirstName()
-	{
+	public function getValidationLastName() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -864,8 +779,7 @@ class UsersInfoEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationCountry()
-	{
+	public function getValidationFirstName() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -876,8 +790,7 @@ class UsersInfoEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationCity()
-	{
+	public function getValidationCountry() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -888,8 +801,7 @@ class UsersInfoEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationZipcode()
-	{
+	public function getValidationRegion() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -900,8 +812,7 @@ class UsersInfoEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationAdresse()
-	{
+	public function getValidationCity() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -912,8 +823,7 @@ class UsersInfoEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationTelFix()
-	{
+	public function getValidationZipcode() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -924,8 +834,7 @@ class UsersInfoEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationTelMobil()
-	{
+	public function getValidationAdresse() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -936,8 +845,7 @@ class UsersInfoEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationTelFax()
-	{
+	public function getValidationTelFix() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -948,8 +856,7 @@ class UsersInfoEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationIdFacebook()
-	{
+	public function getValidationTelMobil() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -960,8 +867,7 @@ class UsersInfoEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationIdTwitter()
-	{
+	public function getValidationTelFax() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -972,8 +878,7 @@ class UsersInfoEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationIdGoogle()
-	{
+	public function getValidationIdFacebook() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -984,8 +889,7 @@ class UsersInfoEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationIdLinkedin()
-	{
+	public function getValidationIdTwitter() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -996,8 +900,7 @@ class UsersInfoEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationIdPinterest()
-	{
+	public function getValidationIdGoogle() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -1008,8 +911,7 @@ class UsersInfoEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationIdMyspace()
-	{
+	public function getValidationIdLinkedin() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -1020,8 +922,7 @@ class UsersInfoEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationIdYoutube()
-	{
+	public function getValidationIdPinterest() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -1032,8 +933,29 @@ class UsersInfoEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationNotificationMail()
-	{
+	public function getValidationIdMyspace() {
+		return array(
+			'type'	         => 'varchar', 
+			'size'			 => 255, 
+			'unique' 		 => false,
+			'required' 		 => false,
+			'primary_key' 	 => false,
+			'auto_increment' => false
+		);
+	} 
+		
+	public function getValidationIdYoutube() {
+		return array(
+			'type'	         => 'varchar', 
+			'size'			 => 255, 
+			'unique' 		 => false,
+			'required' 		 => false,
+			'primary_key' 	 => false,
+			'auto_increment' => false
+		);
+	} 
+		
+	public function getValidationNotificationMail() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 1, 
@@ -1044,8 +966,7 @@ class UsersInfoEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationNotificationNewsletter()
-	{
+	public function getValidationNotificationNewsletter() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 1, 
@@ -1056,8 +977,7 @@ class UsersInfoEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationBirthday()
-	{
+	public function getValidationBirthday() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -1068,8 +988,7 @@ class UsersInfoEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationGender()
-	{
+	public function getValidationGender() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -1080,8 +999,7 @@ class UsersInfoEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationAvatar()
-	{
+	public function getValidationAvatar() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -1092,8 +1010,7 @@ class UsersInfoEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationDescription()
-	{
+	public function getValidationDescription() {
 		return array(
 			'type'	         => 'text', 
 			'size'			 => 0, 
@@ -1104,8 +1021,7 @@ class UsersInfoEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationWebsite()
-	{
+	public function getValidationWebsite() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -1116,8 +1032,7 @@ class UsersInfoEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationHoraire()
-	{
+	public function getValidationHoraire() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -1128,8 +1043,7 @@ class UsersInfoEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationEditorHtml()
-	{
+	public function getValidationEditorHtml() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 50, 
@@ -1140,8 +1054,7 @@ class UsersInfoEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationDateCreation()
-	{
+	public function getValidationDateCreation() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 11, 
@@ -1152,8 +1065,7 @@ class UsersInfoEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationDateModification()
-	{
+	public function getValidationDateModification() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 11, 
@@ -1164,13 +1076,9 @@ class UsersInfoEntity extends AbstractEntity
 		);
 	} 
 
-	
 
 	public function _getMap() { 
-
-		
 		$parentMap = parent::_getMap();
-
 		return array_merge($parentMap, array(            
 		    'Id' =>  'id',            
 		    'ProfileType' =>  'profile_type',            
@@ -1178,11 +1086,13 @@ class UsersInfoEntity extends AbstractEntity
 		    'IdUser' =>  'id_user',            
 		    'Langue' =>  'langue',            
 		    'Network' =>  'network',            
+		    'Company' =>  'company',            
 		    'Email' =>  'email',            
 		    'Pseudo' =>  'pseudo',            
 		    'LastName' =>  'last_name',            
 		    'FirstName' =>  'first_name',            
 		    'Country' =>  'country',            
+		    'Region' =>  'region',            
 		    'City' =>  'city',            
 		    'Zipcode' =>  'zipcode',            
 		    'Adresse' =>  'adresse',            
@@ -1207,8 +1117,7 @@ class UsersInfoEntity extends AbstractEntity
 		    'EditorHtml' =>  'editor_html',            
 		    'DateCreation' =>  'date_creation',            
 		    'DateModification' =>  'date_modification',		
-		)); 
-
+		));
 	} 
 
 

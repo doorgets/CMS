@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -220,7 +220,7 @@ class ModuleGenformRequest extends doorGetsUserModuleRequest{
                         $this->doorGets->dbQD($isContent['id'],$this->doorGets->Table);
                         //$this->doorGets->clearDBCache();
                         
-                        FlashInfo::set("Les données sont supprimées.");
+                        FlashInfo::set($this->doorGets->__("Les données sont supprimées"));
                         $this->doorGets->_redirect($redirectUrl);
                     }
                     
@@ -250,7 +250,7 @@ class ModuleGenformRequest extends doorGetsUserModuleRequest{
                             
                         }
                         
-                        FlashInfo::set("Les données sont supprimées.");
+                        FlashInfo::set($this->doorGets->__("Les données sont supprimées"));
                         $this->doorGets->_redirect($redirectUrl);
                     }
                     

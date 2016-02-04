@@ -2,9 +2,9 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 20, February 2014
-    doorGets it's free PHP Open Source CMS PHP & MySQL
-    Copyright (C) 2012 - 2013 By Mounir R'Quiba -> Crazy PHP Lover
+    doorGets 7.0 - 01, February 2016
+    doorgets it's free PHP Open Source CMS PHP & MySQL
+    Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
 /*******************************************************************************
 
@@ -12,7 +12,7 @@
     Contact : http://www.doorgets.com/t/en/?contact
     
 /*******************************************************************************
-    -= One life for One code =-
+    -= One life, One code =-
 /*******************************************************************************
     
     This program is free software: you can redistribute it and/or modify
@@ -32,22 +32,22 @@
 ******************************************************************************/
 
 
-?> 
+
+?>
 <div class="doorGets-rubrique-center">
-    <div class="doorGets-rubrique-center-content">
-        <div class="doorGets-rubrique-left-center-title page-header">
+    <div class="doorGets-rubrique-center-title">
         
-        </div>
+    </div>
+    <div class="doorGets-rubrique-center-content">
         <legend>
             <b class="glyphicon violet glyphicon-bell "></b> [{!$this->doorGets->__('Modération')!}]
         </legend>
-        <div class="width-listing">
+        <div style="width: 100%;padding: 10px 0 0;overflow: hidden;">
             <div style="overflow: hidden;">
-                    <div style="float: left;padding: 7px 0 ">
+                <div style="float: left;padding: 7px 0 ">
                     <i>
-                        [{?(!empty($count)):}] [{!($ini+1)!}] [{!$this->doorGets->__("à")!}] [{!$finalPer!}] [{!$this->doorGets->__("sur")!}] [?] 
-                        <b>[{!$countTotal.' '!}] [{?( $countTotal > 1 ):}][{!$this->doorGets->__('Items')!}] [??] [{!$this->doorGets->__('Item')!}] [?]</b>
-                        | [{?(!empty($q)):}] [{!$this->doorGets->__('pour la recherche : ').' <b>'.$q.'</b>'!}] [?]
+                        [{?(!empty($cAll)):}] [{!($ini+1)!}] [{!$this->doorGets->__("à")!}] [{!$finalPer!}] [{!$this->doorGets->__("sur")!}] [?]
+                        [{?(!empty($q)):}] [{!$this->doorGets->__('pour la recherche : ').' <b>'.$q.'</b>'!}] [?]
                     </i>
                     <span id="doorGets-sort-count">
                         [{!$this->doorGets->__('Par')!}]
@@ -59,7 +59,7 @@
                      
                 </div>
                 <div  class="doorGets-box-search-module">
-                    [{!$this->doorGets->Form['_search_filter']->open('post',$urlToGo,'')!}]
+                    [{!$this->doorGets->Form['_search_filter']->open('post',$urlPageGo,'')!}]
                     [{!$this->doorGets->Form['_search_filter']->submit($this->doorGets->__('Chercher'),'','btn btn-success')!}]
                     <a href="?controller=[{!$this->doorGets->controllerNameNow()!}]&lg=[{!$lgActuel!}]" class="btn btn-danger doorGets-filter-bt" >[{!$this->doorGets->__('Reset')!}]</a>
                 </div>
@@ -67,23 +67,16 @@
             <div class="separateur-tb"></div>
             [{!$block->getHtml()!}]
             [{!$this->doorGets->Form['_search']->close()!}]
-            
-            [{?(!empty($count)):}]
-
-                <div class="separateur-tb"></div>
+            [{?(!empty($cAll)):}]
+                <br />
                 [{!$valPage!}]
+                <br /><br />
             [??]
-                [{?(!empty($aGroupeFilter)):}]
-                    <div class="alert alert-danger text-center">
-                        [{!$this->doorGets->__("Aucun resultat trouvé pour votre recherche");}]
-                    </div>
-                [??]
-                    <div class="alert alert-danger text-center">
-                        [{!$this->doorGets->__("Il n'y a aucun resultat")!}]
-                    </div>
-                [?]
-                
+                <div class="alert alert-info">
+                    <i class="fa fa-exclamation-triangle"></i> [{!$this->doorGets->__("Aucun résultat")!}]
+                </div>
             [?] 
         </div>
+        
     </div>
 </div>

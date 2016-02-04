@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -42,7 +42,7 @@ class doorGetsUserModuleRequest extends doorGetsUserRequest{
     }
     
     public function doAction() {
-        
+
         $out = '';
         
         // Init langue 
@@ -54,7 +54,7 @@ class doorGetsUserModuleRequest extends doorGetsUserRequest{
         $redirectUrl = './?controller=module'.$moduleInfos['type'].'&uri='.$this->doorGets->Uri.'&lg='.$lgActuel;
         
         // Check if is content modo
-        (in_array($moduleInfos['id'], $User['liste_module_modo'])) ? $is_modo = true : $is_modo = false;
+        $is_modo = (in_array($moduleInfos['id'], $User['liste_module_modo']))?true:false;
 
         // Check if is module modo
         (
@@ -64,10 +64,10 @@ class doorGetsUserModuleRequest extends doorGetsUserRequest{
         ) ? $is_modules_modo = true : $is_modules_modo = false;
 
         // check if user can edit content
-        (in_array($moduleInfos['id'], $User['liste_module_edit'])) ? $user_can_edit = true : $user_can_edit = false;
+        $user_can_edit = (in_array($moduleInfos['id'], $User['liste_module_edit']))?true:false;
 
         // check if user can delete content
-        (in_array($moduleInfos['id'], $User['liste_module_delete'])) ? $user_can_delete = true : $user_can_delete = false;
+        $user_can_delete = (in_array($moduleInfos['id'], $User['liste_module_delete']))?true:false;
         
         // Init count total contents
         $countContents = 0;
@@ -154,7 +154,7 @@ class doorGetsUserModuleRequest extends doorGetsUserRequest{
                         $iCat = explode('_',$k);
                         if (!empty($iCat) && $iCat[0] === 'categories' && is_numeric($iCat[1])) {
                             
-                            $listToCategories .= $iCat[1].',';
+                            $listToCategories .= '#'.$iCat[1].',';
                             unset($this->doorGets->Form->i[$k]);
                             
                         }
@@ -332,7 +332,7 @@ class doorGetsUserModuleRequest extends doorGetsUserRequest{
                         $iCat = explode('_',$k);
                         if (!empty($iCat) && $iCat[0] === 'categories' && is_numeric($iCat[1])) {
                             
-                            $listToCategories .= $iCat[1].',';
+                            $listToCategories .= '#'.$iCat[1].',';
                             unset($this->doorGets->Form->i[$k]);
                             
                         }
@@ -556,13 +556,13 @@ class doorGetsUserModuleRequest extends doorGetsUserRequest{
         
     }
     
-    public function saveLastContentVersion($id_content,$next_content = array()) {
+    public function saveLastContentVersion($id_content,$next_content = array(),$name_field="id_content") {
 
         $lgActuel       = $this->doorGets->getLangueTradution();
         $User           = $this->doorGets->user;
 
         // Save last Version
-        $isLastVersionTemp = $isLastVersion = $this->doorGets->dbQS($id_content,$this->doorGets->Table.'_traduction',"id_content"," AND langue='$lgActuel' LIMIT 1 ");
+        $isLastVersionTemp = $isLastVersion = $this->doorGets->dbQS($id_content,$this->doorGets->Table.'_traduction',$name_field," AND langue='$lgActuel' LIMIT 1 ");
         if (!empty($isLastVersion)) {
 
             unset($isLastVersion['id']);

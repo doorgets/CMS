@@ -57,7 +57,7 @@
 
 .sidebar-nav li {
     text-indent: 20px;
-    line-height: 40px;
+    line-height: 30px;
 }
 
 .sidebar-nav li a {
@@ -65,6 +65,7 @@
     text-decoration: none;
     color: #999999;
     font-size: 13pt;
+    padding: 3px 0;
 }
 
 .sidebar-nav li.active a {

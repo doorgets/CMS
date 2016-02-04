@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 20, February 2014
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2013 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -35,7 +35,7 @@
 class AuthentificationView extends doorGetsUserView{
     
     public function __construct(&$doorGets) {
-        
+        //vdump($_SESSION);
         parent::__construct($doorGets);
 
     }
@@ -75,10 +75,12 @@ class AuthentificationView extends doorGetsUserView{
                     $UserGoogleQuery->filterByAccessToken($token);
                     $UserGoogleQuery->find();
 
-                    $UserGoogleEntity = $UserGoogleQuery->_getEntity()->getData();
+                    $UserGoogleEntity = $UserGoogleQuery->_getEntity();
 
                     if ($UserGoogleEntity) {
-                        $userId = (int) $UserGoogleEntity['id_user'];
+                        $UserGoogleData = $UserGoogleEntity->getData();
+                        $userId = (int) $UserGoogleData['id_user'];
+                        
                         if ($userId == 0) {
                             $isOauthGoogle = true;
                         }
@@ -93,11 +95,12 @@ class AuthentificationView extends doorGetsUserView{
                     $UserFacebookQuery = new UserFacebookQuery($this->doorGets);
                     $UserFacebookQuery->filterByAccessToken($token);
                     $UserFacebookQuery->find();
-
-                    $UserFacebookEntity = $UserFacebookQuery->_getEntity()->getData();
+                    
+                    $UserFacebookEntity = $UserFacebookQuery->_getEntity();
 
                     if ($UserFacebookEntity) {
-                        $userId = (int) $UserFacebookEntity['id_user'];
+                        $UserFacebookData = $UserFacebookEntity->getData();
+                        $userId = (int) $UserFacebookData['id_user'];
                         if ($userId == 0) {
                             $isOauthFacebook = true;
                         }

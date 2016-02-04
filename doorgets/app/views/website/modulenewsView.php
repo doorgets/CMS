@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -44,7 +44,7 @@ class moduleNewsView extends doorgetsWebsiteView{
         $out = $q = $qN = '';
         $Website = $this->Website;
         $Module = $Website->getModule();
-        $moduleInfo = $Website->getActiveModules();
+        $moduleInfo = $Website->activeModules;
 
         $tplPassword = $this->checkModulePassword(
             $moduleInfo[$Module]['all']['with_password'],
@@ -100,7 +100,7 @@ class moduleNewsView extends doorgetsWebsiteView{
             $outSqlGroupe = " WHERE ".$nameTable.".active = 2
             AND ".$nameTable."_traduction.id_content = ".$nameTable.".id
             AND ".$nameTable."_traduction.langue = '".$Website->myLanguage()."'
-            ORDER BY ".$nameTable.".date_creation DESC ";
+            ORDER BY ".$nameTable.".ordre DESC ";
             
             $outRub = $Website->getModule();
             $categoryLabel = '';
@@ -115,7 +115,7 @@ class moduleNewsView extends doorgetsWebsiteView{
                     $outSqlGroupe = " WHERE ".$nameTable."_traduction.id_content = ".$nameTable.".id
                     AND ".$nameTable.".categorie LIKE '%".$isCategorie['id_cat'].",%'
                     AND  ".$nameTable.".active = 2 AND ".$nameTable."_traduction.langue = '".$Website->myLanguage()."'
-                    ORDER BY ".$nameTable.".date_creation DESC ";
+                    ORDER BY ".$nameTable.".ordre DESC ";
                     
                     $outRub = 'doorgets='.$getCategory;
                     if (array_key_exists($getCategory,$categories)) {
@@ -175,8 +175,18 @@ class moduleNewsView extends doorgetsWebsiteView{
             
             $getPagination = '';
             if ($totalContents > $per) { $getPagination = Pagination::pagePublic($totalContents,$p,$per,$urlPage); }
+            $nameTableTrad = $nameTable.'_traduction';
+            $all = $Website->dbQ("
+                SELECT ".$nameTableTrad.".id as id , ".$nameTable.".id as id_content 
+                FROM ".$nameTable.', '.$nameTableTrad.' '.$sqlLimit
+            );
+
+            foreach ($all as $k => $content) {
+                $isContent = $Website->dbQS($content['id_content'],$nameTable);
+                $isContentTrad = $Website->dbQS($content['id'],$nameTableTrad);
+                $all[$k] = array_merge($isContent,$isContentTrad);
+            }
             
-            $all = $Website->dbQ('SELECT * FROM '.$nameTable.', '.$nameTable.'_traduction '.$sqlLimit);
             $cAll = count($all);
             
             $finalPer = $ini+$per;
@@ -196,7 +206,7 @@ class moduleNewsView extends doorgetsWebsiteView{
                     $lenArticle = strlen($contents[$k]['article']);
                     
                     if ($lenArticle > $iMaxDescription - 1) {
-                        $contents[$k]['article'] = substr(strip_tags($contents[$k]['article']),0,$iMaxDescription).'...';
+                        $contents[$k]['article'] = $Website->_truncate($contents[$k]['article'],$iMaxDescription); //substr($contents[$k]['article'],0,$iMaxDescription).'...';
                     }
                     
                     $contents[$k]['order'] = $data['ordre'];
@@ -208,11 +218,11 @@ class moduleNewsView extends doorgetsWebsiteView{
             $groupeBy = $par;
             if (!empty($contents)) {$ini = $ini+1;}
 
-            $labelModuleGroup  = $Website->getActiveModules();
+            $labelModuleGroup  = $Website->activeModules;
             $labelModule       = $labelModuleGroup[$Website->getModule()]['all']['nom'];
 
             $urlAfterAction    = urlencode($Website->getCurrentUrl());
-            $urlAdd            = URL_USER.$Website->_lgUrl.'?controller=modulenews&uri='.$Website->getModule().'&action=add&back='.$urlAfterAction;
+            $urlAdd            = URL_USER.$Website->_lgUrl.'?controller=modulenews&uri='.$Website->getModule().'&action=add';
 
             $tplModuleNewsListing = Template::getWebsiteView('modules/news/news_listing',$Website->getTheme());
             ob_start(); if (is_file($tplModuleNewsListing)) { include $tplModuleNewsListing; }  $out .= ob_get_clean();
@@ -230,7 +240,7 @@ class moduleNewsView extends doorgetsWebsiteView{
                 
                 if (!empty($isContentActive)) {
 
-                    $isContent['article'] = htmlspecialchars_decode(html_entity_decode($isContent['article_tinymce']));
+                    $isContent['article'] = html_entity_decode($isContent['article_tinymce']);
                     $isContent['article'] = $Website->_convertMethod($isContent['article']);
                     $isContent['title'] = $isContent['titre'];
                     
@@ -242,6 +252,12 @@ class moduleNewsView extends doorgetsWebsiteView{
                     unset($isContent['meta_keys']);
                     unset($isContent['langue']);
                     
+                    $isContent['stars'] = 0; $isContent['stars_count']   = $isContentActive['stars_count'];
+                    if (!empty($isContentActive['stars_count'])) {
+                        $isContent['stars']         = number_format(($isContentActive['stars'] / $isContentActive['stars_count']),'1' );
+                    }
+
+                    $isContent['active']        = $isContentActive['active'];
                     $isContent['author_badge']  = $isContentActive['author_badge'];
                     $isContent['id_user']       = $isContentActive['id_user'];
                     $isContent['id_groupe']     = $isContentActive['id_groupe'];                   
@@ -252,7 +268,8 @@ class moduleNewsView extends doorgetsWebsiteView{
                     
                     $isContent['image_gallery'] = $Website->_toArray($isContent['image_gallery'],';');
                     
-                    $isContent['date_creation'] = GetDate::in($isContent['date_modification'],2,$Website->myLanguage);
+                    $isContent['date_creation'] = GetDate::in($isContentActive['date_creation'],2,$Website->myLanguage);
+                    $isContent['date_modification'] = GetDate::in($isContent['date_modification'],2,$Website->myLanguage);
                     
                     $aCategories = $Website->_toArray($isContentActive['categorie']);
                     if (!empty($aCategories)) {
@@ -270,7 +287,7 @@ class moduleNewsView extends doorgetsWebsiteView{
 
                     if (!empty($isContentActive)) {
 
-                        $isContent['article'] = htmlspecialchars_decode(html_entity_decode($isContentActiveVersion['article_tinymce']));
+                        $isContent['article'] = html_entity_decode($isContentActiveVersion['article_tinymce']);
                         $isContent['article'] = $Website->_convertMethod($isContent['article']);
                         $isContent['title'] = $isContentActiveVersion['titre'];
                         
@@ -282,6 +299,12 @@ class moduleNewsView extends doorgetsWebsiteView{
                         unset($isContent['meta_keys']);
                         unset($isContent['langue']);
                         
+                        $isContent['stars'] = 0; $isContent['stars_count']   = $isContentActive['stars_count'];
+                        if (!empty($isContentActive['stars_count'])) {
+                            $isContent['stars']         = number_format(($isContentActive['stars'] / $isContentActive['stars_count']),'1' );
+                        }
+
+                        $isContent['active']        = $isContentActive['active'];
                         $isContent['author_badge']  = $isContentActive['author_badge'];
                         $isContent['id_user']       = $isContentActive['id_user'];
                         $isContent['id_groupe']     = $isContentActive['id_groupe'];                   
@@ -292,7 +315,8 @@ class moduleNewsView extends doorgetsWebsiteView{
                         
                         $isContent['image_gallery'] = $Website->_toArray($isContent['image_gallery'],';');
                         
-                        $isContent['date_creation'] = GetDate::in($isContent['date_modification'],2,$Website->myLanguage);
+                        $isContent['date_creation'] = GetDate::in($isContentActive['date_creation'],2,$Website->myLanguage);
+                        $isContent['date_modification'] = GetDate::in($isContent['date_modification'],2,$Website->myLanguage);
                         
                         $aCategories = $Website->_toArray($isContentActive['categorie']);
                         if (!empty($aCategories)) {
@@ -308,7 +332,7 @@ class moduleNewsView extends doorgetsWebsiteView{
                 
             }
             
-            $labelModuleGroup = $Website->getActiveModules();
+            $labelModuleGroup = $Website->activeModules;
             $labelModule = $labelModuleGroup[$Website->getModule()]['all']['nom'];
 
             $this->userPrivilege['modo']  =  ( $Website->isUser && 
@@ -352,7 +376,7 @@ class moduleNewsView extends doorgetsWebsiteView{
             $urlDelete          = URL_USER.$Website->_lgUrl.'?controller=modulenews&uri='.$Website->getModule().'&action=delete&id='.$isContent['id_content'].'&lg='.$Website->getLangueTradution();
             $urlAdd             = URL_USER.$Website->_lgUrl.'?controller=modulenews&uri='.$Website->getModule().'&action=add';
             
-            $labelModuleGroup = $Website->getActiveModules();
+            $labelModuleGroup = $Website->activeModules;
             $labelModule = $labelModuleGroup[$Website->getModule()]['all']['nom'];
 
             extract($isContent);

@@ -32,7 +32,6 @@
 ******************************************************************************/
 
 // Authentification User
-
 $Auth = new AuthUser();
 $User = $Auth->isConnected();
 
@@ -50,6 +49,23 @@ if (empty($User) )
         
     }
 }
+
+// // Check Payment
+// if (!empty($User) && $User['payment']) {
+//     // Check if user have paid
+//     $orderQuery = new OrderQuery($doorGets);
+//     $orderQuery->filterByUserId($User['id']);
+//     $orderQuery->filterByStatus('payment_success');
+//     $orderQuery->filterByType('subscription');
+//     $orderQuery->find();
+    
+//     $userOrders = $orderQuery->_getEntities('array');
+//     // if not paid redirect to paiement page
+    
+//     if (empty($userOrders)){
+//         header('Location:'.URL.'payment/?lg='.$User['langue']); exit();
+//     }
+// }
 
 $tplWrapper = Template::getView('user/user_wrapper');
 include $tplWrapper;

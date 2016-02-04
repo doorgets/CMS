@@ -1,4 +1,35 @@
-<?php
+<?php 
+
+/*******************************************************************************
+/*******************************************************************************
+    doorGets 7.0 - 01, February 2016
+    doorGets it's free PHP Open Source CMS PHP & MySQL
+    Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
+    
+/*******************************************************************************
+
+    Website : http://www.doorgets.com
+    Contact : http://www.doorgets.com/t/en/?contact
+    
+/*******************************************************************************
+    -= One life, One code =-
+/*******************************************************************************
+    
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    
+******************************************************************************
+******************************************************************************/
 
 class UserGoogleEntity extends AbstractEntity
 {
@@ -127,247 +158,178 @@ class UserGoogleEntity extends AbstractEntity
  
 	
 
-	public function setId($Id)
-	{
-		
+	public function setId($Id) {
 		$this->Id = $Id;
-
 		return $this;
 	} 
 	
 
-	public function setIdUser($IdUser)
-	{
-		
+	public function setIdUser($IdUser) {
 		$this->IdUser = $IdUser;
-
 		return $this;
 	} 
 	
 
-	public function setIdGoogle($IdGoogle)
-	{
-		
+	public function setIdGoogle($IdGoogle) {
 		$this->IdGoogle = $IdGoogle;
-
 		return $this;
 	} 
 	
 
-	public function setEmail($Email)
-	{
-		
+	public function setEmail($Email) {
 		$this->Email = $Email;
-
 		return $this;
 	} 
 	
 
-	public function setVerifiedEmail($VerifiedEmail)
-	{
-		
+	public function setVerifiedEmail($VerifiedEmail) {
 		$this->VerifiedEmail = $VerifiedEmail;
-
 		return $this;
 	} 
 	
 
-	public function setName($Name)
-	{
-		
+	public function setName($Name) {
 		$this->Name = $Name;
-
 		return $this;
 	} 
 	
 
-	public function setGivenName($GivenName)
-	{
-		
+	public function setGivenName($GivenName) {
 		$this->GivenName = $GivenName;
-
 		return $this;
 	} 
 	
 
-	public function setFamilyName($FamilyName)
-	{
-		
+	public function setFamilyName($FamilyName) {
 		$this->FamilyName = $FamilyName;
-
 		return $this;
 	} 
 	
 
-	public function setLink($Link)
-	{
-		
+	public function setLink($Link) {
 		$this->Link = $Link;
-
 		return $this;
 	} 
 	
 
-	public function setPicture($Picture)
-	{
-		
+	public function setPicture($Picture) {
 		$this->Picture = $Picture;
-
 		return $this;
 	} 
 	
 
-	public function setGender($Gender)
-	{
-		
+	public function setGender($Gender) {
 		$this->Gender = $Gender;
-
 		return $this;
 	} 
 	
 
-	public function setLocale($Locale)
-	{
-		
+	public function setLocale($Locale) {
 		$this->Locale = $Locale;
-
 		return $this;
 	} 
 	
 
-	public function setAccessToken($AccessToken)
-	{
-		
+	public function setAccessToken($AccessToken) {
 		$this->AccessToken = $AccessToken;
-
 		return $this;
 	} 
 	
 
-	public function setRefreshToken($RefreshToken)
-	{
-		
+	public function setRefreshToken($RefreshToken) {
 		$this->RefreshToken = $RefreshToken;
-
 		return $this;
 	} 
 	
 
-	public function setUserData($UserData)
-	{
-		
+	public function setUserData($UserData) {
 		$this->UserData = $UserData;
-
 		return $this;
 	} 
 	
 
-	public function setDateCreation($DateCreation)
-	{
-		
+	public function setDateCreation($DateCreation) {
 		$this->DateCreation = $DateCreation;
-
 		return $this;
 	} 
 	
 
-	public function setDateModification($DateModification)
-	{
-		
+	public function setDateModification($DateModification) {
 		$this->DateModification = $DateModification;
-
 		return $this;
 	} 
 
-		
-	public function getId()
-	{
+
+	public function getId() {
 		return $this->Id ;
 	} 
-		
-	public function getIdUser()
-	{
+
+	public function getIdUser() {
 		return $this->IdUser ;
 	} 
-		
-	public function getIdGoogle()
-	{
+
+	public function getIdGoogle() {
 		return $this->IdGoogle ;
 	} 
-		
-	public function getEmail()
-	{
+
+	public function getEmail() {
 		return $this->Email ;
 	} 
-		
-	public function getVerifiedEmail()
-	{
+
+	public function getVerifiedEmail() {
 		return $this->VerifiedEmail ;
 	} 
-		
-	public function getName()
-	{
+
+	public function getName() {
 		return $this->Name ;
 	} 
-		
-	public function getGivenName()
-	{
+
+	public function getGivenName() {
 		return $this->GivenName ;
 	} 
-		
-	public function getFamilyName()
-	{
+
+	public function getFamilyName() {
 		return $this->FamilyName ;
 	} 
-		
-	public function getLink()
-	{
+
+	public function getLink() {
 		return $this->Link ;
 	} 
-		
-	public function getPicture()
-	{
+
+	public function getPicture() {
 		return $this->Picture ;
 	} 
-		
-	public function getGender()
-	{
+
+	public function getGender() {
 		return $this->Gender ;
 	} 
-		
-	public function getLocale()
-	{
+
+	public function getLocale() {
 		return $this->Locale ;
 	} 
-		
-	public function getAccessToken()
-	{
+
+	public function getAccessToken() {
 		return $this->AccessToken ;
 	} 
-		
-	public function getRefreshToken()
-	{
+
+	public function getRefreshToken() {
 		return $this->RefreshToken ;
 	} 
-		
-	public function getUserData()
-	{
+
+	public function getUserData() {
 		return $this->UserData ;
 	} 
-		
-	public function getDateCreation()
-	{
+
+	public function getDateCreation() {
 		return $this->DateCreation ;
 	} 
-		
-	public function getDateModification()
-	{
+
+	public function getDateModification() {
 		return $this->DateModification ;
 	} 
 
 		
-	public function getValidationId()
-	{
+	public function getValidationId() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 11, 
@@ -378,8 +340,7 @@ class UserGoogleEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationIdUser()
-	{
+	public function getValidationIdUser() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 11, 
@@ -390,8 +351,7 @@ class UserGoogleEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationIdGoogle()
-	{
+	public function getValidationIdGoogle() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -402,8 +362,7 @@ class UserGoogleEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationEmail()
-	{
+	public function getValidationEmail() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -414,8 +373,7 @@ class UserGoogleEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationVerifiedEmail()
-	{
+	public function getValidationVerifiedEmail() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -426,8 +384,7 @@ class UserGoogleEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationName()
-	{
+	public function getValidationName() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -438,8 +395,7 @@ class UserGoogleEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationGivenName()
-	{
+	public function getValidationGivenName() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -450,8 +406,7 @@ class UserGoogleEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationFamilyName()
-	{
+	public function getValidationFamilyName() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -462,8 +417,7 @@ class UserGoogleEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationLink()
-	{
+	public function getValidationLink() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -474,8 +428,7 @@ class UserGoogleEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationPicture()
-	{
+	public function getValidationPicture() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -486,8 +439,7 @@ class UserGoogleEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationGender()
-	{
+	public function getValidationGender() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -498,8 +450,7 @@ class UserGoogleEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationLocale()
-	{
+	public function getValidationLocale() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -510,8 +461,7 @@ class UserGoogleEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationAccessToken()
-	{
+	public function getValidationAccessToken() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -522,8 +472,7 @@ class UserGoogleEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationRefreshToken()
-	{
+	public function getValidationRefreshToken() {
 		return array(
 			'type'	         => 'varchar', 
 			'size'			 => 255, 
@@ -534,8 +483,7 @@ class UserGoogleEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationUserData()
-	{
+	public function getValidationUserData() {
 		return array(
 			'type'	         => 'text', 
 			'size'			 => 0, 
@@ -546,8 +494,7 @@ class UserGoogleEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationDateCreation()
-	{
+	public function getValidationDateCreation() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 11, 
@@ -558,8 +505,7 @@ class UserGoogleEntity extends AbstractEntity
 		);
 	} 
 		
-	public function getValidationDateModification()
-	{
+	public function getValidationDateModification() {
 		return array(
 			'type'	         => 'int', 
 			'size'			 => 11, 
@@ -570,13 +516,9 @@ class UserGoogleEntity extends AbstractEntity
 		);
 	} 
 
-	
 
 	public function _getMap() { 
-
-		
 		$parentMap = parent::_getMap();
-
 		return array_merge($parentMap, array(            
 		    'Id' =>  'id',            
 		    'IdUser' =>  'id_user',            
@@ -595,8 +537,7 @@ class UserGoogleEntity extends AbstractEntity
 		    'UserData' =>  'user_data',            
 		    'DateCreation' =>  'date_creation',            
 		    'DateModification' =>  'date_modification',		
-		)); 
-
+		));
 	} 
 
 

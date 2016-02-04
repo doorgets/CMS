@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -37,20 +37,24 @@ class DBCache{
     public $dir;
     public $duree;
     public $name;
-    public $statut = 0;
+    public $statut = false;
     public $get = array();
     
-    public function __construct($module,$name,$duree= 30) {
+    public function __construct() {
+        
+    }
+
+    public function init($module,$name,$duree= 30) {
         
         $this->dir = CACHE_DB.$module.'/';
         
         if (!is_dir(CACHE_DB)) {
-            @mkdir(CACHE_DB, 0777, true);
+            mkdir(CACHE_DB, 0777, true);
         }
 
         $dirModule = $this->dir.$module.'/';
         if (!is_dir($this->dir)) {
-            @mkdir($this->dir, 0777, true);
+            mkdir($this->dir, 0777, true);
         }
         
         $this->name = $this->dir.$name;
@@ -58,10 +62,10 @@ class DBCache{
         
         
         if (file_exists($this->name)) {
-            $this->statut = 1;
+            //echo $this->name.' 111 <br />';
+            $this->statut = true;
             $this->get = $this->lire();
         }
-        
     }
     
     public function ecrire($content) {

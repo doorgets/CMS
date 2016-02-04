@@ -43,7 +43,7 @@ $pwdInfo .= $this->doorGets->__("Nous vous conseillons de choisir un mot de pass
 <div class="doorGets-box-login">
     [{?(count($this->doorGets->allLanguagesWebsite) > 1):}]
     <div  class="btn-group pull-right btn-langue-change">
-        <a  class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
+        <a  class="btn btn-default dropdown-toggle no-loader" data-toggle="dropdown" href="#">
             [{!$this->doorGets->allLanguagesWebsite[$this->doorGets->myLanguage]!}] 
             <b class="caret"></b>
         </a>
@@ -66,7 +66,7 @@ $pwdInfo .= $this->doorGets->__("Nous vous conseillons de choisir un mot de pass
             [{?($isOauthGoogle):}]
             <div>
                 [{!$this->doorGets->Form['google']->open('post','','')!}]
-                    <label>[{!$this->doorGets->__('E-mail')!}] : </label> [{!$UserGoogleEntity['email']!}]
+                    <label>[{!$this->doorGets->__('E-mail')!}] : </label> [{!$UserGoogleData['email']!}]
                     <div class="row">
                         <div class="col-md-6">
                             [{!$this->doorGets->Form['doorgets']->inputTooltip($this->doorGets->__('Prénom'),'firstname')!}]
@@ -77,9 +77,71 @@ $pwdInfo .= $this->doorGets->__("Nous vous conseillons de choisir un mot de pass
                             <div class="separateur-tb"></div>
                         </div>
                     </div>
+                     <div class="separateur-tb"></div>
+                    [{!$this->doorGets->Form['google']->select('<b class="glyphicon glyphicon-globe"></b> '.$this->doorGets->__('Votre fuseau horaire'),'horaire',$this->doorGets->getArrayForms('times_zone'),'Europe/Paris')!}]
                     <div class="separateur-tb"></div>
                     [{!$this->doorGets->Form['google']->inputTooltip('<b class="glyphicon glyphicon-user"></b> '.$this->doorGets->__('Pseudo'),'login','text','','',$pseudoInfo)!}]
                     <div class="separateur-tb"></div>
+                    [{?(!empty($this->doorGets->configWeb['terms_tinymce']) || !empty($this->doorGets->configWeb['cgu_tinymce']) || !empty($this->doorGets->configWeb['privacy_tinymce'])):}]
+                    <div class="text-left"> 
+                    <h4>[{!$this->doorGets->__("Si vous continuez, vous acceptez")!}] :</h4>   
+                        [{?(!empty($this->doorGets->configWeb['cgu_tinymce'])):}]
+                            <span class="show-click-cgu" data-toggle="modal" data-target="#cguModal"><i class="fa fa-check green-c"></i> [{!$this->doorGets->__("Conditions générales d'utilisation")!}]</span>
+                            <div id="cguModal" class="modal fade" role="dialog">
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">[{!$this->doorGets->__("Conditions générales d'utilisation")!}]</h4>
+                                  </div>
+                                  <div class="modal-body">
+                                    [{!$this->doorGets->configWeb['cgu_tinymce']!}]
+                                  </div>
+                                </div>
+
+                              </div>
+                            </div>
+                        [?]
+                        [{?(!empty($this->doorGets->configWeb['terms_tinymce'])):}]
+                            <span class="show-click-terms" data-toggle="modal" data-target="#termsModal"><i class="fa fa-check green-c"></i> [{!$this->doorGets->__("Conditions générales de vente")!}]</span>
+                            <div id="termsModal" class="modal fade" role="dialog">
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">[{!$this->doorGets->__("Conditions générales de vente")!}]</h4>
+                                  </div>
+                                  <div class="modal-body">
+                                    [{!$this->doorGets->configWeb['terms_tinymce']!}]
+                                  </div>
+                                </div>
+
+                              </div>
+                            </div>
+                        [?]
+                        [{?(!empty($this->doorGets->configWeb['privacy_tinymce'])):}]
+                            <span class="show-click-privacy" data-toggle="modal" data-target="#privacyModal"><i class="fa fa-check green-c"></i> [{!$this->doorGets->__("Politique de confidentialité")!}]</span>
+                            <div id="privacyModal" class="modal fade" role="dialog">
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">[{!$this->doorGets->__("Politique de confidentialité")!}]</h4>
+                                  </div>
+                                  <div class="modal-body">
+                                    [{!$this->doorGets->configWeb['privacy_tinymce']!}]
+                                  </div>
+                                </div>
+
+                              </div>
+                            </div>
+                        [?]
+                        <div class="separateur-tb"></div>
+                    </div>
+                    [?]
+                    <div class="checkbox text-center">
+                        [{!$this->doorGets->Form['google']->checkbox($this->doorGets->__("S'inscrire à la newsletter"),'registerNewsletter','1','checked');}]
+                    </div>
                     <div class="text-center">
                         [{!$this->doorGets->Form['google']->submit($this->doorGets->__("Confirmer mon inscription"),'','btn btn-lg btn-success')!}]
                     </div>
@@ -89,7 +151,7 @@ $pwdInfo .= $this->doorGets->__("Nous vous conseillons de choisir un mot de pass
             [{?($isOauthFacebook):}]
             <div>
                 [{!$this->doorGets->Form['facebook']->open('post','','')!}]
-                    <label>[{!$this->doorGets->__('E-mail')!}] : </label> [{!$UserFacebookEntity['email']!}]
+                    <label>[{!$this->doorGets->__('E-mail')!}] : </label> [{!$UserFacebookData['email']!}]
                     <div class="separateur-tb"></div>
                     <div class="row">
                         <div class="col-md-6">
@@ -101,8 +163,71 @@ $pwdInfo .= $this->doorGets->__("Nous vous conseillons de choisir un mot de pass
                             <div class="separateur-tb"></div>
                         </div>
                     </div>
+                     <div class="separateur-tb"></div>
+                    [{!$this->doorGets->Form['facebook']->select('<b class="glyphicon glyphicon-globe"></b> '.$this->doorGets->__('Votre fuseau horaire'),'horaire',$this->doorGets->getArrayForms('times_zone'),'Europe/Paris')!}]
+                    <div class="separateur-tb"></div>
                     [{!$this->doorGets->Form['facebook']->inputTooltip('<b class="glyphicon glyphicon-user"></b> '.$this->doorGets->__('Pseudo'),'login','text','','',$pseudoInfo)!}]
                     <div class="separateur-tb"></div>
+                    [{?(!empty($this->doorGets->configWeb['terms_tinymce']) || !empty($this->doorGets->configWeb['cgu_tinymce']) || !empty($this->doorGets->configWeb['privacy_tinymce'])):}]
+                    <div class="text-left"> 
+                    <h4>[{!$this->doorGets->__("Si vous continuez, vous acceptez")!}] :</h4>   
+                        [{?(!empty($this->doorGets->configWeb['cgu_tinymce'])):}]
+                            <span class="show-click-cgu" data-toggle="modal" data-target="#cguModal"><i class="fa fa-check green-c"></i> [{!$this->doorGets->__("Conditions générales d'utilisation")!}]</span>
+                            <div id="cguModal" class="modal fade" role="dialog">
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">[{!$this->doorGets->__("Conditions générales d'utilisation")!}]</h4>
+                                  </div>
+                                  <div class="modal-body">
+                                    [{!$this->doorGets->configWeb['cgu_tinymce']!}]
+                                  </div>
+                                </div>
+
+                              </div>
+                            </div>
+                        [?]
+                        [{?(!empty($this->doorGets->configWeb['terms_tinymce'])):}]
+                            <span class="show-click-terms" data-toggle="modal" data-target="#termsModal"><i class="fa fa-check green-c"></i> [{!$this->doorGets->__("Conditions générales de vente")!}]</span>
+                            <div id="termsModal" class="modal fade" role="dialog">
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">[{!$this->doorGets->__("Conditions générales de vente")!}]</h4>
+                                  </div>
+                                  <div class="modal-body">
+                                    [{!$this->doorGets->configWeb['terms_tinymce']!}]
+                                  </div>
+                                </div>
+
+                              </div>
+                            </div>
+                        [?]
+                        [{?(!empty($this->doorGets->configWeb['privacy_tinymce'])):}]
+                            <span class="show-click-privacy" data-toggle="modal" data-target="#privacyModal"><i class="fa fa-check green-c"></i> [{!$this->doorGets->__("Politique de confidentialité")!}]</span>
+                            <div id="privacyModal" class="modal fade" role="dialog">
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">[{!$this->doorGets->__("Politique de confidentialité")!}]</h4>
+                                  </div>
+                                  <div class="modal-body">
+                                    [{!$this->doorGets->configWeb['privacy_tinymce']!}]
+                                  </div>
+                                </div>
+
+                              </div>
+                            </div>
+                        [?]
+                        <div class="separateur-tb"></div>
+                    </div>
+                    [?]
+                    <div class="checkbox text-center">
+                        [{!$this->doorGets->Form['facebook']->checkbox($this->doorGets->__("S'inscrire à la newsletter"),'registerNewsletter','1','checked');}]
+                    </div>
                     <div class="text-center">
                         [{!$this->doorGets->Form['facebook']->submit($this->doorGets->__("Confirmer mon inscription"),'','btn btn-lg btn-success')!}]
                     </div>
@@ -112,12 +237,12 @@ $pwdInfo .= $this->doorGets->__("Nous vous conseillons de choisir un mot de pass
             [??]
 
             [{?($this->doorGets->configWeb['oauth_google_active']):}]
-            <a href="[{!BASE!}]/oauth2/google/login/" class="google-sigin">S'inscrire avec Google</a> 
+            <a href="[{!BASE!}]/oauth2/google/login/" class="google-sigin"><i class="fa fa-google"></i> Google</a> 
             <div class="separateur-tb"></div>
             [?]
 
             [{?($this->doorGets->configWeb['oauth_facebook_active']):}]
-            <a href="[{!BASE!}]/oauth2/facebook/login/" class="facebook-sigin">S'inscrire avec Facebook</a> 
+            <a href="[{!BASE!}]/oauth2/facebook/login/" class="facebook-sigin"><i class="fa fa-facebook"></i> Facebook</a> 
             <div class="separateur-tb"></div>
             [?]
 
@@ -155,9 +280,71 @@ $pwdInfo .= $this->doorGets->__("Nous vous conseillons de choisir un mot de pass
                         </div>
                     </div>
                     <div class="separateur-tb"></div>
+                    [{!$this->doorGets->Form['doorgets']->select('<b class="glyphicon glyphicon-globe"></b> '.$this->doorGets->__('Votre fuseau horaire'),'horaire',$this->doorGets->getArrayForms('times_zone'),'Europe/Paris')!}]
+                    <div class="separateur-tb"></div>
                     <label >[{!$this->doorGets->__("Êtes-vous un humain, ou spammeur ?")!}] </label> 
                     [{!$this->doorGets->Form['doorgets']->captcha()!}]
                     <div class="separateur-tb"></div>
+                    [{?(!empty($this->doorGets->configWeb['terms_tinymce']) || !empty($this->doorGets->configWeb['cgu_tinymce']) || !empty($this->doorGets->configWeb['privacy_tinymce'])):}]
+                    <div class="text-left"> 
+                    <h4>[{!$this->doorGets->__("Si vous continuez, vous acceptez")!}] :</h4>   
+                        [{?(!empty($this->doorGets->configWeb['cgu_tinymce'])):}]
+                            <span class="show-click-cgu" data-toggle="modal" data-target="#cguModal"><i class="fa fa-check green-c"></i> [{!$this->doorGets->__("Conditions générales d'utilisation")!}]</span>
+                            <div id="cguModal" class="modal fade" role="dialog">
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">[{!$this->doorGets->__("Conditions générales d'utilisation")!}]</h4>
+                                  </div>
+                                  <div class="modal-body">
+                                    [{!$this->doorGets->configWeb['cgu_tinymce']!}]
+                                  </div>
+                                </div>
+
+                              </div>
+                            </div>
+                        [?]
+                        [{?(!empty($this->doorGets->configWeb['terms_tinymce'])):}]
+                            <span class="show-click-terms" data-toggle="modal" data-target="#termsModal"><i class="fa fa-check green-c"></i> [{!$this->doorGets->__("Conditions générales de vente")!}]</span>
+                            <div id="termsModal" class="modal fade" role="dialog">
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">[{!$this->doorGets->__("Conditions générales de vente")!}]</h4>
+                                  </div>
+                                  <div class="modal-body">
+                                    [{!$this->doorGets->configWeb['terms_tinymce']!}]
+                                  </div>
+                                </div>
+
+                              </div>
+                            </div>
+                        [?]
+                        [{?(!empty($this->doorGets->configWeb['privacy_tinymce'])):}]
+                            <span class="show-click-privacy" data-toggle="modal" data-target="#privacyModal"><i class="fa fa-check green-c"></i> [{!$this->doorGets->__("Politique de confidentialité")!}]</span>
+                            <div id="privacyModal" class="modal fade" role="dialog">
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">[{!$this->doorGets->__("Politique de confidentialité")!}]</h4>
+                                  </div>
+                                  <div class="modal-body">
+                                    [{!$this->doorGets->configWeb['privacy_tinymce']!}]
+                                  </div>
+                                </div>
+
+                              </div>
+                            </div>
+                        [?]
+                        <div class="separateur-tb"></div>
+                    </div>
+                    [?]
+                    <div class="checkbox text-center">
+                        [{!$this->doorGets->Form['doorgets']->checkbox($this->doorGets->__("S'inscrire à la newsletter"),'registerNewsletter','1','checked');}]
+                    </div>
                     <div class="text-center">
                         [{!$this->doorGets->Form['doorgets']->submit($this->doorGets->__("S'inscrire"),'','btn btn-lg btn-success')!}]
                     </div>
@@ -183,18 +370,18 @@ $pwdInfo .= $this->doorGets->__("Nous vous conseillons de choisir un mot de pass
 <div class="text-center ">
     
     <br />
-    <a href="?controller=authentification" class="btn btn-lg btn-link"><b class="glyphicon glyphicon-user"></b> [{!$this->doorGets->__("Se connecter")!}]</a>
+    <a href="?controller=authentification" class="btn btn-lg btn-link "><b class="glyphicon glyphicon-user"></b> [{!$this->doorGets->__("Se connecter")!}]</a>
     [{?($countGroupes > 0):}]
     <br />
         [{?($countGroupes > 1):}]
             [{/($groupes as $id => $groupe):}]
                 [{?($isActiveGroupe !== $groupe['uri']):}]
-                    <a href="?controller=authentification&action=register&groupe=[{!$groupe['uri']!}]" class="btn btn-lg btn-link"><b class="glyphicon glyphicon-star"></b> [{!$this->doorGets->__("S'inscrire en tant que")!}] [{!$groupe['title']!}]</a>
+                    <a href="?controller=authentification&action=register&groupe=[{!$groupe['uri']!}]" class="btn btn-lg btn-link "><b class="glyphicon glyphicon-star"></b> [{!$this->doorGets->__("S'inscrire en tant que")!}] [{!$groupe['title']!}]</a>
                     <br />
                 [?]
             [/]
         [?]
     [?]
     <br />
-    <a href="[{!URL!}][{?(count($this->doorGets->allLanguagesWebsite > 1)):}][{!'t/'.$this->doorGets->myLanguage.'/'!}][?]" class="btn btn-lg btn-link"><b class="glyphicon glyphicon-home"></b> [{!$this->doorGets->__('Accéder au site')!}]</a>
+    <a href="[{!URL!}][{?(count($this->doorGets->allLanguagesWebsite > 1)):}][{!'t/'.$this->doorGets->myLanguage.'/'!}][?]" class="btn btn-lg btn-link "><b class="glyphicon glyphicon-home"></b> [{!$this->doorGets->__('Accéder au site')!}]</a>
 </div>

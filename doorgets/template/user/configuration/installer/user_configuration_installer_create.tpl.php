@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -48,7 +48,7 @@
         [{!$form->input($translate->l("Titre").' <span class="cp-obli">*</span>','title')!}]
         <div class="separateur-tb"></div>
         <div class="text-center">
-            [{!$form->submit($translate->l("Créer un installer maintenant"))!}]
+            [{!$form->submit($translate->l("Créer un système d'installation maintenant"))!}]
         </div>
         
         

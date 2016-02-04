@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -51,11 +51,15 @@ unset($aActivation[0]);
                 [{!$this->doorGets->Form->select($this->doorGets->__('Statut'),'active',$aActivation,2);}]
                 <div class="separateur-tb"></div>
             [?]
-            [{!$this->doorGets->Form->input($this->doorGets->__('Titre').' <span class="cp-obli">*</span>','titre');}]
-            <div class="separateur-tb"></div>
-            [{?($is_modo):}]
-                [{!$this->doorGets->Form->input($this->doorGets->__("Url simplifiée").' <span class="cp-obli">*</span> <small style="font-weight:100;">('.$this->doorGets->__("Caractères alpha numérique seulement").')</small><br />','uri');}]
-                <div class="separateur-tb"></div>
-            [??]
-                [{!$this->doorGets->Form->input('','uri','hidden');}]
-            [?]
+            <div class="row"> 
+                <div class="col-md-6">
+                    [{!$this->doorGets->Form->input($this->doorGets->__('Titre').' <span class="cp-obli">*</span>','titre');}]
+                </div>
+                <div class="col-md-6">
+                    [{?($is_modo):}]
+                        [{!$this->doorGets->Form->input($this->doorGets->__("Url simplifiée").' <span class="cp-obli">*</span> <small style="font-weight:100;">('.$this->doorGets->__("Caractères alpha numérique seulement").')</small><br />','uri');}]
+                    [??]
+                        [{!$this->doorGets->Form->input('','uri','hidden');}]
+                    [?]
+                </div>
+            </div>

@@ -1,4 +1,35 @@
-<?php
+<?php 
+
+/*******************************************************************************
+/*******************************************************************************
+    doorGets 7.0 - 01, February 2016
+    doorGets it's free PHP Open Source CMS PHP & MySQL
+    Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
+    
+/*******************************************************************************
+
+    Website : http://www.doorgets.com
+    Contact : http://www.doorgets.com/t/en/?contact
+    
+/*******************************************************************************
+    -= One life, One code =-
+/*******************************************************************************
+    
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    
+******************************************************************************
+******************************************************************************/
 
 class DgEmailNotificationVersionQuery extends AbstractQuery 
 {
@@ -17,429 +48,329 @@ class DgEmailNotificationVersionQuery extends AbstractQuery
 		return $this->_pk;
 	} 
 
-	public function findByPK($Id)
-	{
+	public function findByPK($Id) {
 		$this->_findBy['Id'] =  $Id;
-
 		$this->_load();
 		return $this;
 	} 
 		
-	public function findById($Id)
-	{
+	public function findById($Id) {
 		$this->_findBy['Id'] =  $Id;
-
 		$this->_load();
 		return $this;
 	} 
 		
-	public function findRangeById($from,$to)
-	{
+	public function findRangeById($from,$to) {
 		$this->_findRangeBy['Id'] =  array(
 			'from' => $from,
 			'to'   => $to
 		);
-
 		$this->_load();
 		return $this;
 	} 
 
 
-	public function findGreaterThanById($int)
-	{
+	public function findGreaterThanById($int) {
 		$this->_findGreaterThanBy['Id'] = $int;
-
 		$this->_load();
 		return $this;
 	} 
 
 
-	public function findLessThanById($int)
-	{
+	public function findLessThanById($int) {
 		$this->_findLessThanBy['Id'] = $int;
-
 		$this->_load();
 		return $this;
 	} 
 		
-	public function findByIdContent($IdContent)
-	{
+	public function findByIdContent($IdContent) {
 		$this->_findBy['IdContent'] =  $IdContent;
-
 		$this->_load();
 		return $this;
 	} 
 		
-	public function findRangeByIdContent($from,$to)
-	{
+	public function findRangeByIdContent($from,$to) {
 		$this->_findRangeBy['IdContent'] =  array(
 			'from' => $from,
 			'to'   => $to
 		);
-
 		$this->_load();
 		return $this;
 	} 
 
 
-	public function findGreaterThanByIdContent($int)
-	{
+	public function findGreaterThanByIdContent($int) {
 		$this->_findGreaterThanBy['IdContent'] = $int;
-
 		$this->_load();
 		return $this;
 	} 
 
 
-	public function findLessThanByIdContent($int)
-	{
+	public function findLessThanByIdContent($int) {
 		$this->_findLessThanBy['IdContent'] = $int;
-
 		$this->_load();
 		return $this;
 	} 
 		
-	public function findByTitle($Title)
-	{
+	public function findByTitle($Title) {
 		$this->_findBy['Title'] =  $Title;
-
 		$this->_load();
 		return $this;
 	} 
 		
-	public function findByPseudo($Pseudo)
-	{
+	public function findByPseudo($Pseudo) {
 		$this->_findBy['Pseudo'] =  $Pseudo;
-
 		$this->_load();
 		return $this;
 	} 
 		
-	public function findByIdUser($IdUser)
-	{
+	public function findByIdUser($IdUser) {
 		$this->_findBy['IdUser'] =  $IdUser;
-
 		$this->_load();
 		return $this;
 	} 
 		
-	public function findRangeByIdUser($from,$to)
-	{
+	public function findRangeByIdUser($from,$to) {
 		$this->_findRangeBy['IdUser'] =  array(
 			'from' => $from,
 			'to'   => $to
 		);
-
 		$this->_load();
 		return $this;
 	} 
 
 
-	public function findGreaterThanByIdUser($int)
-	{
+	public function findGreaterThanByIdUser($int) {
 		$this->_findGreaterThanBy['IdUser'] = $int;
-
 		$this->_load();
 		return $this;
 	} 
 
 
-	public function findLessThanByIdUser($int)
-	{
+	public function findLessThanByIdUser($int) {
 		$this->_findLessThanBy['IdUser'] = $int;
-
 		$this->_load();
 		return $this;
 	} 
 		
-	public function findByIdGroupe($IdGroupe)
-	{
+	public function findByIdGroupe($IdGroupe) {
 		$this->_findBy['IdGroupe'] =  $IdGroupe;
-
 		$this->_load();
 		return $this;
 	} 
 		
-	public function findRangeByIdGroupe($from,$to)
-	{
+	public function findRangeByIdGroupe($from,$to) {
 		$this->_findRangeBy['IdGroupe'] =  array(
 			'from' => $from,
 			'to'   => $to
 		);
-
 		$this->_load();
 		return $this;
 	} 
 
 
-	public function findGreaterThanByIdGroupe($int)
-	{
+	public function findGreaterThanByIdGroupe($int) {
 		$this->_findGreaterThanBy['IdGroupe'] = $int;
-
 		$this->_load();
 		return $this;
 	} 
 
 
-	public function findLessThanByIdGroupe($int)
-	{
+	public function findLessThanByIdGroupe($int) {
 		$this->_findLessThanBy['IdGroupe'] = $int;
-
 		$this->_load();
 		return $this;
 	} 
 		
-	public function findByLangue($Langue)
-	{
+	public function findByLangue($Langue) {
 		$this->_findBy['Langue'] =  $Langue;
-
 		$this->_load();
 		return $this;
 	} 
 		
-	public function findByType($Type)
-	{
+	public function findByType($Type) {
 		$this->_findBy['Type'] =  $Type;
-
 		$this->_load();
 		return $this;
 	} 
 		
-	public function findBySubject($Subject)
-	{
+	public function findBySubject($Subject) {
 		$this->_findBy['Subject'] =  $Subject;
-
 		$this->_load();
 		return $this;
 	} 
 		
-	public function findByMessageTinymce($MessageTinymce)
-	{
+	public function findByMessageTinymce($MessageTinymce) {
 		$this->_findBy['MessageTinymce'] =  $MessageTinymce;
-
 		$this->_load();
 		return $this;
 	} 
 		
-	public function findByDateCreation($DateCreation)
-	{
+	public function findByDateCreation($DateCreation) {
 		$this->_findBy['DateCreation'] =  $DateCreation;
-
 		$this->_load();
 		return $this;
 	} 
 		
-	public function findRangeByDateCreation($from,$to)
-	{
+	public function findRangeByDateCreation($from,$to) {
 		$this->_findRangeBy['DateCreation'] =  array(
 			'from' => $from,
 			'to'   => $to
 		);
-
 		$this->_load();
 		return $this;
 	} 
 
 
-	public function findGreaterThanByDateCreation($int)
-	{
+	public function findGreaterThanByDateCreation($int) {
 		$this->_findGreaterThanBy['DateCreation'] = $int;
-
 		$this->_load();
 		return $this;
 	} 
 
 
-	public function findLessThanByDateCreation($int)
-	{
+	public function findLessThanByDateCreation($int) {
 		$this->_findLessThanBy['DateCreation'] = $int;
-
 		$this->_load();
 		return $this;
 	} 
 
 		
-	public function findOneById($Id)
-	{
+	public function findOneById($Id) {
 		$this->_findOneBy['Id'] =  $Id;
-
 		$this->_load();
 		return $this->_result;
 	} 
 		
-	public function findOneByIdContent($IdContent)
-	{
+	public function findOneByIdContent($IdContent) {
 		$this->_findOneBy['IdContent'] =  $IdContent;
-
 		$this->_load();
 		return $this->_result;
 	} 
 		
-	public function findOneByTitle($Title)
-	{
+	public function findOneByTitle($Title) {
 		$this->_findOneBy['Title'] =  $Title;
-
 		$this->_load();
 		return $this->_result;
 	} 
 		
-	public function findOneByPseudo($Pseudo)
-	{
+	public function findOneByPseudo($Pseudo) {
 		$this->_findOneBy['Pseudo'] =  $Pseudo;
-
 		$this->_load();
 		return $this->_result;
 	} 
 		
-	public function findOneByIdUser($IdUser)
-	{
+	public function findOneByIdUser($IdUser) {
 		$this->_findOneBy['IdUser'] =  $IdUser;
-
 		$this->_load();
 		return $this->_result;
 	} 
 		
-	public function findOneByIdGroupe($IdGroupe)
-	{
+	public function findOneByIdGroupe($IdGroupe) {
 		$this->_findOneBy['IdGroupe'] =  $IdGroupe;
-
 		$this->_load();
 		return $this->_result;
 	} 
 		
-	public function findOneByLangue($Langue)
-	{
+	public function findOneByLangue($Langue) {
 		$this->_findOneBy['Langue'] =  $Langue;
-
 		$this->_load();
 		return $this->_result;
 	} 
 		
-	public function findOneByType($Type)
-	{
+	public function findOneByType($Type) {
 		$this->_findOneBy['Type'] =  $Type;
-
 		$this->_load();
 		return $this->_result;
 	} 
 		
-	public function findOneBySubject($Subject)
-	{
+	public function findOneBySubject($Subject) {
 		$this->_findOneBy['Subject'] =  $Subject;
-
 		$this->_load();
 		return $this->_result;
 	} 
 		
-	public function findOneByMessageTinymce($MessageTinymce)
-	{
+	public function findOneByMessageTinymce($MessageTinymce) {
 		$this->_findOneBy['MessageTinymce'] =  $MessageTinymce;
-
 		$this->_load();
 		return $this->_result;
 	} 
 		
-	public function findOneByDateCreation($DateCreation)
-	{
+	public function findOneByDateCreation($DateCreation) {
 		$this->_findOneBy['DateCreation'] =  $DateCreation;
-
 		$this->_load();
 		return $this->_result;
 	} 
 
 		
-	public function findByLikeId($Id)
-	{
+	public function findByLikeId($Id) {
 		$this->_findByLike['Id'] =  $Id;
-
 		$this->_load();
 		return $this;
 	} 
 		
-	public function findByLikeIdContent($IdContent)
-	{
+	public function findByLikeIdContent($IdContent) {
 		$this->_findByLike['IdContent'] =  $IdContent;
-
 		$this->_load();
 		return $this;
 	} 
 		
-	public function findByLikeTitle($Title)
-	{
+	public function findByLikeTitle($Title) {
 		$this->_findByLike['Title'] =  $Title;
-
 		$this->_load();
 		return $this;
 	} 
 		
-	public function findByLikePseudo($Pseudo)
-	{
+	public function findByLikePseudo($Pseudo) {
 		$this->_findByLike['Pseudo'] =  $Pseudo;
-
 		$this->_load();
 		return $this;
 	} 
 		
-	public function findByLikeIdUser($IdUser)
-	{
+	public function findByLikeIdUser($IdUser) {
 		$this->_findByLike['IdUser'] =  $IdUser;
-
 		$this->_load();
 		return $this;
 	} 
 		
-	public function findByLikeIdGroupe($IdGroupe)
-	{
+	public function findByLikeIdGroupe($IdGroupe) {
 		$this->_findByLike['IdGroupe'] =  $IdGroupe;
-
 		$this->_load();
 		return $this;
 	} 
 		
-	public function findByLikeLangue($Langue)
-	{
+	public function findByLikeLangue($Langue) {
 		$this->_findByLike['Langue'] =  $Langue;
-
 		$this->_load();
 		return $this;
 	} 
 		
-	public function findByLikeType($Type)
-	{
+	public function findByLikeType($Type) {
 		$this->_findByLike['Type'] =  $Type;
-
 		$this->_load();
 		return $this;
 	} 
 		
-	public function findByLikeSubject($Subject)
-	{
+	public function findByLikeSubject($Subject) {
 		$this->_findByLike['Subject'] =  $Subject;
-
 		$this->_load();
 		return $this;
 	} 
 		
-	public function findByLikeMessageTinymce($MessageTinymce)
-	{
+	public function findByLikeMessageTinymce($MessageTinymce) {
 		$this->_findByLike['MessageTinymce'] =  $MessageTinymce;
-
 		$this->_load();
 		return $this;
 	} 
 		
-	public function findByLikeDateCreation($DateCreation)
-	{
+	public function findByLikeDateCreation($DateCreation) {
 		$this->_findByLike['DateCreation'] =  $DateCreation;
-
 		$this->_load();
 		return $this;
 	} 
 
 		
-	public function filterById($Id, $condition = 'AND')
-	{
-		
+	public function filterById($Id, $condition = 'AND') {
 		$_condition = $this->isAndOr($condition);
 		$this->loadFilterBy('Id',$Id,$_condition);
 
@@ -447,38 +378,30 @@ class DgEmailNotificationVersionQuery extends AbstractQuery
 		return $this;
 	} 
 		
-	public function filterRangeById($from,$to)
-	{
+	public function filterRangeById($from,$to) {
 		$this->_filterRangeBy['Id'] =  array(
 			'from' => $from,
 			'to'   => $to
 		);
-
 		$this->_load();
 		return $this;
 	} 
 
 
-	public function filterGreaterThanById($int)
-	{
+	public function filterGreaterThanById($int) {
 		$this->_filterGreaterThanBy['Id'] = $int;
-
 		$this->_load();
 		return $this;
 	} 
 
 
-	public function filterLessThanById($int)
-	{
+	public function filterLessThanById($int) {
 		$this->_filterLessThanBy['Id'] = $int;
-
 		$this->_load();
 		return $this;
 	} 
 		
-	public function filterByIdContent($IdContent, $condition = 'AND')
-	{
-		
+	public function filterByIdContent($IdContent, $condition = 'AND') {
 		$_condition = $this->isAndOr($condition);
 		$this->loadFilterBy('IdContent',$IdContent,$_condition);
 
@@ -486,38 +409,30 @@ class DgEmailNotificationVersionQuery extends AbstractQuery
 		return $this;
 	} 
 		
-	public function filterRangeByIdContent($from,$to)
-	{
+	public function filterRangeByIdContent($from,$to) {
 		$this->_filterRangeBy['IdContent'] =  array(
 			'from' => $from,
 			'to'   => $to
 		);
-
 		$this->_load();
 		return $this;
 	} 
 
 
-	public function filterGreaterThanByIdContent($int)
-	{
+	public function filterGreaterThanByIdContent($int) {
 		$this->_filterGreaterThanBy['IdContent'] = $int;
-
 		$this->_load();
 		return $this;
 	} 
 
 
-	public function filterLessThanByIdContent($int)
-	{
+	public function filterLessThanByIdContent($int) {
 		$this->_filterLessThanBy['IdContent'] = $int;
-
 		$this->_load();
 		return $this;
 	} 
 		
-	public function filterByTitle($Title, $condition = 'AND')
-	{
-		
+	public function filterByTitle($Title, $condition = 'AND') {
 		$_condition = $this->isAndOr($condition);
 		$this->loadFilterBy('Title',$Title,$_condition);
 
@@ -525,9 +440,7 @@ class DgEmailNotificationVersionQuery extends AbstractQuery
 		return $this;
 	} 
 		
-	public function filterByPseudo($Pseudo, $condition = 'AND')
-	{
-		
+	public function filterByPseudo($Pseudo, $condition = 'AND') {
 		$_condition = $this->isAndOr($condition);
 		$this->loadFilterBy('Pseudo',$Pseudo,$_condition);
 
@@ -535,9 +448,7 @@ class DgEmailNotificationVersionQuery extends AbstractQuery
 		return $this;
 	} 
 		
-	public function filterByIdUser($IdUser, $condition = 'AND')
-	{
-		
+	public function filterByIdUser($IdUser, $condition = 'AND') {
 		$_condition = $this->isAndOr($condition);
 		$this->loadFilterBy('IdUser',$IdUser,$_condition);
 
@@ -545,38 +456,30 @@ class DgEmailNotificationVersionQuery extends AbstractQuery
 		return $this;
 	} 
 		
-	public function filterRangeByIdUser($from,$to)
-	{
+	public function filterRangeByIdUser($from,$to) {
 		$this->_filterRangeBy['IdUser'] =  array(
 			'from' => $from,
 			'to'   => $to
 		);
-
 		$this->_load();
 		return $this;
 	} 
 
 
-	public function filterGreaterThanByIdUser($int)
-	{
+	public function filterGreaterThanByIdUser($int) {
 		$this->_filterGreaterThanBy['IdUser'] = $int;
-
 		$this->_load();
 		return $this;
 	} 
 
 
-	public function filterLessThanByIdUser($int)
-	{
+	public function filterLessThanByIdUser($int) {
 		$this->_filterLessThanBy['IdUser'] = $int;
-
 		$this->_load();
 		return $this;
 	} 
 		
-	public function filterByIdGroupe($IdGroupe, $condition = 'AND')
-	{
-		
+	public function filterByIdGroupe($IdGroupe, $condition = 'AND') {
 		$_condition = $this->isAndOr($condition);
 		$this->loadFilterBy('IdGroupe',$IdGroupe,$_condition);
 
@@ -584,38 +487,30 @@ class DgEmailNotificationVersionQuery extends AbstractQuery
 		return $this;
 	} 
 		
-	public function filterRangeByIdGroupe($from,$to)
-	{
+	public function filterRangeByIdGroupe($from,$to) {
 		$this->_filterRangeBy['IdGroupe'] =  array(
 			'from' => $from,
 			'to'   => $to
 		);
-
 		$this->_load();
 		return $this;
 	} 
 
 
-	public function filterGreaterThanByIdGroupe($int)
-	{
+	public function filterGreaterThanByIdGroupe($int) {
 		$this->_filterGreaterThanBy['IdGroupe'] = $int;
-
 		$this->_load();
 		return $this;
 	} 
 
 
-	public function filterLessThanByIdGroupe($int)
-	{
+	public function filterLessThanByIdGroupe($int) {
 		$this->_filterLessThanBy['IdGroupe'] = $int;
-
 		$this->_load();
 		return $this;
 	} 
 		
-	public function filterByLangue($Langue, $condition = 'AND')
-	{
-		
+	public function filterByLangue($Langue, $condition = 'AND') {
 		$_condition = $this->isAndOr($condition);
 		$this->loadFilterBy('Langue',$Langue,$_condition);
 
@@ -623,9 +518,7 @@ class DgEmailNotificationVersionQuery extends AbstractQuery
 		return $this;
 	} 
 		
-	public function filterByType($Type, $condition = 'AND')
-	{
-		
+	public function filterByType($Type, $condition = 'AND') {
 		$_condition = $this->isAndOr($condition);
 		$this->loadFilterBy('Type',$Type,$_condition);
 
@@ -633,9 +526,7 @@ class DgEmailNotificationVersionQuery extends AbstractQuery
 		return $this;
 	} 
 		
-	public function filterBySubject($Subject, $condition = 'AND')
-	{
-		
+	public function filterBySubject($Subject, $condition = 'AND') {
 		$_condition = $this->isAndOr($condition);
 		$this->loadFilterBy('Subject',$Subject,$_condition);
 
@@ -643,9 +534,7 @@ class DgEmailNotificationVersionQuery extends AbstractQuery
 		return $this;
 	} 
 		
-	public function filterByMessageTinymce($MessageTinymce, $condition = 'AND')
-	{
-		
+	public function filterByMessageTinymce($MessageTinymce, $condition = 'AND') {
 		$_condition = $this->isAndOr($condition);
 		$this->loadFilterBy('MessageTinymce',$MessageTinymce,$_condition);
 
@@ -653,9 +542,7 @@ class DgEmailNotificationVersionQuery extends AbstractQuery
 		return $this;
 	} 
 		
-	public function filterByDateCreation($DateCreation, $condition = 'AND')
-	{
-		
+	public function filterByDateCreation($DateCreation, $condition = 'AND') {
 		$_condition = $this->isAndOr($condition);
 		$this->loadFilterBy('DateCreation',$DateCreation,$_condition);
 
@@ -663,209 +550,155 @@ class DgEmailNotificationVersionQuery extends AbstractQuery
 		return $this;
 	} 
 		
-	public function filterRangeByDateCreation($from,$to)
-	{
+	public function filterRangeByDateCreation($from,$to) {
 		$this->_filterRangeBy['DateCreation'] =  array(
 			'from' => $from,
 			'to'   => $to
 		);
-
 		$this->_load();
 		return $this;
 	} 
 
 
-	public function filterGreaterThanByDateCreation($int)
-	{
+	public function filterGreaterThanByDateCreation($int) {
 		$this->_filterGreaterThanBy['DateCreation'] = $int;
-
 		$this->_load();
 		return $this;
 	} 
 
 
-	public function filterLessThanByDateCreation($int)
-	{
+	public function filterLessThanByDateCreation($int) {
 		$this->_filterLessThanBy['DateCreation'] = $int;
-
 		$this->_load();
 		return $this;
 	} 
 
 		
-	public function filterLikeById($Id)
-	{
+	public function filterLikeById($Id) {
 		$this->_filterLikeBy['Id'] =  $Id;
-
 		$this->_load();
 		return $this;
 	} 
 		
-	public function filterLikeByIdContent($IdContent)
-	{
+	public function filterLikeByIdContent($IdContent) {
 		$this->_filterLikeBy['IdContent'] =  $IdContent;
-
 		$this->_load();
 		return $this;
 	} 
 		
-	public function filterLikeByTitle($Title)
-	{
+	public function filterLikeByTitle($Title) {
 		$this->_filterLikeBy['Title'] =  $Title;
-
 		$this->_load();
 		return $this;
 	} 
 		
-	public function filterLikeByPseudo($Pseudo)
-	{
+	public function filterLikeByPseudo($Pseudo) {
 		$this->_filterLikeBy['Pseudo'] =  $Pseudo;
-
 		$this->_load();
 		return $this;
 	} 
 		
-	public function filterLikeByIdUser($IdUser)
-	{
+	public function filterLikeByIdUser($IdUser) {
 		$this->_filterLikeBy['IdUser'] =  $IdUser;
-
 		$this->_load();
 		return $this;
 	} 
 		
-	public function filterLikeByIdGroupe($IdGroupe)
-	{
+	public function filterLikeByIdGroupe($IdGroupe) {
 		$this->_filterLikeBy['IdGroupe'] =  $IdGroupe;
-
 		$this->_load();
 		return $this;
 	} 
 		
-	public function filterLikeByLangue($Langue)
-	{
+	public function filterLikeByLangue($Langue) {
 		$this->_filterLikeBy['Langue'] =  $Langue;
-
 		$this->_load();
 		return $this;
 	} 
 		
-	public function filterLikeByType($Type)
-	{
+	public function filterLikeByType($Type) {
 		$this->_filterLikeBy['Type'] =  $Type;
-
 		$this->_load();
 		return $this;
 	} 
 		
-	public function filterLikeBySubject($Subject)
-	{
+	public function filterLikeBySubject($Subject) {
 		$this->_filterLikeBy['Subject'] =  $Subject;
-
 		$this->_load();
 		return $this;
 	} 
 		
-	public function filterLikeByMessageTinymce($MessageTinymce)
-	{
+	public function filterLikeByMessageTinymce($MessageTinymce) {
 		$this->_filterLikeBy['MessageTinymce'] =  $MessageTinymce;
-
 		$this->_load();
 		return $this;
 	} 
 		
-	public function filterLikeByDateCreation($DateCreation)
-	{
+	public function filterLikeByDateCreation($DateCreation) {
 		$this->_filterLikeBy['DateCreation'] =  $DateCreation;
-
 		$this->_load();
 		return $this;
 	} 
 
 		
-	public function orderById($direction = 'ASC')
-	{
+	public function orderById($direction = 'ASC') {
 		$this->loadDirection('id',$direction);
-		
 		return $this;
 	} 
 		
-	public function orderByIdContent($direction = 'ASC')
-	{
+	public function orderByIdContent($direction = 'ASC') {
 		$this->loadDirection('id_content',$direction);
-		
 		return $this;
 	} 
 		
-	public function orderByTitle($direction = 'ASC')
-	{
+	public function orderByTitle($direction = 'ASC') {
 		$this->loadDirection('title',$direction);
-		
 		return $this;
 	} 
 		
-	public function orderByPseudo($direction = 'ASC')
-	{
+	public function orderByPseudo($direction = 'ASC') {
 		$this->loadDirection('pseudo',$direction);
-		
 		return $this;
 	} 
 		
-	public function orderByIdUser($direction = 'ASC')
-	{
+	public function orderByIdUser($direction = 'ASC') {
 		$this->loadDirection('id_user',$direction);
-		
 		return $this;
 	} 
 		
-	public function orderByIdGroupe($direction = 'ASC')
-	{
+	public function orderByIdGroupe($direction = 'ASC') {
 		$this->loadDirection('id_groupe',$direction);
-		
 		return $this;
 	} 
 		
-	public function orderByLangue($direction = 'ASC')
-	{
+	public function orderByLangue($direction = 'ASC') {
 		$this->loadDirection('langue',$direction);
-		
 		return $this;
 	} 
 		
-	public function orderByType($direction = 'ASC')
-	{
+	public function orderByType($direction = 'ASC') {
 		$this->loadDirection('type',$direction);
-		
 		return $this;
 	} 
 		
-	public function orderBySubject($direction = 'ASC')
-	{
+	public function orderBySubject($direction = 'ASC') {
 		$this->loadDirection('subject',$direction);
-		
 		return $this;
 	} 
 		
-	public function orderByMessageTinymce($direction = 'ASC')
-	{
+	public function orderByMessageTinymce($direction = 'ASC') {
 		$this->loadDirection('message_tinymce',$direction);
-		
 		return $this;
 	} 
 		
-	public function orderByDateCreation($direction = 'ASC')
-	{
+	public function orderByDateCreation($direction = 'ASC') {
 		$this->loadDirection('date_creation',$direction);
-		
 		return $this;
 	} 
 
-	
 
 	public function _getMap() { 
-
-		
 		$parentMap = parent::_getMap();
-
 		return array_merge($parentMap, array(            
 		    'Id' =>  'id',            
 		    'IdContent' =>  'id_content',            
@@ -878,8 +711,7 @@ class DgEmailNotificationVersionQuery extends AbstractQuery
 		    'Subject' =>  'subject',            
 		    'MessageTinymce' =>  'message_tinymce',            
 		    'DateCreation' =>  'date_creation',		
-		)); 
-
+		));
 	} 
 
 

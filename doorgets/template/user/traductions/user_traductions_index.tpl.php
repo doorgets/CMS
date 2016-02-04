@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -56,23 +56,8 @@
                     $googleTranslateUrl = '<a href="https://translate.google.com/#fr/'.$_toLanguage.'/'.urlencode($v).'" target="blank">'.$v.' <b class="glyphicon glyphicon-share-alt"></b></a>';
                 }]
                 [{?(!array_key_exists($k,$_w)):}][{
-                    
-
                     $valCss = 'doorGets-no-value';
-                    $_w[$k] = '';
-                    
-                    if ($_toLanguage === 'fr') {
-                            $_w[$k] = $v;
-                    }else{
-
-                        if ($_toLanguage === 'tu') { $_toLanguage = 'tr'; }
-                        if ($_toLanguage === 'po') { $_toLanguage = 'pt'; }
-                        if ($_toLanguage === 'su') { $_toLanguage = 'sv'; }
-                        if ($_toLanguage === 'cn') { $_toLanguage = 'zh-CN'; }
-                        
-                        //$_w[$k] = GoogleTranslate::rest($v,'fr',$_toLanguage);
-                    }
-
+                    $_w[$k] = $v;
                 }][?]
                 <div style="margin-bottom:5px;border-left: solid 5px #ccc;padding: 5px;">
                     [{?($k):}]<span class="right">[{!$this->doorGets->Form->checkbox(' '.$this->doorGets->__('Supprimer'),'wdel_'.$k,'1')!}]</span>[?]  

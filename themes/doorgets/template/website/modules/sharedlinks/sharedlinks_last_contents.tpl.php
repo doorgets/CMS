@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -44,7 +44,7 @@
  
 ?>
 <!-- doorGets:start:modules/sharedlinks/sharedlinks_last_contents -->
-<div class="doorGets-sharedlinks-last-contents doorGets-module-last-[{!$module!}]">
+<div class="container doorGets-sharedlinks-last-contents doorGets-module-last-[{!$module!}]">
     <div class="row">
         <div class="col-md-12">
             [{?(!empty($Contents)):}]
@@ -53,7 +53,7 @@
                         <div class="col-md-2 left-date-sharedlinks"><h3></h3>[{!$content['date']!}]</div>
                         <div class="col-md-10 ">
                             <h3>
-                                <a href="[{!BASE_URL!}]?[{!$module!}]=[{!$content['content_traduction']['uri']!}]">[{!$content['content_traduction']['titre']!}]</a>
+                                <a href="[{!$this->getBaseUrl()!}]?[{!$module!}]=[{!$content['content_traduction']['uri']!}]">[{!$content['content_traduction']['titre']!}]</a>
                             </h3>
                             <div>
                                 <a href="[{!$content['article']!}]" >[{!$content['article']!}]</a>

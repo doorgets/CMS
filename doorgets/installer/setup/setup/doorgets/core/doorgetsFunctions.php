@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 20, February 2014
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -221,7 +221,6 @@ class doorgetsFunctions {
                 'response'  =>  $errorResponse,
                 'errors'    => $errors
             )
-            , JSON_PRETTY_PRINT
         );
         echo $return; exit();
     }
@@ -235,12 +234,13 @@ class doorgetsFunctions {
                 'success'   =>  true,
                 'response'  =>  $successResponse
             )
-            , JSON_PRETTY_PRINT
         );
         echo $return; exit();
     }
     
     public function installDatabase($data) {
+
+        $this->createDatabase($data);
 
         $adm_email = $data['user_email'];
 
@@ -248,38 +248,10 @@ class doorgetsFunctions {
         $sql_db     = $data['database_name'];
         $sql_login  = $data['database_login'];
         $sql_pwd    = $data['database_password'];
+        $mysql_version    = $data['mysql_version'];
             
-        $db = new CRUD($sql_host,$sql_db,$sql_login,$sql_pwd);
-         
-        $dataTrad['title']              = $data['website_title'];
-        $dataTrad['slogan']             = $data['website_slogan'];
-        $dataTrad['description']        = $data['website_meta_description'];
-        $dataTrad['copyright']          = $data['website_copyright'];
-        $dataTrad['year']               = $data['website_year_creation'];
-        $dataTrad['keywords']           = $data['website_meta_keywords'];
-        $dataTrad['date_modification']  = time();
-
-        $bigQueries = $this->getSQLQueryToImport();
-        
-        if (!empty($bigQueries)) {
-
-            if(array_key_exists('create', $bigQueries)) {
-                $db->dbQL($bigQueries['create']);
-                unset($bigQueries['create']);
-            }
-            
-            foreach ($bigQueries as $bigquery) {
-
-                if (!empty($bigquery)) {
-
-                    $db->dbQL($bigquery);
-                }
-            }
-
-            return true;
-        }
-        
-        return false;
+        $this->getSQLQueryToImport($sql_host,$sql_db,$sql_login,$sql_pwd,$mysql_version);
+        return true;
     }
 
     public function updateDatabase($data = array()){
@@ -357,8 +329,8 @@ class doorgetsFunctions {
         
     }
     
-    private function getSQLQueryToImport() {
-
+    private function getSQLQueryToImport($sql_host,$sql_db,$sql_login,$sql_pwd,$mysql_version) {
+        
         $file = 'database.zip';
         $toFile = BASE.'data/'.$file;
         if (!is_file($toFile)) {return '';}
@@ -388,49 +360,69 @@ class doorgetsFunctions {
             
             $configData  = unserialize($contents);
 
+            
+
             if (!empty($configData) && is_array($configData)) {
                 
                 $sql_query_install = '';
                 $dirDatabase = 'database/';
                 $bigQueries['create'] = '';
 
-                // Installation de la base de données
-                foreach($configData as $k=>$v) {
+                try {
                     
-                    if (!empty($v['sql_create_table'])) {
-                        
-                        $query = str_replace("\n",' ',$v['sql_create_table']);
-                        $query = str_replace("\t",'',$query);
-                        $query = str_replace("\r",'',$query);
-                        
-                        $bigQueries['create'] .= $query;
-                        
-                    }    
+                    $db = Connexion::getInstance($sql_host,$sql_db,$sql_login, $sql_pwd)->getConnexion();
 
-                    $positionBigQueries++;
-                    
-                    $dirDatabaseName = $dirTempDatabase.'database/'.$k.'/';
-                    $allFiles = $this->files($dirDatabaseName);
-                    foreach($allFiles as $nameFile) {
-                        
-                        $dataTableFile = file_get_contents($dirDatabaseName.$nameFile);
-                        if ($dataTableContent = unserialize($dataTableFile)) {
+                    // $default_charset = 'utf8';
+                    // $default_collation = 'utf8_general_ci';
+
+                    // if ($mysql_version > '5.5.3') {
+                    //     $default_charset = 'utf8mb4';
+                    //     $default_collation = 'utf8mb4_general_ci';
+                    // } 
+
+                    // $db->query("SET NAMES '$default_charset' COLLATE '$default_collation';");
+                    // Installation de la base de données
+                    $queries = '';
+                    foreach($configData as $k=>$v) {
+
+                        if (!empty($v['sql_create_table'])) {
                             
-                            $bigQueries[$positionBigQueries] = $dataTableContent;
-                            $positionBigQueries++;
-                        }
+                            $query = str_replace("\n",' ',$v['sql_create_table']);
+                            $query = str_replace("\t",'',$query);
+                            $query = str_replace("\r",'',$query);
+                            
+                            //$bigQueries['create'] .= $query;
+                            $queries .= $query;
+                            
+                        }    
                     }
 
-                    $positionBigQueries++;
+                    $db->exec($queries);
+
+                    // Installation de la base de données
+                    foreach($configData as $k=>$v) {
+                        
+                        $dirDatabaseName = $dirTempDatabase.'database/'.$k.'/';
+                        $allFiles = $this->files($dirDatabaseName);
+                        foreach($allFiles as $nameFile) {
+                            
+                            if (!empty($queries)) {
+                                $db->exec(file_get_contents($dirDatabaseName.$nameFile));
+                            }
+                        }
+                    }
                 }
-                
+                catch (PDOException $e){
+                    //echo "DataBase Errorz: " .$e->getMessage() .'<br>'; exit();
+                }
+                catch (Exception $e) {
+                    //echo "General Errorz: ".$e->getMessage() .'<br>'; exit();
+                }
                 // Suppression des données temporaire
                 if (is_dir($nameDirTemp)) { $this->destroy_dir($nameDirTemp); }
                 
             }
         }
-
-        return $bigQueries;
     }
     
     // Virtual Query Insert 
@@ -460,7 +452,7 @@ class doorgetsFunctions {
         $key = $this->keygen(20);
         $keydoorGets = $this->keygen(20);
         
-        $url = $sql_host = $sql_db = $sql_login = $sql_pwd = $sql_prefix = $adm_name = $adm_login = $adm_pwd = $adm_e = "";
+        $url = $sql_host = $sql_db = $sql_login = $sql_pwd = $sql_prefix = $adm_name = $adm_login = $adm_pwd = $adm_e = $mysql_version = "";
         
         $adm_e = $data['user_email'];
         $adm_pwd = $data['user_password'];
@@ -469,16 +461,19 @@ class doorgetsFunctions {
         $sql_db     = $data['database_name'];
         $sql_login  = $data['database_login'];
         $sql_pwd    = $data['database_password'];
+        $mysql_version    = $data['mysql_version'];
 
         $protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
 
         $url = $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
         $url = str_replace('index.php','',$url);
         
+        $saasEnv = (SAAS_ENV) ? 'true' : 'false';
+
         $iOut = '';
         $iOut .= "<?php".PHP_EOL;
         
-        $iOut .= "define('SAAS_ENV',".SAAS_ENV.");".PHP_EOL;
+        $iOut .= "define('SAAS_ENV',".$saasEnv.");".PHP_EOL;
         $iOut .= "define('ACTIVE_CACHE',false);".PHP_EOL;
         $iOut .= "define('ACTIVE_DEMO',false);".PHP_EOL;
         $iOut .= "define('KEY_SECRET','".KEY_SECRET."');".PHP_EOL;
@@ -522,6 +517,7 @@ class doorgetsFunctions {
         $iOut .= "define('SQL_LOGIN','".$sql_login."');".PHP_EOL;
         $iOut .= "define('SQL_PWD','".$sql_pwd."');".PHP_EOL;
         $iOut .= "define('SQL_DB','".$sql_db."');".PHP_EOL;
+        $iOut .= "define('SQL_VERSION','".$mysql_version."');".PHP_EOL;
         
         $iOut .= "require_once CONFIGURATION.'includes.php';".PHP_EOL;
         
@@ -665,14 +661,23 @@ class doorgetsFunctions {
     
     public function installByOneclick($data) {
 
-        
+
+        $isCreatedQuery = true;
         if (!$data['nodatabase']) {
-            $isCreatedQuery = $this->installDatabase($data);
+            $isConnected = $this->isConnectedToDatabase($data['database_host'],$data['database_name'],$data['database_login'], $data['database_password']);
+                
+            if (empty($isConnected)) {
+                $isCreatedQuery = false;
+            } else {
+                $data['mysql_version'] = $isConnected;
+                $this->createDatabase($data);
+                $isCreatedQuery = $this->installDatabase($data);
+            }
         } else {
             $isCreatedQuery = true;
         }
         
-        $isCreatedQuery = true;
+        
         if ($isCreatedQuery) {
             
             $this->extractDoorgets();
@@ -680,8 +685,8 @@ class doorgetsFunctions {
 
             $this->updateDatabase($data);
             
-            $this->destroy_dir(BASE);
-            //$this->_doorgets($z['k'],$z['u'],$z['v'],$z['e']);
+            //$this->destroy_dir(BASE);
+            $this->_doorgets($z['k'],$z['u'],$z['v'],$z['e']);
             
             return $isCreatedQuery;
             
@@ -692,21 +697,26 @@ class doorgetsFunctions {
 
     public function isConnectedToDatabase($host="localhost",$database="",$login="root",$pwd="") {
         
-        try{
-            
-            $con = @mysql_connect($host,$login,$pwd);
-            if (!empty($con)) {
-                
-                $db_selected = mysql_select_db($database, $con);
-                if ($db_selected) {
-                   return true;
-                }
-                
-            }
-            
+        try {
+            $conn = new PDO(
+                "mysql:host=".$host.";", 
+                $login, 
+                $pwd
+            );
+            $version = $conn->query('select version()')->fetchColumn();
+            $version = mb_substr($version, 0, 6);
+        }
+        catch (PDOException $e){
+            $conn = null;
             return false;
-            
-        }catch(Exception $e) {  }
+        }
+        catch (Exception $e) {
+            $conn = null;
+            return false;
+        }
+        
+        $conn = $version;
+        return true;
         
     }
 
@@ -801,5 +811,39 @@ class doorgetsFunctions {
 
         // everything is OK
         return true;
+    }
+
+    public function createDatabase($data) {
+
+        if (!is_array($data)) {
+            return false;
+        }
+        
+        $sql_host   = $data['database_host'];
+        $sql_db     = $data['database_name'];
+        $sql_login  = $data['database_login'];
+        $sql_pwd    = $data['database_password'];
+        $mysql_version = $data['mysql_version'];
+
+        $default_charset = 'utf8';
+        $default_collation = 'utf8_general_ci';
+
+        if ($mysql_version > '5.5.3') {
+            $default_charset = 'utf8mb4';
+            $default_collation = 'utf8mb4_general_ci';
+        } 
+
+        try {
+            $dbh = new PDO("mysql:host=".$sql_host, $sql_login, $sql_pwd);
+            $createTable    =   $dbh->query("CREATE DATABASE IF NOT EXISTS `$sql_db` DEFAULT CHARACTER SET $default_charset COLLATE $default_collation;");
+            $dbh->exec("
+                GRANT ALL PRIVILEGES ON `$sql_db`.* TO '$sql_login'@'$sql_host' WITH GRANT OPTION;
+                FLUSH PRIVILEGES;
+            ");
+            $dbh = null;
+            $out  = true;
+        } catch (PDOException $e) {
+            $out  = false;
+        }
     }
 }

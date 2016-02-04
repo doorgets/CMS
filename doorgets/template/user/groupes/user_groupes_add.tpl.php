@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 20, February 2014
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -32,7 +32,7 @@
 ******************************************************************************/
 
     unset($aYesNo[0]);
-    
+
 
 ?>
 <div class="doorGets-rubrique-center">
@@ -41,7 +41,7 @@
             
         </div>
         <legend>
-            <span class="create" ><a class="doorGets-comebackform" href="?controller=groupes"><img src="[{!BASE_IMG!}]retour.png" class="Retour-img"> [{!$this->doorGets->__('Retour');}]</a></span>
+            <span class="create" ><a class="doorGets-comebackform" href="?controller=groupes"><i class="fa fa-undo fa-lg green-c"></i> [{!$this->doorGets->__('Retour');}]</a></span>
             <b class="glyphicon glyphicon-cloud"></b> <a href="?controller=groupes">[{!$this->doorGets->__('Groupes')!}]</a> 
              / [{!$this->doorGets->__('Créer un groupe')!}] 
         </legend>
@@ -52,13 +52,16 @@
                 <li class="active" role="presentation" ><a data-toggle="tab" href="#tabs-1">[{!$this->doorGets->__('Information')!}]</a></li>
                 <li role="presentation" ><a data-toggle="tab" href="#tabs-2">[{!$this->doorGets->__('Modules internes')!}]</a></li>
                 <li role="presentation" ><a data-toggle="tab" href="#tabs-3">[{!$this->doorGets->__('Modules doorGets')!}]</a></li>
-                <li role="presentation" ><a data-toggle="tab" href="#tabs-4">[{!$this->doorGets->__('Modérateurs des groupes')!}]</a></li>
+                <li role="presentation" ><a data-toggle="tab" href="#tabs-4">[{!$this->doorGets->__('Modérateurs')!}]</a></li>
                 <li role="presentation" ><a data-toggle="tab" href="#tabs-5">[{!$this->doorGets->__('Attributs')!}]</a></li>
                 <li role="presentation" ><a data-toggle="tab" href="#tabs-6">[{!$this->doorGets->__('Editeur de texte')!}]</a></li>
+                <li role="presentation" ><a data-toggle="tab" href="#tabs-7">[{!$this->doorGets->__('Cloud')!}]</a></li>
             </ul>
             <div class="tab-content">
                 <div class="tab-pane fade in active" id="tabs-1">
                     [{!$this->doorGets->Form->select($this->doorGets->__("Autoriser l'inscription"),'can_subscribe',$aYesNo,'2');}]
+                    <div class="separateur-tb"></div>
+                    [{!$this->doorGets->Form->select($this->doorGets->__("Vérification du compte"),'register_verification',$aYesNo,'2');}]
                     <div class="separateur-tb"></div>
                     [{!$this->doorGets->Form->input($this->doorGets->__('Nom du groupe').' <span class="cp-obli">*</span>','title');}]
                     <div class="separateur-tb"></div>
@@ -141,6 +144,20 @@
                         </div>
                         <div class="col-md-4">
                             <div class="panel panel-default">
+                                <div class="panel-heading">[{!$this->doorGets->__('Boutique')!}]</div>
+                                <div class="panel-body">
+                                    [{/($modulesInterneShop as $k=>$v):}]
+                                        <div  class="doorGets-liste-modules-content-boxin" >
+                                            <div  class="doorGets-liste-modules-content check-module-[{!$k!}]" >
+                                                [{!$this->doorGets->Form->checkbox(ucfirst($v),'modules_interne_'.$k,$k);}] 
+                                            </div>
+                                        </div>
+                                    [/]
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="panel panel-default">
                                 <div class="panel-heading">[{!$this->doorGets->__('Fichiers')!}]</div>
                                 <div class="panel-body">
                                     [{/($modulesInterneMedia as $k=>$v):}]
@@ -155,9 +172,9 @@
                         </div>
                         <div class="col-md-4">
                             <div class="panel panel-default">
-                                <div class="panel-heading">[{!$this->doorGets->__('Message')!}]</div>
+                                <div class="panel-heading">[{!$this->doorGets->__('Mon profil')!}]</div>
                                 <div class="panel-body">
-                                    [{/($modulesInterneInbox as $k=>$v):}]
+                                    [{/($modulesInterneProfile as $k=>$v):}]
                                         <div  class="doorGets-liste-modules-content-boxin" >
                                             <div  class="doorGets-liste-modules-content check-module-[{!$k!}]" >
                                                 [{!$this->doorGets->Form->checkbox(ucfirst($v),'modules_interne_'.$k,$k);}] 
@@ -172,6 +189,20 @@
                                 <div class="panel-heading">[{!$this->doorGets->__('Modérateur')!}]</div>
                                 <div class="panel-body">
                                     [{/($modulesInterneModeration as $k=>$v):}]
+                                        <div  class="doorGets-liste-modules-content-boxin" >
+                                            <div  class="doorGets-liste-modules-content check-module-[{!$k!}]" >
+                                                [{!$this->doorGets->Form->checkbox(ucfirst($v),'modules_interne_'.$k,$k);}] 
+                                            </div>
+                                        </div>
+                                    [/]
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">[{!$this->doorGets->__('Statistiques')!}]</div>
+                                <div class="panel-body">
+                                    [{/($modulesInterneStats as $k=>$v):}]
                                         <div  class="doorGets-liste-modules-content-boxin" >
                                             <div  class="doorGets-liste-modules-content check-module-[{!$k!}]" >
                                                 [{!$this->doorGets->Form->checkbox(ucfirst($v),'modules_interne_'.$k,$k);}] 
@@ -230,10 +261,10 @@
                         <h2 class="title">[{!$this->doorGets->__("Modules")!}]</h2>
                         [{?($cModules > 0):}]
                         <div class="panel panel-default">
-                            <table  class="table">
-                                [{/($modules as $k=>$v):}]
-                                <div  class="doorGets-liste-modules-content-boxin" >
-                                    <div  class="doorGets-liste-modules-content check-module-[{!$k!}]" >
+                            [{/($modules as $k=>$v):}]
+                            <div  class="doorGets-liste-modules-content-boxin" >
+                                <div  class="doorGets-liste-modules-content check-module-[{!$k!}]" >
+                                    <table class="table">
                                         <tr>
                                             <td >
                                                 <div class="extra-module">
@@ -266,31 +297,32 @@
 
                                             </td>
                                         </tr>
-                                    </div>
-                                    <script type="text/javascript">
-                                        $('#groupes_add_module_doorgets_[{!$k!}]').click(function() { if ($(this).is(':checked')) { $('.check-submodule-[{!$k!}]').fadeIn(); }else{  $('.check-submodule-[{!$k!}]').fadeOut();  } });
-                                        if ($('#groupes_add_module_doorgets_[{!$k!}]').is(':checked')) {  $('.check-submodule-[{!$k!}]').fadeIn(); }else{ $('.check-submodule-[{!$k!}]').fadeOut(); }
-                                    </script>
+                                    </table>
                                 </div>
-                                [/]
-                            </table>
+                                <script type="text/javascript">
+                                    $('#groupes_add_module_doorgets_[{!$k!}]').click(function() { if ($(this).is(':checked')) { $('.check-submodule-[{!$k!}]').fadeIn(); }else{  $('.check-submodule-[{!$k!}]').fadeOut();  } });
+                                    if ($('#groupes_add_module_doorgets_[{!$k!}]').is(':checked')) {  $('.check-submodule-[{!$k!}]').fadeIn(); }else{ $('.check-submodule-[{!$k!}]').fadeOut(); }
+                                </script>
+                            </div>
+                            [/]
                         </div>
                         [?]
                         <h2 class="title">[{!$this->doorGets->__("Widgets")!}]</h2>
                         [{?($cWidgets > 0):}]
                         <div class="panel panel-default">
-                            <table class="table">
                             [{?($cBlocks > 0):}]
                                 [{/($widgets['blok'] as $k=>$v):}]
                                 <div  class="doorGets-liste-modules-content-boxin" >
                                     <div  class="doorGets-liste-modules-content check-module-[{!$k!}]" >
-                                        <tr>
-                                            <td >
-                                                [{!$this->doorGets->Form->input('','widget_doorgets_limit_'.$k,'hidden','0');}]
-                                                [{!$this->doorGets->Form->input('','widget_doorgets_can_modo_'.$k,'hidden','0');}]
-                                                [{!$this->doorGets->Form->checkbox(ucfirst($v['label']).' <small>('.$v['type'].')</small>','widget_doorgets_'.$k,$k,'');}]
-                                            </td>
-                                        </tr>
+                                        <table class="table">
+                                            <tr>
+                                                <td >
+                                                    [{!$this->doorGets->Form->input('','widget_doorgets_limit_'.$k,'hidden','0');}]
+                                                    [{!$this->doorGets->Form->input('','widget_doorgets_can_modo_'.$k,'hidden','0');}]
+                                                    [{!$this->doorGets->Form->checkbox(ucfirst($v['label']).' <small>('.$v['type'].')</small>','widget_doorgets_'.$k,$k,'');}]
+                                                </td>
+                                            </tr>
+                                        </table>
                                         <script type="text/javascript">
                                             $('#groupes_add_widget_doorgets_[{!$k!}]').click(function() { if ($(this).is(':checked')) { $('.check-submodule-[{!$k!}]').fadeIn(); }else{  $('.check-submodule-[{!$k!}]').fadeOut();  } });
                                          </script>
@@ -298,17 +330,59 @@
                                 </div>
                                 [/]
                             [?]
-                            [{?($cWidgets > 0):}]
+                            [{?($cCarousel > 0):}]
+                               [{/($widgets['carousel'] as $k=>$v):}]
+                               <div  class="doorGets-liste-modules-content-boxin" >
+                                   <div  class="doorGets-liste-modules-content check-module-[{!$k!}]" >
+                                        <table class="table">
+                                            <tr>
+                                                <td >
+                                                   [{!$this->doorGets->Form->input('','widget_doorgets_limit_'.$k,'hidden','0');}]
+                                                   [{!$this->doorGets->Form->input('','widget_doorgets_can_modo_'.$k,'hidden','0');}]
+                                                   [{!$this->doorGets->Form->checkbox(ucfirst($v['label']).' <small>('.$v['type'].')</small>','widget_doorgets_'.$k,$k,'');}]         
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <script type="text/javascript">
+                                           $('#groupes_add_widget_doorgets_[{!$k!}]').click(function() { if ($(this).is(':checked')) { $('.check-submodule-[{!$k!}]').fadeIn(); }else{  $('.check-submodule-[{!$k!}]').fadeOut();  } });
+                                        </script>
+                                   </div>
+                               </div>
+                               [/]
+                            [?]
+                            [{?($cGenforms > 0):}]
                                 [{/($widgets['genform'] as $k=>$v):}]
                                 <div  class="doorGets-liste-modules-content-boxin" >
                                     <div  class="doorGets-liste-modules-content check-module-[{!$k!}]" >
-                                        <tr>
-                                            <td >
-                                                [{!$this->doorGets->Form->input('','widget_doorgets_limit_'.$k,'hidden','0');}]
-                                                [{!$this->doorGets->Form->input('','widget_doorgets_can_modo_'.$k,'hidden','0');}]
-                                                [{!$this->doorGets->Form->checkbox(ucfirst($v['label']).' <small>('.$v['type'].')</small>','widget_doorgets_'.$k,$k,'');}] 
-                                            </td>
-                                        </tr>
+                                        <table class="table">
+                                            <tr>
+                                                <td >
+                                                    [{!$this->doorGets->Form->input('','widget_doorgets_limit_'.$k,'hidden','0');}]
+                                                    [{!$this->doorGets->Form->input('','widget_doorgets_can_modo_'.$k,'hidden','0');}]
+                                                    [{!$this->doorGets->Form->checkbox(ucfirst($v['label']).' <small>('.$v['type'].')</small>','widget_doorgets_'.$k,$k,'');}] 
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <script type="text/javascript">
+                                            $('#groupes_add_widget_doorgets_[{!$k!}]').click(function() { if ($(this).is(':checked')) { $('.check-submodule-[{!$k!}]').fadeIn(); }else{  $('.check-submodule-[{!$k!}]').fadeOut();  } });
+                                        </script>
+                                    </div>
+                                </div>
+                                [/]
+                            [?]
+                            [{?($cSurvey > 0):}]
+                                [{/($widgets['survey'] as $k=>$v):}]
+                                <div  class="doorGets-liste-modules-content-boxin" >
+                                    <div  class="doorGets-liste-modules-content check-module-[{!$k!}]" >
+                                        <table class="table">
+                                            <tr>
+                                                <td >
+                                                    [{!$this->doorGets->Form->input('','widget_doorgets_limit_'.$k,'hidden','0');}]
+                                                    [{!$this->doorGets->Form->input('','widget_doorgets_can_modo_'.$k,'hidden','0');}]
+                                                    [{!$this->doorGets->Form->checkbox(ucfirst($v['label']).' <small>('.$v['type'].')</small>','widget_doorgets_'.$k,$k,'');}] 
+                                                </td>
+                                            </tr>
+                                        </table>
                                         <script type="text/javascript">
                                             $('#groupes_add_widget_doorgets_[{!$k!}]').click(function() { if ($(this).is(':checked')) { $('.check-submodule-[{!$k!}]').fadeIn(); }else{  $('.check-submodule-[{!$k!}]').fadeOut();  } });
                                         </script>
@@ -372,10 +446,40 @@
                     [{!$this->doorGets->Form->input('','attributes','hidden','');}]
                 </div>
                 <div class="tab-pane fade" id="tabs-6">    
-                    [{!$this->doorGets->Form->checkbox('CKEditor : <a href="http://ckeditor.com/" target="blank">http://ckeditor.com/</a>','editor_ckeditor','active','');}]
+                    [{!$this->doorGets->Form->checkbox('CKEditor','editor_ckeditor','active','');}]
+                    <a href="http://ckeditor.com/" target="blank">http://ckeditor.com/</a>
                     <div class="separateur-tb"></div>
-                    [{!$this->doorGets->Form->checkbox('TinyMCE : <a href="http://www.tinymce.com/" target="blank">http://www.tinymce.com/</a>','editor_tinymce','active','');}]
-                                  
+                    [{!$this->doorGets->Form->checkbox('TinyMCE','editor_tinymce','active','');}]
+                    <a href="http://www.tinymce.com/" target="blank">http://www.tinymce.com/</a>
+                    <div class="separateur-tb"></div>
+                    [{!$this->doorGets->Form->select('Roxy Fileman:','fileman',$fileman,'none');}]
+                    <br /><a href="http://www.roxyfileman.com/" target="blank">http://www.roxyfileman.com/</a>              
+                </div>
+                <div class="tab-pane fade" id="tabs-7">    
+                    <div class="row">
+                        <div class="col-md-6">
+                            [{!$this->doorGets->Form->checkbox($this->doorGets->__("Ajouter"),'saas_add','active','');}]
+                            <div class="separateur-tb"></div>
+                            [{!$this->doorGets->Form->checkbox($this->doorGets->__("Supprimer"),'saas_delete','active','');}]
+                            <div class="separateur-tb"></div>           
+                        </div>    
+                        <div class="col-md-3">
+                            [{!$this->doorGets->Form->input($this->doorGets->__('Limite').'*','saas_limit','text','0','mod-group-input is-digit-input');}]
+                            <div class="separateur-tb"></div> 
+                        </div>
+                        <div class="col-md-3">
+                            [{!$this->doorGets->Form->input($this->doorGets->__('Nombre de jours').'*','saas_date_end','text','0','mod-group-input is-digit-input');}]
+                            <div class="separateur-tb"></div> 
+                        </div>
+                    </div>  
+                    <div class="row">
+                        [{/($activeSaasOptions['saas_constant'] as $k=>$v):}]
+                            [{ $check = (is_bool($activeSaasOptions['saas_constant'][$k]) && $activeSaasOptions['saas_constant'][$k])?'checked':"";}]
+                            <div class="col-md-3">
+                                    [{!$this->doorGets->Form->checkbox($k,'saas_constant['.$k.']',$k,$check);}] 
+                            </div>
+                        [/]
+                    </div>         
                 </div>
             </div>
         </div>

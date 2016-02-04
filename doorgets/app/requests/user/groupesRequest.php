@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 20, February 2014
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -80,6 +80,80 @@ class GroupesRequest extends doorGetsUserRequest{
         $cUsers = $this->doorGets->getCountTable('_users_info',$arrayFilter);
         $cModules = count($modules);
         
+        $saas_constant['SAAS_TRADUCTION'] = false;
+        $saas_constant['SAAS_ATTRIBUTS'] = true;
+        $saas_constant['SAAS_GROUPES'] = true;
+        $saas_constant['SAAS_NOTIFICATION'] = false;
+        $saas_constant['SAAS_NEWSLETTER'] = false;
+        $saas_constant['SAAS_MEDIA'] = true;
+        $saas_constant['SAAS_CLOUD'] = true;
+        $saas_constant['SAAS_USERS'] = true;
+        $saas_constant['SAAS_MENU'] = true;
+
+        $saas_constant['SAAS_STATS'] = true;
+        
+        $saas_constant['SAAS_MODERATION'] = true;
+        $saas_constant['SAAS_INBOX'] = true;
+        $saas_constant['SAAS_COMMENT'] = true;
+        $saas_constant['SAAS_SUPPORT'] = true;
+
+        $saas_constant['SAAS_ORDER'] = true;
+
+        $saas_constant['SAAS_MYINBOX'] = true;
+
+        $saas_constant['SAAS_THEME'] = true;
+        $saas_constant['SAAS_THEME_ADD'] = true;
+        $saas_constant['SAAS_THEME_EDIT'] = true;
+        $saas_constant['SAAS_THEME_DELETE'] = true;
+        $saas_constant['SAAS_THEME_JS'] = false;
+
+        $saas_constant['SAAS_ADDRESS'] = true;
+
+        $saas_constant['SAAS_SIZE_LIMIT'] = 200; // Mo
+
+        $saas_constant['SAAS_MODULES'] = true;
+        $saas_constant['SAAS_MODULES_PAGE'] = true;
+        $saas_constant['SAAS_MODULES_MULTIPAGE'] = true;
+        $saas_constant['SAAS_MODULES_ONEPAGE'] = true;
+        $saas_constant['SAAS_MODULES_BLOG'] = true;
+        $saas_constant['SAAS_MODULES_SHOP'] = true;
+        $saas_constant['SAAS_MODULES_NEWS'] = true;
+        $saas_constant['SAAS_MODULES_SHAREDLINKS'] = true;
+        $saas_constant['SAAS_MODULES_VIDEO'] = true;
+        $saas_constant['SAAS_MODULES_IMAGE'] = true;
+        $saas_constant['SAAS_MODULES_FAQ'] = true;
+        $saas_constant['SAAS_MODULES_PARTNER'] = true;
+        $saas_constant['SAAS_MODULES_CONTACT'] = true;
+        $saas_constant['SAAS_MODULES_LINK'] = true;
+
+        $saas_constant['SAAS_WIDGET_CAROUSEL'] = true;
+        $saas_constant['SAAS_WIDGET_BLOCK'] = true;
+        $saas_constant['SAAS_WIDGET_FORM'] = true;
+        $saas_constant['SAAS_WIDGET_SURVEY'] = true;
+
+        $saas_constant['SAAS_CONFIGURATION'] = true;
+
+        $saas_constant['SAAS_CONFIG_LANGUE'] = true;
+        $saas_constant['SAAS_CONFIG_MODULES'] = false;
+        $saas_constant['SAAS_CONFIG_PARAMS'] = false;
+        $saas_constant['SAAS_CONFIG_BACKUPS'] = false;
+        $saas_constant['SAAS_CONFIG_UPDATE'] = false;
+        $saas_constant['SAAS_CONFIG_SMTP'] = true;
+        $saas_constant['SAAS_CONFIG_CACHE'] = true;
+        $saas_constant['SAAS_CONFIG_SETUP'] = true;
+        $saas_constant['SAAS_CONFIG_OAUTH2'] = true;
+        $saas_constant['SAAS_CONFIG_NETWORK'] = true;
+        $saas_constant['SAAS_CONFIG_MEDIA'] = true;
+        $saas_constant['SAAS_CONFIG_ANALYTICS'] = true;
+        $saas_constant['SAAS_CONFIG_CLOUD'] = true;
+        $saas_constant['SAAS_CONFIG_SOCIAL'] = true;
+
+        $saas_constant['SAAS_CONFIG_STRIPE'] = true;
+        $saas_constant['SAAS_CONFIG_PAYPAL'] = true;
+        $saas_constant['SAAS_CONFIG_TRANSFER'] = true;
+        $saas_constant['SAAS_CONFIG_CHECK'] = true;
+        $saas_constant['SAAS_CONFIG_CASH'] = true;
+
         if (!empty($isContent)) {
             
             $activeWidgets = $this->doorGets->_toArray($isContent['liste_widget']);
@@ -101,7 +175,7 @@ class GroupesRequest extends doorGetsUserRequest{
             $activeGroupesEnfantsModo = $this->doorGets->_toArray($isContent['liste_enfant_modo']);
             
             $activeGroupesParents = $this->doorGets->_toArray($isContent['liste_parent']);
-            
+
             $iEnfant = count($activeGroupesEnfants);
             $iParent = count($activeGroupesParents);
             
@@ -120,16 +194,26 @@ class GroupesRequest extends doorGetsUserRequest{
         $listeModulesLimit          = $subName              = $listeWidgets             =   '';
         $listeWidgetsLimit          = $listeWidgetsModo     = '';
         
+        $prefix = "#";
         $_attributes = array();
 
         $nonObligatoire = array(
+            'attributes',
+            'can_subscribe',
+            'register_verification',
+            'module_doorgets_limit',
+            'widget_doorgets_limit',
+            'widget_doorgets_can_modo',
             'payment',
             'payment_amount_month',
             'payment_tranche',
             'payment_group_expired',
-            'payment_group_upgrade'
+            'payment_group_upgrade',
+            'saas_limit',
+            'saas_date_end'
         );
-
+        $removeInt = array('0','1','2','3','4','5','6','7','8','9');
+        
         switch($this->Action) {
             
             case 'index':
@@ -142,100 +226,117 @@ class GroupesRequest extends doorGetsUserRequest{
                 
                 if (!empty($this->doorGets->Form->i)) {
                     
+                    $this->doorGets->checkMode();
+
+                    $saasOptions = array(
+                        'saas_add' => false,
+                        'saas_delete' => false,
+                        'saas_limit' => $this->doorGets->Form->i['saas_limit'],
+                        'saas_date_end' => $this->doorGets->Form->i['saas_date_end'],
+                        'saas_constant' => $saas_constant
+                    );
+
+                    $fieldModuleIds = array();
+                    $fieldGroupeIds = array();
                     foreach($this->doorGets->Form->i as $k=>$v) {
                         
-                        $subNameHidden = substr($k,0,21);
-                        $subNameHiddenWidget = substr($k,0,24);
+                        if (!is_array($v)) {
 
-                        if (
-                            empty($v) 
-                            && $k !== 'attributes'
-                            && $k !=='can_subscribe' 
-                            && $subNameHidden !== 'module_doorgets_limit'
-                            && $subNameHidden !== 'widget_doorgets_limit'
-                            && $subNameHiddenWidget !== 'widget_doorgets_can_modo'
-                            && !in_array($k,$nonObligatoire)
-                        ) {
+                            $subNameHidden = substr($k,0,21);
+                            $subNameHiddenWidget = substr($k,0,24);
 
-                            $this->doorGets->Form->e[$this->doorGets->controllerNameNow().'_add_'.$k] = 'ok';
+                            $rKey = substr(str_replace($removeInt,'',$k),0,-1);
+                            if ( !in_array($k,$nonObligatoire) && !in_array($rKey,$nonObligatoire) &&  empty($v) ) {
+                                $this->doorGets->Form->e[$this->doorGets->controllerNameNow().'_add_'.$k] = 'ok';
+                            }
                             
-                        }
-                        
-                        if (!array_key_exists($v,$subModule)  && $subNameHidden !== 'module_doorgets_limit') {
-                            
-                            $subName = substr($k,0,15);
-                            
-                            if ($subName === 'modules_interne')
-                            {
+                            if (!array_key_exists($v,$subModule)  && $subNameHidden !== 'module_doorgets_limit') {
                                 
-                                $listeModulesInterne .= $v.',';
-                                if (array_key_exists($this->doorGets->controllerNameNow().'_add_modules_interne_can_modo_'.$v,$params['POST'])) {
-                                    $listeModulesInterneModo    .= $v.',';
-                                }
                                 
-                            }elseif ($subName === 'module_doorgets' )
-                            {
+                                $subName = substr($k,0,15);
                                 
-                                $isModuleChecked = (array_key_exists('module_doorgets_'.$v, $this->doorGets->Form->i)) ? true : false ;
-
-                                if(!$isModuleChecked) { continue; } 
-
-                                $listeModules .= $v.','; 
-                                
-                                $numberLimit = 0;
-                                if (
-                                    array_key_exists('module_doorgets_limit_'.$v, $this->doorGets->Form->i) 
-                                    && is_numeric($this->doorGets->Form->i['module_doorgets_limit_'.$v])
-                               ) {
-                                    $numberLimit = (int)$this->doorGets->Form->i['module_doorgets_limit_'.$v];
-                                }
-                                $listeModulesLimit   .= $v.'|'.$numberLimit.',';
-                                if (array_key_exists($this->doorGets->controllerNameNow().'_add_module_doorgets_can_modo_'.$v,$params['POST'])) {
-                                    $listeModulesModo    .= $v.',';
-                                }
-                                if (array_key_exists($this->doorGets->controllerNameNow().'_add_module_doorgets_can_list_'.$v,$params['POST'])) {
-                                    $listeModulesList    .= $v.',';
-                                }
-                                if (array_key_exists($this->doorGets->controllerNameNow().'_add_module_doorgets_can_show_'.$v,$params['POST'])) {
-                                    $listeModulesShow    .= $v.',';
-                                }
-                                if (array_key_exists($this->doorGets->controllerNameNow().'_add_module_doorgets_can_add_'.$v,$params['POST'])) {
-                                    $listeModulesAdd    .= $v.',';
-                                }
-                                if (array_key_exists($this->doorGets->controllerNameNow().'_add_module_doorgets_can_edit_'.$v,$params['POST'])) {
-                                    $listeModulesEdit    .= $v.',';
-                                }
-                                if (array_key_exists($this->doorGets->controllerNameNow().'_add_module_doorgets_can_delete_'.$v,$params['POST'])) {
-                                    $listeModulesDelete    .= $v.',';
-                                }
-                                if (array_key_exists($this->doorGets->controllerNameNow().'_add_module_doorgets_can_admin_'.$v,$params['POST'])) {
-                                    $listeModulesAdmin    .= $v.',';
-                                }
-                                
-                            }elseif ($subName === 'widget_doorgets')
-                            {
-                                $listeWidgets .= $v.',';
-                                $numberLimit = 0;
-                                $valueLimit = 'widget_doorgets_limit_'.$v;
-                                if (array_key_exists($valueLimit,$this->doorGets->Form->i) && is_numeric($this->doorGets->Form->i[$valueLimit])) {
-                                    $numberLimit = (int)$this->doorGets->Form->i['widget_doorgets_limit_'.$v];
-                                }
-                                $listeWidgetsLimit   .= $v.'|'.$numberLimit.',';
-                                if (array_key_exists($this->doorGets->controllerNameNow().'_edit_widget_doorgets_can_modo_'.$v,$params['POST'])) {
-                                    $listeWidgetsModo    .= $v.',';
-                                }
+                                if ($subName === 'modules_interne')
+                                {
                                     
-                            }elseif ($subName === 'groupes_enfants')
-                            {
-                                $listeGroupesEnfants .=  $v.',';
-                                
-                                if (array_key_exists($this->doorGets->controllerNameNow().'_add_groupes_enfants_can_modo_'.$v,$params['POST'])) {
-                                    $listeGroupesEnfantsModo    .= $v.',';
+                                    $listeModulesInterne .= $v.',';
+                                    if (array_key_exists($this->doorGets->controllerNameNow().'_add_modules_interne_can_modo_'.$v,$params['POST'])) {
+                                        $listeModulesInterneModo    .= $v.',';
+                                    }
+                                    
+                                }elseif ($subName === 'module_doorgets' )
+                                {
+                                    if (in_array($v,$fieldModuleIds)) { continue; }
+
+                                    $isModuleChecked = (array_key_exists('module_doorgets_'.$v, $this->doorGets->Form->i)) ? true : false ;
+
+                                    if(!$isModuleChecked) { continue; } 
+
+                                    $listeModules .= $prefix.$v.','; 
+                                    
+                                    $numberLimit = 0;
+                                    if (
+                                        array_key_exists('module_doorgets_limit_'.$v, $this->doorGets->Form->i) 
+                                        && is_numeric($this->doorGets->Form->i['module_doorgets_limit_'.$v])
+                                    ) {
+                                        $numberLimit = (int)$this->doorGets->Form->i['module_doorgets_limit_'.$v];
+                                    }
+                                    $listeModulesLimit   .= $prefix.$v.'|'.$numberLimit.',';
+                                    if (array_key_exists($this->doorGets->controllerNameNow().'_add_module_doorgets_can_modo_'.$v,$params['POST'])) {
+                                        $listeModulesModo    .= $prefix.$v.',';
+                                    }
+                                    if (array_key_exists($this->doorGets->controllerNameNow().'_add_module_doorgets_can_list_'.$v,$params['POST'])) {
+                                        $listeModulesList    .= $prefix.$v.',';
+                                    }
+                                    if (array_key_exists($this->doorGets->controllerNameNow().'_add_module_doorgets_can_show_'.$v,$params['POST'])) {
+                                        $listeModulesShow    .= $prefix.$v.',';
+                                    }
+                                    if (array_key_exists($this->doorGets->controllerNameNow().'_add_module_doorgets_can_add_'.$v,$params['POST'])) {
+                                        $listeModulesAdd    .= $prefix.$v.',';
+                                    }
+                                    if (array_key_exists($this->doorGets->controllerNameNow().'_add_module_doorgets_can_edit_'.$v,$params['POST'])) {
+                                        $listeModulesEdit    .= $prefix.$v.',';
+                                    }
+                                    if (array_key_exists($this->doorGets->controllerNameNow().'_add_module_doorgets_can_delete_'.$v,$params['POST'])) {
+                                        $listeModulesDelete    .= $prefix.$v.',';
+                                    }
+                                    if (array_key_exists($this->doorGets->controllerNameNow().'_add_module_doorgets_can_admin_'.$v,$params['POST'])) {
+                                        $listeModulesAdmin    .= $prefix.$v.',';
+                                    }
+
+                                    $fieldModuleIds[] = $v;
+                                    
+                                }elseif ($subName === 'widget_doorgets')
+                                {   
+
+                                    if (in_array($v,$fieldModuleIds)) { continue; }
+
+                                    $listeWidgets .= $prefix.$v.',';
+                                    $numberLimit = 0;
+                                    $valueLimit = 'widget_doorgets_limit_'.$v;
+                                    if (array_key_exists($valueLimit,$this->doorGets->Form->i) && is_numeric($this->doorGets->Form->i[$valueLimit])) {
+                                        $numberLimit = (int)$this->doorGets->Form->i['widget_doorgets_limit_'.$v];
+                                    }
+                                    $listeWidgetsLimit   .= $prefix.$v.'|'.$numberLimit.',';
+                                    if (array_key_exists($this->doorGets->controllerNameNow().'_edit_widget_doorgets_can_modo_'.$v,$params['POST'])) {
+                                        $listeWidgetsModo    .= $prefix.$v.',';
+                                    }
+
+                                    $fieldModuleIds[] = $v;
+                                        
+                                }elseif ($subName === 'groupes_enfants')
+                                {
+                                    $listeGroupesEnfants .=  $prefix.$v.',';
+                                    
+                                    if (in_array($v,$fieldGroupeIds)) { continue; }
+
+                                    if (array_key_exists($this->doorGets->controllerNameNow().'_add_groupes_enfants_can_modo_'.$v,$params['POST'])) {
+                                        $listeGroupesEnfantsModo    .= $prefix.$v.',';
+                                    }
+
+                                    $fieldGroupeIds[] = $v;
                                 }
                             }
                         }
-
-                        
                     }
 
                     if (!array_key_exists('editor_ckeditor', $this->doorGets->Form->i)) {
@@ -250,11 +351,19 @@ class GroupesRequest extends doorGetsUserRequest{
                         $this->doorGets->Form->i['editor_tinymce'] = 1;
                     }
 
-                    if (!array_key_exists('payment', $this->doorGets->Form->i)) {
-                        $this->doorGets->Form->i['payment'] = 0;
-                    }else{
-                        $this->doorGets->Form->i['payment'] = 1;
+                    if (array_key_exists('saas_add', $this->doorGets->Form->i)) {
+                        $saasOptions['saas_add'] = true;
                     }
+
+                    if (array_key_exists('saas_delete', $this->doorGets->Form->i)) {
+                        $saasOptions['saas_delete'] = true;
+                    }
+
+                    // if (!array_key_exists('payment', $this->doorGets->Form->i)) {
+                    //     $this->doorGets->Form->i['payment'] = 0;
+                    // }else{
+                    //     $this->doorGets->Form->i['payment'] = 1;
+                    // }
 
                     $uri = $this->doorGets->Form->i['uri'];
                     $isValidUri = $this->doorGets->isValidUri($uri,'_users_groupes');
@@ -269,7 +378,20 @@ class GroupesRequest extends doorGetsUserRequest{
                         }
                     }
 
+                    // Constant
+                    foreach ($saas_constant as $key => $value) {
+                        if (is_bool($value)) {
+                            if (array_key_exists('saas_constant', $this->doorGets->Form->i) && array_key_exists($key, $this->doorGets->Form->i['saas_constant'])) {
+                                $saasOptions['saas_constant'][$key] = true;
+                            } elseif (is_bool($value)){
+                                $saasOptions['saas_constant'][$key] = false;
+                            }    
+                        }
+                    }
+
                     if (empty($this->doorGets->Form->e)) {
+                        
+                        //$this->doorGets->Form->i['payment_amount_month'] = (float) str_replace(',','.',$this->doorGets->Form->i['payment_amount_month']);
                         
                         $data = array(
 
@@ -289,14 +411,24 @@ class GroupesRequest extends doorGetsUserRequest{
                             
                             'liste_module_interne'          => $listeModulesInterne,
                             'liste_module_interne_modo'     => $listeModulesInterneModo,
-                            
+
+                            // 'payment'                       => $this->doorGets->Form->i['payment'],
+                            // 'payment_currency'              => $this->doorGets->Form->i['payment_currency'],
+                            // 'payment_amount_month'          => $this->doorGets->Form->i['payment_amount_month'],
+                            // 'payment_tranche'               => $this->doorGets->Form->i['payment_tranche'],
+                            // 'payment_group_expired'         => $this->doorGets->Form->i['payment_group_expired'],
+                            // 'payment_group_upgrade'         => $this->doorGets->Form->i['payment_group_upgrade'],                            
+
                             'liste_enfant'                  => $listeGroupesEnfants,
                             'liste_enfant_modo'             => $listeGroupesEnfantsModo,
 
                             'editor_ckeditor'               => $this->doorGets->Form->i['editor_ckeditor'],
                             'editor_tinymce'                => $this->doorGets->Form->i['editor_tinymce'],
+                            'fileman'                       => $this->doorGets->Form->i['fileman'],
 
-                            'attributes'                    => serialize($_attributes),
+                            'attributes'                    => base64_encode(serialize($_attributes)),
+                            'saas_options'                  => base64_encode(serialize($saasOptions)),
+                            'register_verification'         => $this->doorGets->Form->i['register_verification'],
 
                             'date_creation'                 => time()
                             
@@ -341,7 +473,7 @@ class GroupesRequest extends doorGetsUserRequest{
                         //$this->doorGets->clearDBCache();
                         header('Location:./?controller=groupes'); exit();
                     }
-                    
+
                     FlashInfo::set($this->doorGets->__("Veuillez remplir correctement le formulaire"),"error");
                 }
                 
@@ -350,22 +482,29 @@ class GroupesRequest extends doorGetsUserRequest{
             case 'edit':
                 
                 if (!empty($this->doorGets->Form->i)) {
+
+                    $this->doorGets->checkMode();
                     
+                    $saasOptions = array(
+                        'saas_add' => false,
+                        'saas_delete' => false,
+                        'saas_limit' => $this->doorGets->Form->i['saas_limit'],
+                        'saas_date_end' => $this->doorGets->Form->i['saas_date_end'],
+                        'saas_constant' => $saas_constant
+                    );
+
+                    $fieldModuleIds = array();
+                    $fieldGroupeIds = array();
+
                     foreach($this->doorGets->Form->i as $k=>$v) {
 
-                        if (!empty($v)) {
+                        if (!empty($v) && !is_array($v)) {
 
                             $subNameHidden = substr($k,0,21);
                             
-                            if ( 
-                                empty($v) 
-                                && $k !=='can_subscribe' 
-                                && $subNameHidden !== 'module_doorgets_limit'
-                                && !in_array($k,$nonObligatoire)
-                            ) {
-                                
+                            $rKey = substr(str_replace($removeInt,'',$k),0,-1);
+                            if ( !in_array($k,$nonObligatoire) && !in_array($rKey,$nonObligatoire) &&  empty($v) ) {
                                 $this->doorGets->Form->e[$this->doorGets->controllerNameNow().'_edit_'.$k] = 'ok';
-                                
                             }
                             
                             if (!array_key_exists($v,$subModule) && $subNameHidden !== 'module_doorgets_limit') {
@@ -382,7 +521,9 @@ class GroupesRequest extends doorGetsUserRequest{
                                     
                                 }elseif ($subName === 'module_doorgets' && is_numeric($v))
                                 {
-                                    $listeModules .= $v.',';
+                                    if (in_array($v,$fieldModuleIds)) { continue; }
+
+                                    $listeModules .= $prefix.$v.',';
                                     $numberLimit = 0;
                                     if (
                                         array_key_exists('module_doorgets_limit_'.$v, $this->doorGets->Form->i) 
@@ -390,48 +531,59 @@ class GroupesRequest extends doorGetsUserRequest{
                                     ) {
                                         $numberLimit = (int)$this->doorGets->Form->i['module_doorgets_limit_'.$v];
                                     }
-                                    $listeModulesLimit   .= $v.'|'.$numberLimit.',';
+                                    $listeModulesLimit   .= $prefix.$v.'|'.$numberLimit.',';
                                     if (array_key_exists($this->doorGets->controllerNameNow().'_edit_module_doorgets_can_modo_'.$v,$params['POST'])) {
-                                        $listeModulesModo    .= $v.',';
+                                        $listeModulesModo    .= $prefix.$v.',';
                                     }
                                     if (array_key_exists($this->doorGets->controllerNameNow().'_edit_module_doorgets_can_list_'.$v,$params['POST'])) {
-                                        $listeModulesList    .= $v.',';
+                                        $listeModulesList    .= $prefix.$v.',';
                                     }
                                     if (array_key_exists($this->doorGets->controllerNameNow().'_edit_module_doorgets_can_show_'.$v,$params['POST'])) {
-                                        $listeModulesShow    .= $v.',';
+                                        $listeModulesShow    .= $prefix.$v.',';
                                     }
                                     if (array_key_exists($this->doorGets->controllerNameNow().'_edit_module_doorgets_can_add_'.$v,$params['POST'])) {
-                                        $listeModulesAdd    .= $v.',';
+                                        $listeModulesAdd    .= $prefix.$v.',';
                                     }
                                     if (array_key_exists($this->doorGets->controllerNameNow().'_edit_module_doorgets_can_edit_'.$v,$params['POST'])) {
-                                        $listeModulesEdit    .= $v.',';
+                                        $listeModulesEdit    .= $prefix.$v.',';
                                     }
                                     if (array_key_exists($this->doorGets->controllerNameNow().'_edit_module_doorgets_can_delete_'.$v,$params['POST'])) {
-                                        $listeModulesDelete    .= $v.',';
+                                        $listeModulesDelete    .= $prefix.$v.',';
                                     }
                                     if (array_key_exists($this->doorGets->controllerNameNow().'_edit_module_doorgets_can_admin_'.$v,$params['POST'])) {
-                                        $listeModulesAdmin    .= $v.',';
+                                        $listeModulesAdmin    .= $prefix.$v.',';
                                     }
+
+                                    $fieldModuleIds[] = $v;
 
                                 }elseif ($subName === 'widget_doorgets')
                                 {
-                                    $listeWidgets .= $v.',';
+                                    
+                                    if (in_array($v,$fieldModuleIds)) { continue; }
+
+                                    $listeWidgets .= $prefix.$v.',';
                                     $numberLimit = 0;
                                     if (is_numeric($this->doorGets->Form->i['widget_doorgets_limit_'.$v])) {
                                         $numberLimit = (int)$this->doorGets->Form->i['widget_doorgets_limit_'.$v];
                                     }
-                                    $listeWidgetsLimit   .= $v.'|'.$numberLimit.',';
+                                    $listeWidgetsLimit   .= $prefix.$v.'|'.$numberLimit.',';
                                     if (array_key_exists($this->doorGets->controllerNameNow().'_edit_widget_doorgets_can_modo_'.$v,$params['POST'])) {
-                                        $listeWidgetsModo    .= $v.',';
+                                        $listeWidgetsModo    .= $prefix.$v.',';
                                     }
+
+                                    $fieldModuleIds[] = $v;
                                     
                                 }elseif ($subName === 'groupes_enfants')
                                 {
-                                    $listeGroupesEnfants .=  $v.',';
+                                    $listeGroupesEnfants .=  $prefix.$v.',';
                                     
+                                    if (in_array($v,$fieldGroupeIds)) { continue; }
+
                                     if (array_key_exists($this->doorGets->controllerNameNow().'_edit_groupes_enfants_can_modo_'.$v,$params['POST'])) {
-                                        $listeGroupesEnfantsModo    .= $v.',';
+                                        $listeGroupesEnfantsModo    .= $prefix.$v.',';
                                     }
+
+                                    $fieldGroupeIds[] = $v;
                                 }
                             }
                         }
@@ -450,11 +602,19 @@ class GroupesRequest extends doorGetsUserRequest{
                         $this->doorGets->Form->i['editor_tinymce'] = 1;
                     }
 
-                    if (!array_key_exists('payment', $this->doorGets->Form->i)) {
-                        $this->doorGets->Form->i['payment'] = 0;
-                    }else{
-                        $this->doorGets->Form->i['payment'] = 1;
+                    if (array_key_exists('saas_add', $this->doorGets->Form->i)) {
+                        $saasOptions['saas_add'] = true;
                     }
+
+                    if (array_key_exists('saas_delete', $this->doorGets->Form->i)) {
+                        $saasOptions['saas_delete'] = true;
+                    }
+                    
+                    // if (!array_key_exists('payment', $this->doorGets->Form->i)) {
+                    //     $this->doorGets->Form->i['payment'] = 0;
+                    // }else{
+                    //     $this->doorGets->Form->i['payment'] = 1;
+                    // }
 
                     $uri = $this->doorGets->Form->i['uri'];
                     $isValidUri = $this->doorGets->isValidUri($uri,'_users_groupes_attributes',$isContent);
@@ -469,7 +629,20 @@ class GroupesRequest extends doorGetsUserRequest{
                         }
                     }
 
+                    // Constant
+                    foreach ($saas_constant as $key => $value) {
+                        if (is_bool($value)) {
+                            if (array_key_exists('saas_constant', $this->doorGets->Form->i) && array_key_exists($key, $this->doorGets->Form->i['saas_constant'])) {
+                                $saasOptions['saas_constant'][$key] = true;
+                            } elseif (is_bool($value)){
+                                $saasOptions['saas_constant'][$key] = false;
+                            }    
+                        }
+                    }
+
                     if (empty($this->doorGets->Form->e)) {
+                        
+                        //$this->doorGets->Form->i['payment_amount_month'] = (float) str_replace(',','.',$this->doorGets->Form->i['payment_amount_month']);
                         
                         $data = array(
 
@@ -489,15 +662,25 @@ class GroupesRequest extends doorGetsUserRequest{
                             
                             'liste_module_interne'          => $listeModulesInterne,
                             'liste_module_interne_modo'     => $listeModulesInterneModo,
+
+                            // 'payment'                       => $this->doorGets->Form->i['payment'],
+                            // 'payment_currency'              => $this->doorGets->Form->i['payment_currency'],
+                            // 'payment_amount_month'          => $this->doorGets->Form->i['payment_amount_month'],
+                            // 'payment_tranche'               => $this->doorGets->Form->i['payment_tranche'],
+                            // 'payment_group_expired'         => $this->doorGets->Form->i['payment_group_expired'],
+                            // 'payment_group_upgrade'         => $this->doorGets->Form->i['payment_group_upgrade'],                            
                             
                             'liste_enfant'                  => $listeGroupesEnfants,
                             'liste_enfant_modo'             => $listeGroupesEnfantsModo,
                             
                             'editor_ckeditor'               => $this->doorGets->Form->i['editor_ckeditor'],
                             'editor_tinymce'                => $this->doorGets->Form->i['editor_tinymce'],
+                            'fileman'                       => $this->doorGets->Form->i['fileman'],
 
-                            'attributes'                    => serialize($_attributes), 
+                            'attributes'                    => base64_encode(serialize($_attributes)), 
+                            'saas_options'                  => base64_encode(serialize($saasOptions)),
 
+                            'register_verification'         => $this->doorGets->Form->i['register_verification']
                         );
                         
                         $dataTraduction = array(
@@ -526,10 +709,9 @@ class GroupesRequest extends doorGetsUserRequest{
                         
                         $this->doorGets->dbQU($isContent['id_groupe'],$data,'_users_groupes','id');
                         if (!empty($idLgGroupe)) {
-
                             $this->doorGets->dbQU($idLgGroupe,$dataTraduction,'_users_groupes_traduction');
                         }
-                        
+
                         FlashInfo::set($this->doorGets->__("Vos informations ont bien été mises à jour"));
                         //$this->doorGets->clearDBCache();
 
@@ -544,9 +726,11 @@ class GroupesRequest extends doorGetsUserRequest{
                 
                 if (!empty($this->doorGets->Form->i) && empty($this->doorGets->Form->e) && $cUsers == 0) {
                     
+                    $this->doorGets->checkMode();
+                    
                     $this->doorGets->dbQD($isContent['id_groupe'],'_users_groupes');
                     $this->doorGets->dbQD($isContent['id_groupe'],'_users_groupes_traduction','id_groupe','=','');
-                    FlashInfo::set("Vos informations sont bien supprimées");
+                    FlashInfo::set($this->doorGets->__("Vos informations sont bien supprimées"));
                     header('Location:./?controller=groupes');
                     exit();
                     
@@ -572,8 +756,8 @@ class GroupesRequest extends doorGetsUserRequest{
             $this->doorGets->dbQU(
                 $idGroupe,
                 array(
-                    'liste_enfant'          => $isGroupe['liste_enfant'].$idGroupeToAdd.',',
-                    'liste_enfant_modo'     => $isGroupe['liste_enfant_modo'].$idGroupeToAdd.',',
+                    'liste_enfant'          => $isGroupe['liste_enfant']."#".$idGroupeToAdd.',',
+                    'liste_enfant_modo'     => $isGroupe['liste_enfant_modo']."#".$idGroupeToAdd.',',
                 ),
                 '_users_groupes'
             );

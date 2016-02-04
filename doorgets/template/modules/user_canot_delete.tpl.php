@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -38,7 +38,9 @@
 			[{!$this->doorGets->__("Vous n'avez pas le droit de supprimer ce contenu")!}]. 
 		</div>
 		<div class="text-center">
-			<a class="btn btn-default" href="?controller=module[{!$moduleInfos['type']!}]&uri=[{!$this->doorGets->Uri!}]"><img src="[{!BASE_IMG!}]retour.png" class="Retour-img"> [{!$this->doorGets->__("Retour")!}]</a>
-		</div>		
+            [{?(isset($moduleInfos)):}]
+			<a class="btn btn-default" href="?controller=module[{!$moduleInfos['type']!}]&uri=[{!$this->doorGets->Uri!}]"><i class="fa fa-undo fa-lg green-c"></i> [{!$this->doorGets->__("Retour")!}]</a>
+		    [?]
+        </div>		
 	</div>
 </div>

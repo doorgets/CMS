@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 20, February 2014
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -34,16 +34,22 @@
 ?>
 <div class="doorGets-content-wrapper">
     <div class="doorGets-top-title-content">
-        doorGets 7.0 <small>Free OpenSource CMS PHP/MySQL</small>
+        <img src="<?php echo BASE_IMG; ?>doorgets.png">
     </div>
     <div class="doorGets-title-content">
         3/5 - <?php echo $doorgets->l("Connecter votre base de données"); ?>
     </div>
     <?php if(!empty($doorgets->form['doorgets_database']->i)): ?>
-    <div class="info-no-ok">
+    <div id="info-no-ok" class="info-no-ok">
         <?php echo $doorgets->l("La connexion n'est pas établie !"); ?>
     </div>
-    <?php endif;  echo $doorgets->form['doorgets_database']->open('post','',''); ?>
+    <?php endif; ?>
+    <div id="show-after-click" style="display: none;text-align: center;">
+        <img src="<?php echo BASE_IMG; ?>loader.gif" style="margin: 10px;" ><br /><br /> 
+        <?php echo $doorgets->l("Installation en cours"); ?>... 
+    </div>
+    <div id="hide-after-click">
+    <?php echo $doorgets->form['doorgets_database']->open('post','',''); ?>
         <div class="separateur-tb"></div>
         <?php echo $doorgets->form['doorgets_database']->input($doorgets->l('Hôte'),'hote','text',$this->info['hote']); ?>
         <div class="separateur-tb"></div>
@@ -54,4 +60,16 @@
         <?php echo $doorgets->form['doorgets_database']->input($doorgets->l('Mot de passe'),'password','text'); ?>
         <div class="separateur-tb"></div>
         <?php echo $doorgets->form['doorgets_database']->submit($doorgets->l('Etape suivante'),'','submit-next');  echo $doorgets->form['doorgets_database']->close();  echo $doorgets->getHtmlGoBack(); ?>
+    </div>
 </div>
+<script type="text/javascript">
+    document.getElementById('doorgets_database_submit').addEventListener('click',function(e){
+        document.getElementById('doorgets_database_submit').style.display = 'none';
+        document.getElementById('doorgets_goback_submit').style.display = 'none';
+        document.getElementById('show-after-click').style.display = 'block';
+        document.getElementById('hide-after-click').style.display = 'none';
+        if(document.getElementById('info-no-ok') !== null) {
+            document.getElementById('info-no-ok').style.display = 'none';
+        }
+    });
+</script>

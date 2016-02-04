@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -174,22 +174,133 @@ class ThemeRequest extends doorGetsUserRequest{
                 
                 
                 break;
+
+            case 'import':
+                
+                $form = $this->doorGets->Form;
+                // vdump($form->i);
+                if (!empty($form->i) && !SAAS_ENV) {
+                    
+                    $this->doorGets->checkMode();
+                    
+                    $newname = 'doorgets'.time();
+                    $dirTheme = BASE.'themes/';
+                    if (array_key_exists('import_theme_file', $_FILES) && $_FILES["import_theme_file"]["name"]) {
+
+                        $filename = $_FILES["import_theme_file"]["name"];
+                        $source = $_FILES["import_theme_file"]["tmp_name"];
+                        $type = $_FILES["import_theme_file"]["type"];
+                        
+                        $name = explode(".", $filename);
+                        $accepted_types = array('application/zip', 'application/x-zip-compressed', 'multipart/x-zip', 'application/x-compressed');
+                        foreach($accepted_types as $mime_type) {
+                            if($mime_type == $type) {
+                                $okay = true;
+                                break;
+                            } 
+                        }
+                        
+                        $fileName = strtolower($name[0]);
+                        $newname = trim(str_replace(array('doorgets','cms',' '),'',$fileName));
+
+                        if (is_dir($dirTheme.$newname)) {
+                            $newname = 'doorgets'.uniqid();
+                        } 
+
+                        $continue = strtolower($name[1]) == 'zip' ? true : false;
+                        if(!$continue) {
+                            $this->doorGets->Form->e['import_theme_file'] = 'ok';
+                        }
+
+                    } else {
+                        $this->doorGets->Form->e['import_theme_file'] = 'ok';
+                    }
+
+                    if (empty($this->doorGets->Form->e)) {
+                        $entries = array();
+                        $target_path = $dirTheme.$fileName; 
+                        if(move_uploaded_file($source, $target_path)) {
+                            $zip = new ZipArchive();
+                            $x = $zip->open($target_path);
+                            if ($x === true) {
+                                $dir = trim($zip->getNameIndex(0));
+                                for ($i = 0; $i < $zip->numFiles; $i++) {
+                                    $entries[] = $zip->getNameIndex($i);
+                                }
+                                $fo = '';
+                                if (array_key_exists(0, $entries)) {
+                                    $fo = $entries[0];
+                                }
+
+                                $zip->extractTo($dirTheme.'/');
+                                $zip->close();
+                        
+                                @unlink($target_path);
+                            }
+                        } else {    
+                            $this->doorGets->Form->e['import_theme_file'] = 'ok';
+                        }
+                    }
+
+                    if (empty($this->doorGets->Form->e)) {
+
+                        FlashInfo::set($this->doorGets->__("Vos informations ont bien été mises à jour"));
+                        header('Location:./?controller=theme&action=edit&name='.$newname);
+                        exit();
+                    }
+                    
+                    FlashInfo::set($this->doorGets->__("Veuillez remplir correctement le formulaire"),"error");
+                    
+                }
+                
+                
+                break;
             
             case 'edit':
                 
-                $form = $this->doorGets->Form;
+
+                $form = $this->doorGets->Form['edit'];
                 if (!empty($form->i)) {
                     
                     $this->doorGets->checkMode();
                     
                     $urlFile = THEME.$fileSelected;
-                    $fileContent = html_entity_decode($form->i['content_nofi']);
-                    
+                    // NO FILTER BECAUSE SAVED IN FILE :)
+                    $fileContent = $_POST['theme_content_nofi'];
                     @file_put_contents($urlFile,$fileContent);
                     
+                    $websiteData = array(
+                        'theme_bootstrap'=>$form->i['bootstrap_version']
+                    );
+                    
+                    $this->doorGets->dbQU(Constant::$websiteId,$websiteData,'_website');
+
                     FlashInfo::set($this->doorGets->__("Vos informations ont bien été mises à jour"));
                     header("Location:".$_SERVER['REQUEST_URI']);
                     exit();
+                }
+
+                $formDownload = $this->doorGets->Form['download'];
+                if (!empty($formDownload->i)) {
+                    
+                    $this->doorGets->checkMode();
+                    
+                    $archiveFileName = ucfirst($name).' doorGets CMS Template.zip';
+                    
+                    $zip = new ZipDir();
+                    $res = $zip->open($archiveFileName, ZipArchive::CREATE);
+                    if ($res === TRUE) {
+                        $zip->addDir(BASE."themes/$name/", "$name/");
+                    }
+                    $zip->close();
+
+                    header("Content-type: application/zip"); 
+                    header("Content-Disposition: attachment; filename=$archiveFileName");
+                    header("Content-length: " . filesize($archiveFileName));
+                    header("Pragma: no-cache"); 
+                    header("Expires: 0"); 
+                    @readfile("$archiveFileName");
+
                 }
                 break;
             

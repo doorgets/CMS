@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -36,6 +36,8 @@ class ModulesController extends doorGetsUserController{
     
     public function __construct(&$doorGets) {
         
+        $doorGets->Table = '_modules';
+
         parent::__construct($doorGets);
         
         if (empty($doorGets->user)) {
@@ -49,6 +51,20 @@ class ModulesController extends doorGetsUserController{
             FlashInfo::set($this->doorGets->__("Vous n'avez pas les droits pour afficher ce module"),"error");
             header('Location:./'); exit();
         }
+    }
+    
+    public function indexAction() {
+        
+        $this->doorGets->Form['_search']            = new Formulaire('doorGets_search');
+        $this->doorGets->Form['_massdelete']        = new Formulaire($this->doorGets->controllerNameNow().'_massdelete');
+        $this->doorGets->Form['_search_filter']     = new Formulaire('doorGets_search_filter');
+        
+        // Generate the model
+        $this->getRequest();
+        
+        // return the view
+        return $this->getView();
+    
     }
     
     public function typeAction() {
@@ -118,6 +134,44 @@ class ModulesController extends doorGetsUserController{
         return $this->getView();
     
     }
+
+    public function addshopAction() {
+        
+        if (!in_array('module_shop',$this->doorGets->user['liste_module_interne'])
+            || ( in_array('module_shop',  $this->doorGets->user['liste_module_interne']) && SAAS_ENV && !SAAS_MODULES_SHOP)) {
+
+            FlashInfo::set($this->doorGets->__("Vous n'avez pas les droits pour afficher ce module"),"error");
+            header('Location:./'); exit();
+        }
+
+        $this->doorGets->Form = new Formulaire('modules_addshop');
+        
+        // Generate the model
+        $this->getRequest();
+        
+        // return the view
+        return $this->getView();
+    
+    }
+
+    public function addonepageAction() {
+        
+        if (!in_array('module_onepage',$this->doorGets->user['liste_module_interne'])
+            || ( in_array('module_onepage',  $this->doorGets->user['liste_module_interne']) && SAAS_ENV && !SAAS_MODULES_ONEPAGE)) {
+
+            FlashInfo::set($this->doorGets->__("Vous n'avez pas les droits pour afficher ce module"),"error");
+            header('Location:./'); exit();
+        }
+
+        $this->doorGets->Form = new Formulaire('modules_addonepage');
+        
+        // Generate the model
+        $this->getRequest();
+        
+        // return the view
+        return $this->getView();
+    
+    }
     
     public function addnewsAction() {
         
@@ -147,7 +201,7 @@ class ModulesController extends doorGetsUserController{
             header('Location:./'); exit();
         }
 
-        $this->doorGets->Form = new Formulaire('modules_addnews');
+        $this->doorGets->Form = new Formulaire('modules_addsharedlinks');
         
         // Generate the model
         $this->getRequest();
@@ -309,6 +363,44 @@ class ModulesController extends doorGetsUserController{
         return $this->getView();
     
     }
+
+    public function addsurveyAction() {
+        
+        if (!in_array('module_survey',$this->doorGets->user['liste_module_interne'])
+            || ( in_array('module_survey',  $this->doorGets->user['liste_module_interne']) && SAAS_ENV && !SAAS_WIDGET_SURVEY)) {
+
+            FlashInfo::set($this->doorGets->__("Vous n'avez pas les droits pour afficher ce module"),"error");
+            header('Location:./'); exit();
+        }
+
+        $this->doorGets->Form = new Formulaire('modules_addsurvey');
+        
+        // Generate the model
+        $this->getRequest();
+        
+        // return the view
+        return $this->getView();
+    
+    }
+
+    public function addcarouselAction() {
+        
+        if (!in_array('module_carousel',$this->doorGets->user['liste_module_interne'])
+            || ( in_array('module_carousel',  $this->doorGets->user['liste_module_interne']) && SAAS_ENV && !SAAS_WIDGET_BLOCK)) {
+
+            FlashInfo::set($this->doorGets->__("Vous n'avez pas les droits pour afficher ce module"),"error");
+            header('Location:./'); exit();
+        }
+
+        $this->doorGets->Form = new Formulaire('modules_addcarousel');
+        
+        // Generate the model
+        $this->getRequest();
+        
+        // return the view
+        return $this->getView();
+    
+    }
     
     public function editpageAction() {
         
@@ -396,6 +488,44 @@ class ModulesController extends doorGetsUserController{
         }
 
         $this->doorGets->Form = new Formulaire('modules_editblog');
+        
+        // Generate the model
+        $this->getRequest();
+        
+        // return the view
+        return $this->getView();
+    
+    }
+
+    public function editshopAction() {
+        
+        if (!in_array('module_shop',$this->doorGets->user['liste_module_interne'])
+            || ( in_array('module_shop',  $this->doorGets->user['liste_module_interne']) && SAAS_ENV && !SAAS_MODULES_SHOP)) {
+
+            FlashInfo::set($this->doorGets->__("Vous n'avez pas les droits pour afficher ce module"),"error");
+            header('Location:./'); exit();
+        }
+
+        $this->doorGets->Form = new Formulaire('modules_editshop');
+        
+        // Generate the model
+        $this->getRequest();
+        
+        // return the view
+        return $this->getView();
+    
+    }
+
+    public function editonepageAction() {
+        
+        if (!in_array('module_onepage',$this->doorGets->user['liste_module_interne'])
+            || ( in_array('module_onepage',  $this->doorGets->user['liste_module_interne']) && SAAS_ENV && !SAAS_MODULES_ONEPAGE)) {
+
+            FlashInfo::set($this->doorGets->__("Vous n'avez pas les droits pour afficher ce module"),"error");
+            header('Location:./'); exit();
+        }
+
+        $this->doorGets->Form = new Formulaire('modules_editonepage');
         
         // Generate the model
         $this->getRequest();
@@ -548,6 +678,44 @@ class ModulesController extends doorGetsUserController{
         }
 
         $this->doorGets->Form = new Formulaire('modules_editblock');
+        
+        // Generate the model
+        $this->getRequest();
+        
+        // return the view
+        return $this->getView();
+    
+    }
+
+    public function editsurveyAction() {
+        
+        if (!in_array('module_survey',$this->doorGets->user['liste_module_interne'])
+            || ( in_array('module_survey',  $this->doorGets->user['liste_module_interne']) && SAAS_ENV && !SAAS_WIDGET_SURVEY)) {
+
+            FlashInfo::set($this->doorGets->__("Vous n'avez pas les droits pour afficher ce module"),"error");
+            header('Location:./'); exit();
+        }
+
+        $this->doorGets->Form = new Formulaire('modules_editsurvey');
+        
+        // Generate the model
+        $this->getRequest();
+        
+        // return the view
+        return $this->getView();
+    
+    }
+
+    public function editcarouselAction() {
+        
+        if (!in_array('module_carousel',$this->doorGets->user['liste_module_interne'])
+            || ( in_array('module_carousel',  $this->doorGets->user['liste_module_interne']) && SAAS_ENV && !SAAS_WIDGET_BLOCK)) {
+
+            FlashInfo::set($this->doorGets->__("Vous n'avez pas les droits pour afficher ce module"),"error");
+            header('Location:./'); exit();
+        }
+
+        $this->doorGets->Form = new Formulaire('modules_editcarousel');
         
         // Generate the model
         $this->getRequest();

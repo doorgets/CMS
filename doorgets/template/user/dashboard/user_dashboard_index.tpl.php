@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -32,6 +32,7 @@
 ******************************************************************************/
 
 
+
 ?>
 <div class="doorGets-rubrique-center">
     <div class="doorGets-rubrique-center-title page-header">
@@ -41,13 +42,20 @@
         <legend>
             <b class="glyphicon glyphicon-dashboard"></b> [{!$this->doorGets->__('Tableau de bord')!}]
         </legend>
+        [{?(($hasStats && !SAAS_ENV) || ($hasStats && SAAS_ENV && SAAS_STATS)):}]
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-12">
+                <div id="chart_div" style="width: 110%; height: 500px;margin-left:-100px;margin-top:-20px;"></div>
+            </div>
+        </div>
+        [?]
+        <div class="row">
+            <div class="col-md-4">
                 <div class="panel panel-default box-dash">
                     <div class="box-dash-title panel-heading">
                         <b class="glyphicon glyphicon-signal"></b> [{!$this->doorGets->__('Activité')!}]
                     </div>
-                    <div class="panel-body box-dash-content">
+                    <div class="panel-body padding-0 panel-dash-module">
                         [{?(!empty($history)):}]
                             [{/($history as $track):}]
                                 [{?(array_key_exists('history',$track)):}]
@@ -56,231 +64,200 @@
                                         <img class="media-object avatars" src="[{!URL.'data/users/'.$track['user_infos']['avatar']!}]" >    
                                     </div>
                                     <div class="media-body">
-                                        <h4><small>[{!$track['date']!}]</small></h4>
-                                        <small class="pull-right"></small>
+                                        <small class="pull-right">[{!$track['date']!}]</small>
                                         [{!$track['history']!}]
                                     </div>
                                 </div>
                                 [?]
                             [/]
                         [??]
-                            <div class="comment-center">[{!$this->doorGets->__("Il n'y a pas encore d'historique")!}].</div>
+                            <div class="comment-center"><i class="fa fa-exclamation-triangle"></i> [{!$this->doorGets->__("Il n'y a pas encore d'historique")!}].</div>
                         [?]
                     </div>
                 </div>
             </div>
+            [{?($is_user_modo):}]
             <div class="col-md-4">
-                <div class="row">
-                    [{?($is_comment_modo):}]
-                        <div class="col-md-12">
-                            <div class="panel panel-default box-dash">
-                                <div class="box-dash-title panel-heading">
-                                    <a href="?controller=comment">
-                                        <b class="glyphicon glyphicon-comment"></b>  [{!$this->doorGets->__("Commentaire")!}]
-                                    </a>
+                <div class="panel panel-default box-dash">
+                    <div class="box-dash-title panel-heading">
+                        <a href="?controller=users">
+                            <small class="pull-right">[{!$totalUsers!}]</small>
+                            <b class="glyphicon glyphicon-user"></b> [{!$this->doorGets->__('Utilisateurs')!}]
+                        </a>
+                    </div>
+                    <div class="panel-body padding-0 panel-dash-module">
+                        [{?(!empty($usersInfoCollection)):}]
+                            [{/($usersInfoCollection as $user):}]
+                                [{
+                                    $user['status_ico'] = '<i class="fa fa-exclamation-triangle red-c"></i>';
+                                    if (array_key_exists($user['active'],Constant::$userStatus)) {
+                                        $user['status_ico'] = Constant::$userStatus[$user['active']];
+                                    }
+                                    $user['first_name'] = ucfirst($user['first_name']);
+                                    $user['last_name'] = ucfirst($user['last_name']);
+                                    $user['date_creation'] = GetDate::before($user['date_creation'],$this->doorGets);
+                                }]
+                                <div class="box-dash-content-out padding-10">
+                                    <small class="pull-right">[{!$user['date_creation']!}]</small>
+                                    [{!$user['status_ico']!}] [{!$this->doorGets->__('Utilisateur')!}] n° <a href="?controller=users&action=edit&id=[{!$user['id']!}]" target="_blank">[{!$user['id']!}]</a>
+                                    <br />
+                                    <b>[{!$user['pseudo']!}]</b> [{!$user['first_name']!}] [{!$user['last_name']!}] 
                                 </div>
-                                <div class="panel-body box-dash-content">
-                                    [{?(!empty($lastComments)):}]
-                                        <ul class="list-group">  
-                                        [{/($lastComments as $v):}]
-                                            [{
-                                                $imgVal = '<img src="'.BASE_IMG.'puce-rouge.png" title="'.$this->doorGets->__('Bloquer').'" />';
-                                                if ($v['validation'] === '2') {
-                                                    $imgVal = '<img src="'.BASE_IMG.'puce-verte.png" title="'.$this->doorGets->__('Activer').'" />';
-                                                }
-                                                if ($v['validation'] === '3') {
-                                                    $imgVal = '<img src="'.BASE_IMG.'puce-orange.png" title="'.$this->doorGets->__('En attente de modération').'" />';
-                                                }
-                                            }]
-                                            <li class="list-group-item">
-                                                <a href="?controller=comment&action=select&id=[{!$v['id']!}]">
-                                                    <h4>
-                                                      [{!$imgVal!}] [{!$this->doorGets->_truncate($v['nom'])!}] <small>([{!$this->doorGets->_truncate($v['email'])!}])</small>
-                                                    </h4>
-                                                    <p>[{!$this->doorGets->_truncate($v['comment'])!}]</p>
-                                                    <div class="text-right">
-                                                        <small>[{!GetDate::in($v['date_creation'],1,$this->doorGets->myLanguage)!}]</small>
-                                                    </div>
-                                                </a>
-                                            </li>
-                                        [/]
-                                            <li class="list-group-item text-right">
-                                                <span>[{!$this->doorGets->__("Total")!}] : [{!$iComments!}]</span>
-                                            </li>
-                                        </ul>
-                                    [??]
-                                        <div class="comment-center">[{!$this->doorGets->__("Il n'y a pas encore de commentaire")!}].</div>
-                                    [?]
-                                </div>
-                            </div>
-                        </div>
-                    [?]
-                    [{?($is_inbox_modo):}]
-                        <div class="col-md-12">
-                            <div class="panel panel-default box-dash">
-                                <div class="box-dash-title panel-heading">
-                                    <a href="?controller=inbox">
-                                        <b class="glyphicon glyphicon-envelope"></b>  [{!$this->doorGets->__("Message")!}]
-                                    </a>
-                                </div>
-                                <div class="panel-body box-dash-content">
-                                    [{?(!empty($lastInbox)):}]
-                                        <ul class="list-group">  
-                                        [{/($lastInbox as $v):}]
-                                            [{
-                                                $imgVal = '<img src="'.BASE_IMG.'puce-orange.png" title="'.$this->doorGets->__('Non lu').'" />';
-                                                if ($v['lu'] === '1') {
-                                                    $imgVal = '<img src="'.BASE_IMG.'puce-verte.png" title="'.$this->doorGets->__('Lu').'" />';
-                                                }
-                                            }]
-                                            <li class="list-group-item">
-                                                <a href="?controller=inbox&action=select&id=[{!$v['id']!}]">
-                                                    <h4 >
-                                                      [{!$imgVal!}] [{!$this->doorGets->_truncate($v['nom'],'30')!}] - [{!$this->doorGets->_truncate($v['sujet'],'30')!}] 
-                                                      <small>([{!$this->doorGets->_truncate($v['email'])!}])</small>
-                                                    </h4>
-                                                    <p>[{!$this->doorGets->_truncate($v['message'])!}]</p>
-                                                    <div class="text-right"><small>[{!GetDate::in($v['date_creation'],1,$this->doorGets->myLanguage)!}]</small></div>
-                                                </a>
-                                            </li>
-                                        [/]
-                                            <li class="list-group-item text-right">
-                                                <span >[{!$this->doorGets->__("Total")!}] : [{!$iInbox!}]</span>
-                                            </li>
-                                        </ul>
-                                    [??]
-                                        <div class="comment-center">[{!$this->doorGets->__("Il n'y a pas encore de message")!}].</div>
-                                    [?]
-                                </div>
-                            </div>
-                        </div>
-                    [?]
-                    [{?(!empty($allModules)):}]
-                        
-                        <div class="col-md-12">
-                            <div class="panel panel-default box-dash">
-                                <div class="box-dash-title panel-heading">
-                                    <a href="?controller=modules">
-                                        <b class="glyphicon glyphicon-asterisk"></b> [{!$this->doorGets->__("Module")!}]
-                                    </a>
-                                </div>
-                                <div class="panel-body box-dash-content">
-                                    [{?(!empty($allModules)):}]
-                                        <ul class="list-group">  
-                                        [{/($allModules as $v):}]
-                                            [{
-                                                $imgVal = '<img src="'.BASE_IMG.'puce-verte.png" title="'.$this->doorGets->__('Active').'" />';
-                                                if ($v['active'] === '0') {
-                                                    $imgVal = '<img src="'.BASE_IMG.'puce-rouge.png" title="'.$this->doorGets->__('Désactivé').'" />';
-                                                }
-                                                $imgType = '<img src="'.$listeInfos[$v['type']]['image'].'" >';
-                                            }]
-                                            <li class="list-group-item">
-                                                <a href="[{!$v['url']!}]" title="[{!$this->doorGets->__('Gérer le contenu')!}]" style="display: block;">
-                                                    [{!$imgVal!}] [{!$imgType!}] [{!$this->doorGets->_truncate($v['label'])!}]
-                                                    [{?(!empty($v['count'])):}]<span class="badge right">[{!$this->doorGets->_truncate($v['count'])!}]</span>[?]
-                                                </a>
-                                                
-                                            </li>
-
-                                        [/]
-                                            <li class="list-group-item text-right">
-                                                <span >[{!$this->doorGets->__("Total")!}] [ [{!$this->doorGets->__("Module")!}] : [{!$iModules!}] - [{!$this->doorGets->__("Contenu")!}] : [{!$iCountContents!}] ]</span>
-                                            </li>
-                                        </ul>
-                                    [??]
-                                        <div class="comment-center">[{!$this->doorGets->__("Il n'y a pas encore de module")!}].</div>
-                                    [?]
-                                </div>
-                            </div>
-                        </div>
-                    [?]
-                    [{?(!empty($modulesBlocks) || !empty($modulesGenforms)):}]
-                        
-                        <div class="col-md-12">
-                            <div class="panel panel-default box-dash">
-                                <div class="box-dash-title panel-heading">
-                                    <b class="glyphicon glyphicon-asterisk"></b> [{!$this->doorGets->__("Widgets")!}]
-                                </div>
-                                <div class="panel-body box-dash-content">
-                                    <ul class="list-group"> 
-                                    [{?(!empty($modulesBlocks)):}]
-                                         
-                                        [{/($modulesBlocks as $v):}]
-                                            [{
-                                                $imgVal = '<img src="'.BASE_IMG.'puce-verte.png" title="'.$this->doorGets->__('Active').'" />';
-                                                if ($v['active'] === '0') {
-                                                    $imgVal = '<img src="'.BASE_IMG.'puce-rouge.png" title="'.$this->doorGets->__('Désactivé').'" />';
-                                                }
-                                                $imgType = '<img src="'.$listeInfos[$v['type']]['image'].'" >';
-                                            }]
-                                            <li class="list-group-item">
-                                                <a href="?controller=moduleblock&uri=[{!$v['uri']!}]" title="[{!$this->doorGets->__('Gérer le contenu')!}]" style="display: block;">
-                                                    [{!$imgVal!}] [{!$imgType!}] [{!$this->doorGets->_truncate($v['label'])!}]
-                                                </a>
-                                            </li>
-                                        [/]
-                                    [?]
-                                    [{?(!empty($modulesGenforms)):}] 
-                                        [{/($modulesGenforms as $v):}]
-                                            [{
-                                                $imgVal = '<img src="'.BASE_IMG.'puce-verte.png" title="'.$this->doorGets->__('Active').'" />';
-                                                if ($v['active'] === '0') {
-                                                    $imgVal = '<img src="'.BASE_IMG.'puce-rouge.png" title="'.$this->doorGets->__('Désactivé').'" />';
-                                                }
-                                                $imgType = '<img src="'.$listeInfos[$v['type']]['image'].'" >';
-                                            }]
-                                            <li class="list-group-item">
-                                                <a href="?controller=modulegenform&uri=[{!$v['uri']!}]" title="[{!$this->doorGets->__('Gérer le contenu')!}]" style="display: block;">
-                                                    [{!$imgVal!}] [{!$imgType!}] [{!$this->doorGets->_truncate($v['label'])!}]
-                                                    [{?(!empty($v['count'])):}]<span class="badge right">[{!$this->doorGets->_truncate($v['count'])!}]</span>[?]
-                                                </a>
-                                            </li>
-                                        [/]
-                                    [?]
-                                    </ul>
-                                    [{?(empty($modulesGenforms) && empty($modulesBlocks)):}] 
-                                        <div class="comment-center">[{!$this->doorGets->__("Il n'y a pas encore de contenu")!}].</div>
-                                    [?]
-                                </div>
-                                <div class="panel-footer text-right">
-                                    <span>[{!$this->doorGets->__("Total")!}] : [{!$iModulesBlocks + $iModulesGenforms!}]</span>
-                                </div>
-                            </div>
-                        </div>
-                    [?]
-                </div> 
+                            [/]
+                        [?]
+                    </div>
+                </div>
             </div>
+            [?]
+            [{?(!empty($allModules)):}]
+            <div class="col-md-4">
+                <div class="panel panel-default box-dash">
+                    <div class="box-dash-title panel-heading">
+                        <a href="?controller=modules">
+                            <span class="pull-right">[{!$iModules!}]</span>
+                            <b class="glyphicon glyphicon-asterisk"></b> [{!$this->doorGets->__("Modules")!}] 
+                        </a>
+                    </div>
+                    <div class="panel-body padding-0 panel-dash-module">
+                        [{?(!empty($allModules)):}]
+                            [{/($allModules as $v):}]
+                                [{?($v['active'] === '1'):}]
+                                [{
+                                    $imgType = '<img src="'.$listeInfos[$v['type']]['image'].'" >';
+                                }]
+                                <div class="box-dash-content-in">
+                                    <a href="[{!$v['url']!}]" title="[{!$this->doorGets->__('Gérer le contenu')!}]" style="display: block;">
+                                        [{!$imgType!}] [{!$this->doorGets->_truncate($v['label'])!}]
+                                        [{?(!empty($v['count'])):}]<span class="badge right">[{!$this->doorGets->_truncate($v['count'])!}]</span>[?]
+                                    </a>
+                                </div>
+                                [?]
+                            [/]
+                        [?]
+                    </div>
+                </div>
+            </div>
+            [?]
+            [{?($is_comment_modo):}]
+                <div class="col-md-4">
+                    <div class="panel panel-default box-dash">
+                        <div class="box-dash-title panel-heading">
+                            <a href="?controller=comment">
+                                <span class="pull-right">[{!number_format($iComments,0,',',' ')!}]</span>
+                                <b class="glyphicon glyphicon-comment"></b>  [{!$this->doorGets->__("Commentaires")!}]
+                            </a>
+                        </div>
+                        <div class="panel-body padding-0 panel-dash-comment">
+                            [{?(!empty($lastComments)):}]
+                                [{/($lastComments as $v):}]
+                                    [{
+                                        $imgVal = '<i class="fa fa-ban fa-lg red-c"></i>';
+                                        if ($v['validation'] === '2') {
+                                            $imgVal = '<i class="fa fa-check fa-lg green-c"></i>';
+                                        } elseif ($v['validation'] === '3') {
+                                            $imgVal = '<i class="fa fa-hourglass-end fa-lg orange-c"></i>';
+                                        }
+                                    }]
+                                    <div class="box-dash-content-in">
+                                        <a href="?controller=comment&action=select&id=[{!$v['id']!}]">
+                                            [{!$imgVal!}] [{!GetDate::in($v['date_creation'],1,$this->doorGets->myLanguage)!}] <br />
+                                            [{!$this->doorGets->_truncate($v['nom'])!}]
+                                            <i class="fa fa-caret-right"></i> [{!$this->doorGets->_truncate($v['comment'])!}]   
+                                        </a>
+                                    </div>
+                                [/]
+                            [??]
+                                <div class="comment-center"><i class="fa fa-exclamation-triangle"></i> [{!$this->doorGets->__("Il n'y a pas encore de commentaire")!}].</div>
+                            [?]
+                        </div>
+                    </div>
+                </div>
+            [?]
+            [{?($is_inbox_modo):}]
+                <div class="col-md-4">
+                    <div class="panel panel-default box-dash">
+                        <div class="box-dash-title panel-heading">
+                            <a href="?controller=inbox">
+                                <span class="pull-right">[{!number_format($iInbox,0,',',' ')!}]</span>
+                                <b class="glyphicon glyphicon-envelope"></b>  [{!$this->doorGets->__("Messages")!}]
+                            </a>
+                        </div>
+                        <div class="panel-body padding-0 panel-dash-inbox">
+                            [{?(!empty($lastInbox)):}] 
+                                [{/($lastInbox as $v):}]
+                                    [{
+                                        $imgVal = '<i class="fa fa-eye-slash fa-lg orange-c"></i> ';
+                                        if ($v['lu'] === '1') {
+                                            $imgVal = '<i class="fa fa-eye fa-lg green-c"></i> ';
+                                        }
+                                    }]
+                                    <div class="box-dash-content-in">
+                                        <a href="?controller=inbox&action=select&id=[{!$v['id']!}]">
+                                              [{!$imgVal!}] [{!GetDate::in($v['date_creation'],1,$this->doorGets->myLanguage)!}] <br />
+                                              [{!$this->doorGets->_truncate($v['nom'],'30')!}] <i class="fa fa-caret-right"></i> [{!$this->doorGets->_truncate($v['sujet'],'30')!}]
+                                        </a>
+                                    </div>
+                                [/]
+                            [??]
+                                <div class="comment-center"><i class="fa fa-exclamation-triangle"></i> [{!$this->doorGets->__("Il n'y a pas encore de message")!}].</div>
+                            [?]
+                        </div>
+                    </div>
+                </div>
+            [?]
+            [{?($is_support_modo):}]
+                <div class="col-md-4">
+                    <div class="panel panel-default box-dash">
+                        <div class="box-dash-title panel-heading">
+                            <a href="?controller=inbox">
+                                <span class="pull-right">[{!number_format($iSupport,0,',',' ')!}]</span>
+                                <b class="glyphicon  glyphicon-question-sign"></b>  [{!$this->doorGets->__("Support")!}]
+                            </a>
+                        </div>
+                        <div class="panel-body padding-0 panel-dash-inbox">
+                            [{?(!empty($lastSupport)):}] 
+                                [{/($lastSupport as $v):}]
+                                    [{
+                                        $imgVal = '<i class="fa fa-eye-slash fa-lg orange-c"></i> ';
+                                        if ($v['readed_support'] === '2') {
+                                            $imgVal = '<i class="fa fa-eye fa-lg green-c"></i> ';
+                                        }
+                                    }]
+                                    <div class="box-dash-content-in">
+                                        <a href="?controller=support&action=ticket&id=[{!$v['id']!}]">
+                                              [{!$imgVal!}] [{!GetDate::in($v['date_creation'],1,$this->doorGets->myLanguage)!}] <br />
+                                              [{!$this->doorGets->_truncate($v['pseudo'],'30')!}] <i class="fa fa-caret-right"></i> [{!$this->doorGets->_truncate($v['subject'],'30')!}]
+                                        </a>
+                                    </div>
+                                [/]
+                            [??]
+                                <div class="comment-center"><i class="fa fa-exclamation-triangle"></i> [{!$this->doorGets->__("Aucun résulat")!}].</div>
+                            [?]
+                        </div>
+                    </div>
+                </div>
+            [?]
         </div>
-        
     </div>
-
 </div>
+[{?(($hasStats && !SAAS_ENV) || ($hasStats && SAAS_ENV && SAAS_STATS)):}]
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
-  
-    $( ".sortable-dash" ).sortable();
-    $( ".sortable-dash" ).disableSelection();
+  google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawVisualization);
+      function drawVisualization() {
+        // Some raw data (not necessarily accurate)
+        var data = google.visualization.arrayToDataTable([
+        [{!$jsChartTitleFinal!}]
+        [{!$jsChartFinal!}]
+      ]);
 
-    function checkHistory() {
-        $.ajax({
-            url: '[{!$urlHistory!}]',
-            dataType: 'json',
-        })
-        .done(function(data) {
-            console.log(data.data);
-            if (data.data.length > 0) {
+    var options = {
+      seriesType: 'bars',
+    };
 
-                $.each(data.data, function(key,value){
-
-                    $('#show-history .list-group').prepend('<li class="list-group-item"><a href="' + value.url + '">' + value.url + ' : ' + value.time + '</a></li>');
-                });
-            }
-            
-        });      
-    }
-
-    
-    window.setInterval(function(){
-        //checkHistory();
-    }, 5000);
+    var chart = new google.visualization.ComboChart(document.getElementById('chart_div'));
+    chart.draw(data, options);
+  }
 </script>
+[?]

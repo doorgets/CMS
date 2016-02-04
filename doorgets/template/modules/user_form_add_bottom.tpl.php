@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -31,7 +31,7 @@
 ******************************************************************************
 ******************************************************************************/
 
-$aAuthorBadge = array('blog','news','image','video');
+$aAuthorBadge = Constant::$modulesWithUserBadge;
 
 ?>
         </div>

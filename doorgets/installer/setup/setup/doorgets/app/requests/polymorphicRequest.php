@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 20, February 2014
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -45,94 +45,34 @@ class polymorphicRequest extends doorgetsRequest{
         
         $form = $this->doorgets->form['doorgets_'.$actionName]  = new Formulaire('doorgets_'.$actionName);
         
+        $urlRedic = $_SERVER['REQUEST_URI'];
+        $urlRedic = str_replace('index.php','',$urlRedic);
+
+        $configFile = 'config/config.php';
+        if (file_exists($configFile) && is_file($configFile)) {
+            //$this->destroy_dir(BASE);
+            header("Location:".$urlRedic); exit();
+        }
+
         if (!empty($form->i) && empty($form->e) )
         {
-            
+
+            $this->removeDataTemp();
+
             $isCreatedQuery = true;//$this->installDatabase();
-            
             $this->extractDoorgets();
             $z = $this->loadConfig();
             if ($isCreatedQuery) {
                 
                 $this->updateDatabase();
                 
-                $this->destroy_dir(BASE);
+                //$this->destroy_dir(BASE);
                 $this->_doorgets($z['k'],$z['u'],$z['v'],$z['e']);
                 
-                $urlRedic = $_SERVER['REQUEST_URI'];
-                $urlRedic = str_replace('index.php','',$urlRedic);
-                
-                header("Location:".$urlRedic); exit();
-                
             }
+            header("Location:".$urlRedic); exit();
         }
-    }
-    
-    public function installDatabase() {
-
-        $fileTempAdmin = BASE.'temp/admin.php';
-        if (is_file($fileTempAdmin)) {
             
-            $cFile = file_get_contents($fileTempAdmin);
-            $cOutFile = unserialize($cFile);
-            
-            $adm_email = $cOutFile['email'];
-            
-        }
-      
-        $fileTempDatabase = BASE.'temp/database.php';
-        if (is_file($fileTempDatabase)) {
-            
-            $cFileDatabase = file_get_contents($fileTempDatabase);
-            if ($cOutFileDatabase = unserialize($cFileDatabase)) {
-                
-                $sql_host   = $cOutFileDatabase['hote'];
-                $sql_db     = $cOutFileDatabase['name'];
-                $sql_login  = $cOutFileDatabase['login'];
-                $sql_pwd    = $cOutFileDatabase['password'];
-                
-            }
-               
-            $db = new CRUD($sql_host,$sql_db,$sql_login,$sql_pwd);
-             
-            $fileTempWebsite = BASE.'temp/website.php';
-            if (is_file($fileTempWebsite)) {
-                
-                $cFileWebiste = file_get_contents($fileTempWebsite);
-                if ($cOutFileWebsite = unserialize($cFileWebiste)) {
-                    
-                    $dataTrad['title']              = $cOutFileWebsite['title'];
-                    $dataTrad['slogan']             = $cOutFileWebsite['slogan'];
-                    $dataTrad['description']        = $cOutFileWebsite['description'];
-                    $dataTrad['copyright']          = $cOutFileWebsite['copyright'];
-                    $dataTrad['year']               = $cOutFileWebsite['year'];
-                    $dataTrad['keywords']           = $cOutFileWebsite['keywords'];
-                    $dataTrad['date_modification']  = time();
-
-                    $bigQueries = $this->getSQLQueryToImport($cOutFile);
-                    
-                    if (!empty($bigQueries)) {
-
-                        if(array_key_exists('create', $bigQueries)) {
-                            $db->dbQL($bigQueries['create']);
-                            unset($bigQueries['create']);
-                        }
-                        
-                        foreach ($bigQueries as $bigquery) {
-
-                            if (!empty($bigquery)) {
-
-                                $db->dbQL($bigquery);
-                            }
-                        }
-
-                        return true;
-                    }
-                }
-            }
-            
-            return false;
-        }
     }
 
     public function updateDatabase(){
@@ -368,6 +308,7 @@ class polymorphicRequest extends doorgetsRequest{
             $sql_db = $cOutFile['name'];
             $sql_login = $cOutFile['login'];
             $sql_pwd = $cOutFile['password'];
+            $sql_version = $cOutFile['mysql_version'];
             
         }
 
@@ -376,10 +317,12 @@ class polymorphicRequest extends doorgetsRequest{
         $url = $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
         $url = str_replace('index.php','',$url);
         
+        $saasEnv = (SAAS_ENV) ? 'true' : 'false';
+        
         $iOut = '';
         $iOut .= "<?php".PHP_EOL;
         
-        $iOut .= "define('SAAS_ENV',".SAAS_ENV.");".PHP_EOL;
+        $iOut .= "define('SAAS_ENV',".$saasEnv.");".PHP_EOL;
         $iOut .= "define('ACTIVE_CACHE',false);".PHP_EOL;
         $iOut .= "define('ACTIVE_DEMO',false);".PHP_EOL;
         $iOut .= "define('KEY_SECRET','".KEY_SECRET."');".PHP_EOL;
@@ -423,6 +366,7 @@ class polymorphicRequest extends doorgetsRequest{
         $iOut .= "define('SQL_LOGIN','".$sql_login."');".PHP_EOL;
         $iOut .= "define('SQL_PWD','".$sql_pwd."');".PHP_EOL;
         $iOut .= "define('SQL_DB','".$sql_db."');".PHP_EOL;
+        $iOut .= "define('SQL_VERSION','".$sql_version."');".PHP_EOL;
         
         $iOut .= "require_once CONFIGURATION.'includes.php';".PHP_EOL;
         
@@ -562,5 +506,12 @@ class polymorphicRequest extends doorgetsRequest{
         $randkey .= substr($keyset, rand(0, strlen($keyset)-1), 1);
         
         return $randkey;
+    }
+
+    public function removeDataTemp() {
+        $fileData = 'setup/temp/data.txt';
+        $fileRoot = 'data.txt';
+        if ((is_file($fileData))) { @unlink($fileData); }
+        if ((is_file($fileRoot))) { @unlink($fileRoot); }
     }
 }

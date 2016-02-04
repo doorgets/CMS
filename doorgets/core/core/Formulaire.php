@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -51,13 +51,16 @@ class Formulaire{
 
     }
     
-    public function open($method="post",$action="",$enctype = 'enctype="multipart/form-data"',$class='') {
+
+    public function open($method="post",$action="",$enctype = 'enctype="multipart/form-data"',$class='',$withToken = true) {
         
         $name = $this->name;
 
         if (empty($action)) { $action = $_SERVER['REQUEST_URI']; }
         $out = '<form '.$enctype.' id="'.$name.'" name="'.$name.'" method="'.$method.'" class="'.$class.'" action="'.$action.'" role="form">';
-        $out .= '<input type="hidden" name="'.$name.'_token" value="'.$this->_token.'">';
+        if ($withToken) {
+            $out .= '<input type="hidden" name="'.$name.'_token" value="'.$this->_token.'">';
+        }
 
         return $out;
 
@@ -116,7 +119,7 @@ class Formulaire{
         }
 
         if ($type !== 'hidden' && !empty($label)) {
-            $input .= "\r\n\t\t<label $styleLabel >$label</label>";
+            $input .= "<label for=\"$name\" $styleLabel >$label</label>";
         }
         $value = Convertag::in($value);
         if ($type === 'hidden') {
@@ -125,6 +128,49 @@ class Formulaire{
             $input .= '<div class="input-group " ><input autocomplete="off" maxlength="220" type="'.$type.'" id="'.$name.'" name="'.$name.'"   value="'.$value.'" class="form-control '.$class.'" '.$style.' ></div>';
            
         }
+        return $input;
+        
+    }
+
+    public function inputTags($label,$name,$value="",$class="") {
+        
+        $input = '';
+        $valueTemp = $value;
+        $name = $this->name.'_'.$name;
+        $style = '';
+        $styleLabel = '';
+        
+        if (isset($_POST[$name])) {
+            $value = $_POST[$name];
+            if (!empty($this->e[$name])) {
+                
+                $styleLabel = 'style="color:#ff0000;"';
+                $style = 'style="border:solid 2px #ff0000;"';
+                $value = $valueTemp;
+            }
+        }
+
+        $input .= "<label for=\"$name\" $styleLabel >$label</label>";
+        
+        $valArray = explode( ',', $value);
+        foreach ($valArray as $key => $tag) {
+            $tag = trim($tag);
+            if (empty($tag)) {
+                unset($valArray[$key]);
+            } else {
+                $valArray[$key] = $tag;
+            }
+        }
+        $cVal = count($valArray);
+        $input .= '<div id="input-tags-'.$name.'" class="input-tags-block">';
+        if ($cVal > 0) {
+            foreach ($valArray as $tag) {
+                $input .= '<span class="input-tags-field">'.$tag.' <i class="fa fa-remove red-c remove-tag-btn "></i></span>';
+            }
+        }
+        $input .= '</div>';
+        $input .= '<div class="input-group " ><input autocomplete="off" maxlength="70" size="50" type="text" id="'.$name.'-tags"  value="" class="form-control input-add-tags '.$class.'" '.$style.' ></div>';
+        $input .= '<div class="input-group " ><input autocomplete="off" maxlength="70" size="50" type="hidden" id="'.$name.'" name="'.$name.'"   value="'.$value.'" class="form-control '.$class.'" '.$style.' ></div>';
         return $input;
         
     }
@@ -309,9 +355,32 @@ class Formulaire{
         }
         $input = '<div class="upload-recepetion-'.$name.'" style="display:block;margin-bottom:20px;width:180px;" ></div>';
         $input .= (!empty($label)) ? '<label id="label-upload-recepetion-'.$name.'"' ." $styleLabel >$label</label>" : '';
-        $input .= '<span class"span-upload-recepetion"></span>';
+        $input .= '<span id="span-upload-recepetion-'.$name.'"></span>';
         $input .= '<input type="file" id="'.$name.'" name="'.$name.'"  '.$style.' >';
-        $input .= '<input type="hidden" id="'.$name.'" name="'.$name.'"  '.$style.' value="'.$value.'" >';
+        $input .= '<input type="hidden" id="'.$name.'" name="'.$name.'" class="'.$name.'" '.$style.' value="'.$value.'" >';
+        
+        
+        return $input;
+        
+    }
+
+    public function fileDownloadAjax($label,$name,$value="") {
+        
+        $name = $this->name.'_'.$name;
+        $style = '';
+        $styleLabel = '';
+        
+        if (!empty($this->e[$name])) {
+            
+            $styleLabel = ' style="color:#ff0000;" ';
+            $style= ' style="border: solid 2px #ff0000;" ';
+            
+        }
+        $input = '<div class="upload-recepetion-'.$name.'" style="display:block;margin-bottom:20px;width:100%;" ></div>';
+        $input .= (!empty($label)) ? '<label id="label-upload-recepetion-'.$name.'"' ." $styleLabel >$label</label>" : '';
+        $input .= '<span id="span-upload-recepetion-'.$name.'"></span>';
+        $input .= '<input type="file" id="'.$name.'" name="'.$name.'"  '.$style.' >';
+        $input .= '<input type="hidden" id="'.$name.'" name="'.$name.'" class="'.$name.'" '.$style.' value="'.$value.'" >';
         
         
         return $input;
@@ -336,7 +405,7 @@ class Formulaire{
         $input .= '<div class="alert alert-success">';
         $input .= (!empty($label)) ? '<label id="label-upload-recepetion-'.$name.'"' ." $styleLabel >$label</label>" : '';
 
-        $input .= '<span class="span-upload-recepetion-'.$name.' " ></span>';
+        $input .= '<span id="span-upload-recepetion-'.$name.' " ></span>';
         $input .= '<input type="file" id="'.$name.'" name="'.$name.'"  '.$style.' class="'.$class.' multi-file-ajax" >';
         $input .= '<input type="hidden" id="'.$name.'" name="'.$name.'"  value="'.$value.'" >';
         $input .= '</div >';
@@ -345,7 +414,7 @@ class Formulaire{
         
     }
 
-    public function textarea($label,$name,$value="",$class="",$style='') {
+    public function textarea($label,$name,$value="",$class="",$style='',$placeholder = '') {
         
         $rest = substr($name, -8);
         $restHtml = substr($name, -5); 
@@ -377,7 +446,8 @@ class Formulaire{
         if (!empty($label)) {
             $textarea = '<label '.$styleLabel.' >'.$label.'</label>';
         }
-        $textarea .= '<textarea id="'.$name.'" name="'.$name.'" class="input-control '.$class.'" '.$style.' >'.$value.'</textarea>';
+        $placeholder = (!empty($placeholder))?' placeholder="'.$placeholder.'" ':'';
+        $textarea .= '<textarea id="'.$name.'" name="'.$name.'" '.$placeholder.' class="input-control '.$class.'" '.$style.' >'.$value.'</textarea>';
         
         
         return $textarea;
@@ -395,7 +465,7 @@ class Formulaire{
         $formName = $this->name;
         
         if (isset($_POST[$name])) {
-            $value = trim(htmlentities($_POST[$name],ENT_NOQUOTES));
+            $value = trim(htmlentities($_POST[$name],ENT_QUOTES));
             if (!empty($this->e[$name])) {
                 $styleLabel = 'style="color:#ff0000;"';
                 $style = 'style="border:solid 2px #ff0000;"';
@@ -406,9 +476,9 @@ class Formulaire{
         if (!empty($label)) {
             $select .= "<label $styleLabel >$label</label>";
         }
-        $select .= "\n\r";
-        $select .= '<select class="form-control"  name="'.$name.'" id="'.$name.'" '.$style.' >';
-        $select .= "\n\r";
+        $select .= "";
+        $select .= '<select class="form-control select2-select"  name="'.$name.'" id="'.$name.'" '.$style.' >';
+        $select .= "";
         
         if (is_array($option) && !empty($option))
         {
@@ -417,7 +487,7 @@ class Formulaire{
                 
                 $select .="\t".'<option ';
                 
-                if (!empty($value)) {
+                if (true) {
                     
                     if (strtolower($value) === strtolower($k)) { 
                         $select .=" selected=\"selected\" "; 
@@ -660,7 +730,6 @@ class Formulaire{
         $name = $nameForm;
         $isView = null;
         if (!empty($_POST)) {
-            
             // captcha verification
             if (
                 array_key_exists('captcha_num1',$_POST)
@@ -687,9 +756,9 @@ class Formulaire{
                 $rest = substr($k, -8);
                 $restHtml = substr($k, -5);
                 if ($rest !== '_tinymce' && $restHtml !== '_html' && $restHtml !== '_nofi') {
-                    
-                    $_POST[$k] = filter_input(INPUT_POST, $k, FILTER_SANITIZE_STRING) ;
-                    
+                    if (!is_array($v)) {
+                        $_POST[$k] = filter_input(INPUT_POST, $k, FILTER_SANITIZE_STRING) ;
+                    }
                 }
             }
             
@@ -701,7 +770,7 @@ class Formulaire{
                 unset($_POST[$nameForm.'_submit']);
                 
                 foreach($_POST as $k=>$v) {
-                    
+                    $_k = $k;
                     $rest = substr($k, -8);
                     $restHtml = substr($k, -5);
                     $k = str_replace($nameForm.'_','',$k);
@@ -712,16 +781,18 @@ class Formulaire{
                             
                             if (!empty($this->i) && empty($this->e)) {
                                 
-                                //$_POST[$k] = stripcslashes($_POST[$k]);
-                                $v = str_replace('</textarea','',$v);
-                                $v = str_replace('&lt;/textarea','',$v);
-                                $v = str_replace('%3c/textarea','',$v);
-                                $v = str_replace('&#60;/textarea','',$v);
                                 
-                                $v = str_replace('<body','',$v);
-                                $v = str_replace('&lt;body','',$v);
-                                $v = str_replace('%3c/body','',$v);
-                                $v = str_replace('&#60;/body','',$v);
+                                $_POST[$_k] = stripcslashes($_POST[$_k]);
+                                $replace = array(
+                                    '</textarea','&lt;/textarea','%3c/textarea','&#60;/textarea',
+                                    '<body','&lt;body','%3c/body','&#60;/body',
+                                );
+                                $replaceNext = array(
+                                    'scr=""'
+                                );
+                                $v = str_replace($replace,'',$_POST[$_k]);
+                                $v = str_replace('scr=""','scr=',$_POST[$_k]);
+                                $v = str_replace('scr=""','scr=',$_POST[$_k]);
                                 
                                 $this->i[$k] = htmlentities($HTMLPurifierService->purify($v),ENT_QUOTES);
                             }
@@ -732,12 +803,9 @@ class Formulaire{
                             
                         }          
 
-                    }else{
-                        
-                        $this->i[$k] = Convertag::get($v);
-                        
+                    } else {
+                        $_POST[$_k] = stripcslashes($_POST[$_k]);
                     }
-                    
                 }
             }
             

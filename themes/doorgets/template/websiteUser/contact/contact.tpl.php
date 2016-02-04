@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -40,9 +40,10 @@
         $article
         $date_creation
  */
- 
+
 ?>
 <!-- doorGets:start:modules/inbox/inbox_form -->
+[{!$this->Website->getHtmlBadgeHeader()!}]
 <div class="doorGets-contact-content doorGets-module-[{!$Website->getModule()!}]">
 
     <div class="jumbotron">
@@ -72,12 +73,16 @@
         <div class="input-group">
             [{!$Website->form['contact_inbox']->textarea('<span class="color-red">*</span> '.$Website->__('Message').'<br />','message','','form-control')!}]
         </div>
-        <div class="input-group">
+        [{?(empty($_email)):}]
+        <div class="input-group text-center" >
+            <label>[{!$Website->__("Etes-vous un humain, ou spammeur")!}] ? <span class="color-red">*</span></label>
+            [{!$Website->form['contact_inbox']->input('','codechallenge','hidden',$Website->_genRandomKey(50))!}]
             [{!$Website->form['contact_inbox']->captcha()!}]
         </div>
+        [?]
         <div class="input-group text-center">
             [{!$Website->form['contact_inbox']->submit($Website->__('Envoyer le message'),'','btn btn-success')!}]
-            <div class="right"><span class="color-red">*</span> [{!$Website->__('Champ obligatoire')!}]</div>
+            <div class="pull-center"><span class="color-red">*</span> [{!$Website->__('Champ obligatoire')!}]</div>
         </div>
         
     [{!$Website->form['contact_inbox']->close()!}]

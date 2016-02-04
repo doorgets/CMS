@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -43,16 +43,16 @@
  $labelModuleGroup = $this->getActiveModules();
  $labelModule = $labelModuleGroup[$module]['all']['nom'];
 ?>
-<!-- doorGets:start:modules/image/image_listing -->
-<div class="doorGets-image-listing doorGets-module-[{!$module!}]">
+<!-- doorGets:start:modules/image/image_last_contents -->
+<div class="container doorGets-image-listing doorGets-module-[{!$module!}]">
     <div class="row">
         <div class="col-md-12">
             [{?(!empty($Contents)):}]
                 <div class="row">
                 [{/($Contents as $content):}]
-                    <div class="col-md-12 col-xs-6 p-bottom-1 ">
-                        <a href="[{!BASE_URL!}]?[{!$module!}]=[{!$content['content_traduction']['uri']!}]" title="[{!$content['content_traduction']['titre']!}]">
-                            <img src="[{!BASE!}]data/[{!$module!}]/real/[{!$content['content_traduction']['image']!}]" class="img-thumbnail   hover-t" />
+                    <div class="col-md-4 col-xs-12 p-bottom-1 ">
+                        <a href="[{!$this->getBaseUrl()!}]?[{!$module!}]=[{!$content['content_traduction']['uri']!}]" title="[{!$content['content_traduction']['titre']!}]">
+                            <img src="[{!URL!}]data/[{!$module!}]/[{!$content['content_traduction']['image']!}]" class="img-thumbnail   hover-t" />
                     
                         </a>
                     </div>
@@ -63,4 +63,4 @@
         </div>
     </div>
 </div>
-<!-- doorGets:end:modules/image/image_listing -->
+<!-- doorGets:end:modules/image/image_last_contents -->

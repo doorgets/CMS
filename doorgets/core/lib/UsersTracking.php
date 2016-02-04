@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -34,9 +34,9 @@
 
 class UsersTracking{
     
-    static function check($dataTrack = array()) {
+    static function check($dataTrack = array(),&$doorGets) {
         
-        $db = new CRUD();
+        $db = $doorGets;
         if (
            empty($dataTrack)
            || !array_key_exists('id_user',$dataTrack)

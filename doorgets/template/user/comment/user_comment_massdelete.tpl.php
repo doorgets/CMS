@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -39,7 +39,7 @@
     </div>
     <div class="doorGets-rubrique-center-content">
         <legend>
-            <span class="create" ><a class="doorGets-comebackform" href="?controller=[{!$this->doorGets->controllerNameNow()!}]"><img src="[{!BASE_IMG!}]retour.png" class="Retour-img"> [{!$this->doorGets->__('Retour')!}]</a></span>
+            <span class="create" ><a class="doorGets-comebackform" href="?controller=[{!$this->doorGets->controllerNameNow()!}]"><i class="fa fa-undo fa-lg green-c"></i> [{!$this->doorGets->__('Retour')!}]</a></span>
             <b class="glyphicon glyphicon-comment"></b> <a href="?controller=comment">[{!$this->doorGets->__('Commentaire')!}]</a>
              / [{!$this->doorGets->__("Supprimer par groupe")!}]
         </legend>
@@ -47,7 +47,7 @@
         [{?(empty($varListeFile)):}]
             
             <div class="alert alert-info">
-                [{!$this->doorGets->__("Aucun élement dans votre séléction.")!}]  <a class="doorGets-comebackform" href="./?controller=[{!$this->doorGets->controllerNameNow()!}]">[{!$this->doorGets->__('Retour')!}]</a>
+                <i class="fa fa-exclamation-triangle"></i> [{!$this->doorGets->__("Aucun élement dans votre séléction.")!}]  <a class="doorGets-comebackform" href="./?controller=[{!$this->doorGets->controllerNameNow()!}]">[{!$this->doorGets->__('Retour')!}]</a>
             </div>
            
         [??]

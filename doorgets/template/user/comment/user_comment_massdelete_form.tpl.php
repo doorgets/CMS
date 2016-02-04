@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -35,7 +35,7 @@
 ?>
 [{!$this->doorGets->Form['_massdelete']->open('post','./?controller='.$this->doorGets->controllerNameNow().'&action=massdelete','')!}]
 [{!$this->doorGets->Form['_massdelete']->input('','groupe_delete','hidden')!}]
-[{!$this->doorGets->Form['_massdelete']->submit($this->doorGets->__("Supprimer la séléction"),'','btn btn-success btn-lg')!}] 
+[{!$this->doorGets->Form['_massdelete']->submit($this->doorGets->__("Supprimer la séléction"),'','btn btn-danger')!}] 
 [{!$this->doorGets->Form['_massdelete']->close()!}]
     
     <script type="text/javascript">

@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -228,7 +228,7 @@ class EmailnotificationRequest extends doorGetsUserRequest{
         }
     }
 
-    public function saveLastContentVersion($id_content,$next_content = array()) {
+    public function saveLastContentVersion($id_content,$next_content = array(),$name_field="id_content") {
 
         $lgActuel       = $this->doorGets->getLangueTradution();
         $User           = $this->doorGets->user;

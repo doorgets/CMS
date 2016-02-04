@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 20, February 2014
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2013 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -48,14 +48,19 @@ class AuthentificationRequest extends doorGetsUserRequest{
         $idActiveGroupe = '';
 
         $groupes = $this->doorGets->loadGroupesSubscriber();
+
         $countGroupes = count($groupes);
 
         $Params = $this->doorGets->Params();
         if (array_key_exists('groupe',$Params['GET'])) {
             $idActiveGroupe = $Params['GET']['groupe'];
         }
-
-        $backUrl = $_SERVER['REQUEST_URI'];
+        
+        $backUrl = '/';
+        if ($this->Action !== 'logout') {
+            $backUrl = $_SERVER['REQUEST_URI'];
+        }
+        
         if (array_key_exists('back',$Params['GET'])) {
             $backUrl = urldecode($Params['GET']['back']);
             $_SESSION['backurl'] = $backUrl;
@@ -82,23 +87,20 @@ class AuthentificationRequest extends doorGetsUserRequest{
                     $UserGoogleQuery->find();
 
                     $UserGoogleEntity = $UserGoogleQuery->_getEntity();
+
                     if ($UserGoogleEntity) {
                         $isUserGoogle = true;
                         $userId = $UserGoogleEntity->getIdUser();
-
-                        if ($UserGoogleEntity->getIdUser()) {
-                            $idEmptyUserGoogle = false;
-                        }
                     }
 
                 }
 
                 
-                if ($isEmptyUserGoogle) {
+                if ($isUserGoogle) {
 
                     $LogineExist = $this->doorGets->dbQS($userId,'_users');
                     if(!empty($LogineExist)) {
-                        
+
                         $isUserInfos = $this->doorGets->dbQS($LogineExist['id'],'_users_info','id_user');
 
                         if ( !empty($isUserInfos)  && ( $isUserInfos['active'] == '2' OR $isUserInfos['active'] == '5') ) {
@@ -113,6 +115,9 @@ class AuthentificationRequest extends doorGetsUserRequest{
                             $_SESSION['doorgets_user']['password']  = '';
                             $_SESSION['doorgets_user']['langue']    = $isUserInfos['langue'];
                             $_SESSION['doorgets_user']['token']     = $_token;
+                            
+                            // Users tracking
+                            $this->doorGets->_trackMe($LogineExist['id'],$isUserInfos['network']);
                             
                             $this->doorGets->dbQU($LogineExist['id'],array('token'=>$_token),'_users');
                             FlashInfo::set($this->doorGets->__("Connexion réussie"));
@@ -148,19 +153,16 @@ class AuthentificationRequest extends doorGetsUserRequest{
                     $UserFacebookQuery->find();
 
                     $UserFacebookEntity = $UserFacebookQuery->_getEntity();
+
                     if ($UserFacebookEntity) {
                         $isUserFacebook = true;
                         $userId = $UserFacebookEntity->getIdUser();
-
-                        if ($UserFacebookEntity->getIdUser()) {
-                            $idEmptyUserFacebook = false;
-                        }
                     }
 
                 }
 
                 
-                if ($isEmptyUserFacebook) {
+                if ($isUserFacebook) {
 
                     $LogineExist = $this->doorGets->dbQS($userId,'_users');
                     if(!empty($LogineExist)) {
@@ -180,11 +182,14 @@ class AuthentificationRequest extends doorGetsUserRequest{
                             $_SESSION['doorgets_user']['langue']    = $isUserInfos['langue'];
                             $_SESSION['doorgets_user']['token']     = $_token;
                             
+                            // Users tracking
+                            $this->doorGets->_trackMe($LogineExist['id'],$isUserInfos['network']);
+                            
                             $this->doorGets->dbQU($LogineExist['id'],array('token'=>$_token),'_users');
                             FlashInfo::set($this->doorGets->__("Connexion réussie"));
                             
                             if ($isUserInfos['active'] == '5') {
-                                
+                            
                                 $this->doorGets->dbQU($LogineExist['id'],array('active' => '2'),'_users_info');
                                 FlashInfo::set($this->doorGets->__("Connexion réussie").', '.$this->doorGets->__("Votre compte est maintenant ouvert"));
                             
@@ -236,7 +241,7 @@ class AuthentificationRequest extends doorGetsUserRequest{
                                 $LogineExist['salt'],
                                 $LogineExist['password']
                             );
-
+                        
                             if($hasPassword) {
                                 
                                 $isUserInfos = $this->doorGets->dbQS($LogineExist['id'],'_users_info','id_user');
@@ -255,6 +260,9 @@ class AuthentificationRequest extends doorGetsUserRequest{
                                     $_SESSION['doorgets_user']['password']  = $LogineExist['password'];
                                     $_SESSION['doorgets_user']['langue']    = $isUserInfos['langue'];
                                     $_SESSION['doorgets_user']['token']     = $_token;
+                                    
+                                    // Users tracking
+                                    $this->doorGets->_trackMe($LogineExist['id'],$isUserInfos['network']);
                                     
                                     $this->doorGets->dbQU($LogineExist['id'],array('token'=>$_token),'_users');
                                     FlashInfo::set($this->doorGets->__("Connexion réussie"));
@@ -294,18 +302,21 @@ class AuthentificationRequest extends doorGetsUserRequest{
             case 'register':
                 
                 $idGroupe = null;
+                $hasVerification = true;
 
                 $errorMsg = '';
 
                 if (empty($idActiveGroupe) && $countGroupes === 1) {
                     foreach ($groupes as $key => $value) {
-                    
+                        
                         $idGroupe = $groupes[$key]['id'];
+                        $hasVerfication = $groupes[$key]['verification'];
                     }
                 
                 }elseif (array_key_exists($idActiveGroupe, $groupes)) {
                     
                     $idGroupe = $groupes[$idActiveGroupe]['id'];
+                    $hasVerfication = $groupes[$idActiveGroupe]['verification'];
                 }
 
                 // Oauth2 google
@@ -362,36 +373,58 @@ class AuthentificationRequest extends doorGetsUserRequest{
 
                         $UserGoogleEntity = $UserGoogleQuery->_getEntity();
                         $UserGoogle  = $UserGoogleEntity->getData();
-
+                        
                         if ($UserGoogle) {
                             $userId = (int) $UserGoogle['id_user'];
                             if ($userId == 0) {
 
-                                $avatar = $this->doorGets->copyGravatar($UserGoogle['email']);
+                                try{
+
+                                    $avatar = $this->doorGets->copyGravatar($UserGoogle['email']);
 
 
-                                $dataLogin['login']         = $UserGoogle['email'];
-                                $dataLogin['password']      = $this->doorGets->_crypt((time() + mt_rand(100000,100000000)));
-                                $dataLogin['salt']          = $this->doorGets->_crypt((time() + mt_rand(100000,100000000)));
-                                
-                                $dataInfo['langue']         = $this->doorGets->myLanguage;
-                                $dataInfo['network']        = $idGroupe;
-                                $dataInfo['active']         = '2'; // moderation mode
-                                
-                                $dataInfo['pseudo']         = $this->doorGets->Form['google']->i['login'];
-                                $dataInfo['email']          = $UserGoogle['email'];
-                                $dataInfo['last_name']      = $this->doorGets->Form['google']->i['lastname'];
-                                $dataInfo['first_name']     = $this->doorGets->Form['google']->i['firstname'];
+                                    $dataLogin['login']         = $UserGoogle['email'];
+                                    $dataLogin['password']      = $this->doorGets->_crypt((time() + mt_rand(100000,100000000)));
+                                    $dataLogin['salt']          = $this->doorGets->_crypt((time() + mt_rand(100000,100000000)));
+                                    
+                                    $dataInfo['langue']         = $this->doorGets->myLanguage;
+                                    $dataInfo['network']        = $idGroupe;
+                                    $dataInfo['active']         = '2'; 
+                                    
+                                    $dataInfo['pseudo']         = $this->doorGets->Form['google']->i['login'];
+                                    $dataInfo['horaire']        = $this->doorGets->Form['google']->i['horaire'];
+                                    $dataInfo['email']          = $UserGoogle['email'];
+                                    $dataInfo['last_name']      = $this->doorGets->Form['google']->i['subscribe_lastname'];
+                                    $dataInfo['first_name']     = $this->doorGets->Form['google']->i['subscribe_firstname'];
 
-                                $dataInfo['date_creation']  = time();
+                                    $dataInfo['editor_html']     = '';
+                                    $dataInfo['notification_mail']     = 1;
+                                    $dataInfo['notification_newsletter']     = (array_key_exists('registerNewsletter',$this->doorGets->Form['google']->i))?1:0;
                                 
-                                $dataInfo['avatar']         = $avatar;
-                                
-                                $dataInfo['id_user']        = $this->doorGets->dbQI($dataLogin,'_users');
-                                $userInfoId = $this->doorGets->dbQI($dataInfo,'_users_info');
+                                    $dataInfo['date_creation']  = time();
+                                    
+                                    $dataInfo['avatar']         = $avatar;
+                                    
+                                    $UsersLog = new UsersEntity();
+                                    $UsersLog->setData($dataLogin);
+                                    $UsersLog->save(false);
 
-                                $UserGoogleEntity->setIdUser($dataInfo['id_user']);
-                                $UserGoogleEntity->save();
+                                    $dataInfo['id_user']        = $UsersLog->getId();
+
+                                    $UsersInfo = new UsersInfoEntity();
+                                    $UsersInfo->setData($dataInfo);
+                                    $UsersInfo->save(false);
+
+                                    $UserGoogleEntity->setIdUser($dataInfo['id_user']);
+                                    $UserGoogleEntity->save(false);
+
+                                
+                                } catch(PDOException $e){
+                                    new PrintErrorException($e);exit();
+                                }   catch(Exception $e) {
+                                    echo $e->getMessage();
+                                    exit();
+                                }
 
                                 $this->doorGets->createFolderUser($dataInfo['pseudo'],$dataInfo['id_user']);
                                 
@@ -457,9 +490,10 @@ class AuthentificationRequest extends doorGetsUserRequest{
 
                         $UserFacebookEntity = $UserFacebookQuery->_getEntity();
                         $UserFacebook  = $UserFacebookEntity->getData();
-
+                        
                         if ($UserFacebook) {
                             $userId = (int) $UserFacebook['id_user'];
+
                             if ($userId == 0) {
 
                                 $avatar = $this->doorGets->copyGravatar($UserFacebook['email']);
@@ -470,23 +504,35 @@ class AuthentificationRequest extends doorGetsUserRequest{
                                 
                                 $dataInfo['langue']         = $this->doorGets->myLanguage;
                                 $dataInfo['network']        = $idGroupe;
-                                $dataInfo['active']         = '2'; // moderation mode
+                                $dataInfo['active']         = '2'; 
                                 
+                                $dataInfo['horaire']        = $this->doorGets->Form['facebook']->i['horaire'];
                                 $dataInfo['pseudo']         = $this->doorGets->Form['facebook']->i['login'];
                                 $dataInfo['email']          = $UserFacebook['email'];
-                                $dataInfo['last_name']      = $this->doorGets->Form['facebook']->i['lastname'];
-                                $dataInfo['first_name']     = $this->doorGets->Form['facebook']->i['firstname'];
+                                $dataInfo['last_name']      = $this->doorGets->Form['facebook']->i['subscribe_lastname'];
+                                $dataInfo['first_name']     = $this->doorGets->Form['facebook']->i['subscribe_firstname'];
 
+                                $dataInfo['editor_html']     = '';
+                                $dataInfo['notification_mail']     = 1;
+                                $dataInfo['notification_newsletter']     = (array_key_exists('registerNewsletter',$this->doorGets->Form['facebook']->i))?1:0;
+                            
                                 $dataInfo['date_creation']  = time();
                                 
                                 $dataInfo['avatar']         = $avatar;
-                                
-                                $dataInfo['id_user']        = $this->doorGets->dbQI($dataLogin,'_users');
-                                $userInfoId = $this->doorGets->dbQI($dataInfo,'_users_info');
+
+                                $UsersLog = new UsersEntity();
+                                $UsersLog->setData($dataLogin);
+                                $UsersLog->save(false);
+
+                                $dataInfo['id_user']        = $UsersLog->getId();
+
+                                $UsersInfo = new UsersInfoEntity();
+                                $UsersInfo->setData($dataInfo);
+                                $UsersInfo->save(false);
 
                                 $UserFacebookEntity->setIdUser($dataInfo['id_user']);
-                                $UserFacebookEntity->save();
-
+                                $UserFacebookEntity->save(false);
+                                
                                 $this->doorGets->createFolderUser($dataInfo['pseudo'],$dataInfo['id_user']);
                                 
                                 FlashInfo::set($this->doorGets->__("Connexion réussie").', '.$this->doorGets->__("Votre compte est maintenant ouvert"));
@@ -604,36 +650,72 @@ class AuthentificationRequest extends doorGetsUserRequest{
                             
                             $dataInfo['langue']         = $this->doorGets->myLanguage;
                             $dataInfo['network']        = $idGroupe;
-                            $dataInfo['active']         = '3'; // moderation mode
+                            $dataInfo['active']         = ($hasVerfication) ? '3' : '2'; // moderation mode
                             
+                            $dataInfo['horaire']        = $this->doorGets->Form['doorgets']->i['horaire'];
                             $dataInfo['pseudo']         = $this->doorGets->Form['doorgets']->i['login'];
                             $dataInfo['email']          = $this->doorGets->Form['doorgets']->i['email'];
                             $dataInfo['last_name']      = $this->doorGets->Form['doorgets']->i['lastname'];
                             $dataInfo['first_name']     = $this->doorGets->Form['doorgets']->i['firstname'];
+
+                            $dataInfo['editor_html']     = '';
+                            
+                            $dataInfo['notification_mail']     = 1;
+                            $dataInfo['notification_newsletter']     = (array_key_exists('registerNewsletter',$this->doorGets->Form['doorgets']->i))?1:0;
+                            
                             $dataInfo['date_creation']  = time();
                             
                             $dataInfo['avatar']         = $avatar;
                             
-                            $dataInfo['id_user']        = $this->doorGets->dbQI($dataLogin,'_users');
-                            $this->doorGets->dbQI($dataInfo,'_users_info');
-                            
-                            // create activation code
-                            
-                            $dataCode['type']           = 'subscribe';
-                            $dataCode['id_user']        = $dataInfo['id_user'];
-                            $dataCode['code']           = $this->doorGets->_genRandomKey(45);
-                            $dataCode['date_creation']  = time();
-                            
-                            $this->doorGets->dbQI($dataCode,'_users_activation');
-                            
-                            $this->doorGets->createFolderUser($dataInfo['pseudo'],$dataInfo['id_user']);
+                            $UsersLog = new UsersEntity();
+                            $UsersLog->setData($dataLogin);
+                            $UsersLog->save(false);
 
-                            $lgUser = ''; if (count($this->doorGets->allLanguagesWebsite) > 1) { $lgUser = $this->doorGets->myLanguage.'/'; }
-                            $urlToSend = URL_USER.$lgUser.'?controller=authentification&action=activation&code='.$dataCode['code'];
+                            $dataInfo['id_user']        = $UsersLog->getId();
+
+                            $UsersInfo = new UsersInfoEntity();
+                            $UsersInfo->setData($dataInfo);
+                            $UsersInfo->save(false);
+
+                            // create activation code
+                            if ($hasVerfication) {
+
+                                $dataCode['type']           = 'subscribe';
+                                $dataCode['id_user']        = $dataInfo['id_user'];
+                                $dataCode['code']           = $this->doorGets->_genRandomKey(45);
+                                $dataCode['date_creation']  = time();
+                                
+                                $UsersActivation = new UsersActivationEntity();
+                                $UsersActivation->setData($dataCode);
+                                $UsersActivation->save(false);
+                                
+                                $this->doorGets->createFolderUser($dataInfo['pseudo'],$dataInfo['id_user']);
+
+                                $lgUser = ''; if (count($this->doorGets->allLanguagesWebsite) > 1) { $lgUser = $this->doorGets->myLanguage.'/'; }
+                                $urlToSend = URL_USER.$lgUser.'?controller=authentification&action=activation&code='.$dataCode['code'];
+                                
+                                // send mail with code confirmation
+                                new SendMailAuth($dataInfo['email'],'subscribe',$urlToSend,$this->doorGets);
                             
-                            // send mail with code confirmation
-                            new SendMailAuth($dataInfo['email'],'subscribe',$urlToSend,$this->doorGets);
+                            } else {
                             
+                                // Connect user
+                                $_token = md5(uniqid(mt_rand(), true));
+
+                                $_SESSION['doorgets_user']['id']        = $dataInfo['id_user'];
+                                $_SESSION['doorgets_user']['groupe']    = $dataInfo['network'];
+                                $_SESSION['doorgets_user']['login']     = $dataLogin['login'];
+                                $_SESSION['doorgets_user']['password']  = $dataLogin['password'];
+                                $_SESSION['doorgets_user']['langue']    = $dataInfo['langue'];
+                                $_SESSION['doorgets_user']['token']     = $_token;
+                                
+                                $this->doorGets->createFolderUser($dataInfo['pseudo'],$dataInfo['id_user']);
+                                
+                                $this->doorGets->dbQU($dataInfo['id_user'],array('token'=>$_token),'_users');
+                                FlashInfo::set($this->doorGets->__("Connexion réussie"));
+                                header('Location:'.$backUrl); exit();
+                            }
+
                             $this->doorGets->Form['doorgets']->isSended = true;
                                 
                         }   
@@ -791,15 +873,20 @@ class AuthentificationRequest extends doorGetsUserRequest{
             
             case 'logout':
                 
-                $_SESSION = array(); header('Location:'.BASE); exit();
+                if (array_key_exists('cart',$_SESSION)) {
+                    $cart = $_SESSION['cart'];
+                    $_SESSION = array();
+                    $_SESSION['cart'] = $cart; 
+                } else {
+                    $_SESSION = array(); 
+                }
+
+                header('Location:'.$backUrl); exit();
                 break;
             
             
         }
         
         return $out;
-        
     }
-    
-    
 }

@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -52,18 +52,24 @@ if ($cLanguageWebsite > 1) { $urlLangueTraduction = 't/'.$lgActuel.'/'; }
     <div class="tab-content">
         <div class="tab-pane fade in active" id="tabs-1">
             [{?($is_modo):}]
-                [{!$this->doorGets->Form->select($this->doorGets->__('Statut'),'active',$aActivation,$isContent['active']);}]
-                <div class="separateur-tb"></div>
-            [?]
-            [{!$this->doorGets->Form->input($this->doorGets->__('Titre').' <span class="cp-obli">*</span>','titre','text',$isContent['titre']);}]
+                <div class="col-md-3">
+                    [{!$this->doorGets->Form->select($this->doorGets->__('Statut'),'active',$aActivation,$isContent['active']);}]
+                </div>
+            [?] 
+            <div class="row">
+                <div class="col-md-3">
+                    [{!$this->doorGets->Form->input($this->doorGets->__('Titre').' <span class="cp-obli">*</span>','titre','text',$isContent['titre']);}]
+                </div>
+
+                <div class="col-md-5">
+                [{?($is_modo):}]
+                    [{!$this->doorGets->Form->input($this->doorGets->__("Url simplifiée").' <span class="cp-obli">*</span> <small style="font-weight:100; ">('.$this->doorGets->__("Caractères alpha numérique seulement").')</small><br />','uri','text',$isContent['uri']);}]
+                [??]
+                    [{!$this->doorGets->Form->input($this->doorGets->__("Url simplifiée").' <span class="cp-obli">*</span> <small style="font-weight:100;">('.$this->doorGets->__("Caractères alpha numérique seulement").')</small><br />','uri','hidden',$isContent['uri']);}]  
+                [?]
+                </div> 
+            </div> 
             <div class="separateur-tb"></div>
-            [{?($is_modo):}]
-                [{!$this->doorGets->Form->input($this->doorGets->__("Url simplifiée").' <span class="cp-obli">*</span> <small style="font-weight:100; ">('.$this->doorGets->__("Caractères alpha numérique seulement").')</small><br />','uri','text',$isContent['uri']);}]
-                <div class="separateur-tb"></div>
-            [??]
-                [{!$this->doorGets->Form->input($this->doorGets->__("Url simplifiée").' <span class="cp-obli">*</span> <small style="font-weight:100;">('.$this->doorGets->__("Caractères alpha numérique seulement").')</small><br />','uri','hidden',$isContent['uri']);}]
-                
-            [?]
             [{?($isContent['active'] === '2'):}]
                 <div class="alert alert-success"><a target="blank" href="[{!URL.$urlLangueTraduction.'?'.$moduleInfos['uri'].'='.$isContent['uri']!}]">[{!URL.$urlLangueTraduction.'?'.$moduleInfos['uri'].'='!}]<span>[{!$isContent['uri']!}]</span> <b class="glyphicon glyphicon-share-alt"></b></a></div>
             [?]

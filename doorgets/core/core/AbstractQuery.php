@@ -1,5 +1,36 @@
 <?php
 
+/*******************************************************************************
+/*******************************************************************************
+    doorGets 7.0 - 01, February 2016
+    doorgets it's free PHP Open Source CMS PHP & MySQL
+    Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
+    
+/*******************************************************************************
+
+    Website : http://www.doorgets.com
+    Contact : http://www.doorgets.com/t/en/?contact
+    
+/*******************************************************************************
+    -= One life, One code =-
+/*******************************************************************************
+    
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    
+******************************************************************************
+******************************************************************************/
+
 class AbstractQuery 
 {
 	
@@ -196,13 +227,13 @@ class AbstractQuery
 			}
 			
 			$_subQuery = substr($_subQuery, 0, -4);
-
-			$endQuery = (empty(trim($this->_joinFields.$this->_joinFiltersSql.' '.$_subQuery))) ? '' : " WHERE ".$this->_joinFields.$this->_joinFiltersSql.$_AND.$_subQuery;
+			$res = trim($this->_joinFields.$this->_joinFiltersSql.' '.$_subQuery);
+			$endQuery = (empty($res)) ? '' : " WHERE ".$this->_joinFields.$this->_joinFiltersSql.$_AND.$_subQuery;
 			$countTotalQuery = "SELECT COUNT(*) as c FROM ".$this->_table.$this->_sqlJoinTable.$endQuery;
 
 		} elseif (is_null($pk)) {
-			
-			$endQuery = (empty(trim($this->_joinFields.$this->_joinFiltersSql))) ? '' : " WHERE ".$this->_joinFields.$this->_joinFiltersSql;
+			$res = trim($this->_joinFields.$this->_joinFiltersSql);
+			$endQuery = (empty($res)) ? '' : " WHERE ".$this->_joinFields.$this->_joinFiltersSql;
 			$countTotalQuery = "SELECT COUNT(*) as c FROM ".$this->_table.$this->_sqlJoinTable.$endQuery;
 			
 		} elseif (is_string($pk) && is_numeric($pk)) {
@@ -218,8 +249,8 @@ class AbstractQuery
 			}
 
 			$pks = substr($pks,0, -3);
-
-			$endQuery = (empty(trim($this->_joinFields.$this->_joinFiltersSql." $pks "))) ? '' : " WHERE  ".$this->_joinFields.$this->_joinFiltersSql." $pks ";
+			$res = trim($this->_joinFields.$this->_joinFiltersSql." $pks ");
+			$endQuery = (empty($res)) ? '' : " WHERE  ".$this->_joinFields.$this->_joinFiltersSql." $pks ";
 			$countTotalQuery = "SELECT COUNT(*) as c FROM ".$this->_table.$this->_sqlJoinTable.$endQuery;
 			
 		}
@@ -284,7 +315,8 @@ class AbstractQuery
 				$_AND = ' 1 = 1  AND ';
 			}
 
-			$endQuery = (empty(trim($this->_joinFields.$this->_joinFiltersSql." ".$_subQuery)))  ? '' : " WHERE ".$this->_joinFields.$this->_joinFiltersSql.$_AND.$_subQuery;
+			$res = trim($this->_joinFields.$this->_joinFiltersSql." ".$_subQuery);
+			$endQuery = (empty($res))  ? '' : " WHERE ".$this->_joinFields.$this->_joinFiltersSql.$_AND.$_subQuery;
 
 			$query = $this->_filtersQuery = "SELECT * FROM ".$this->_table.$this->_sqlJoinTable.$endQuery.' '.$this->_orderBy.$this->_limit;
 		
@@ -307,7 +339,8 @@ class AbstractQuery
 
 			$pks = substr($pks,0, -3);
 
-			$endQuery = (empty(trim($this->_joinFields.$this->_joinFiltersSql." $pks ")))  ? '' : " WHERE ".$this->_joinFields.$this->_joinFiltersSql." $pks ";
+			$res = trim($this->_joinFields.$this->_joinFiltersSql." $pks ");
+			$endQuery = (empty($res))  ? '' : " WHERE ".$this->_joinFields.$this->_joinFiltersSql." $pks ";
 
 			$query = "SELECT * FROM ".$this->_table.$this->_sqlJoinTable." WHERE ".$this->_orderBy.$this->_limit;
 			

@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 20, February 2014
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2013 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -52,7 +52,7 @@ class MediaView extends doorGetsUserView{
         if (
             !empty($User) && in_array('media',$User['liste_module_interne'])
             && in_array('media',$User['liste_module_interne_modo'])
-       ) { $isModo = true; }
+        ) { $isModo = true; }
         
         // files type start
         $typeFile["image/png"] = "data/upload/png/";
@@ -508,12 +508,12 @@ class MediaView extends doorGetsUserView{
                     
                     
                     $valFilterDateStart = '';
-                    if (array_key_exists('doorGets_search_filter_q_date_creation_start',$aGroupeFilter)) {
+                    if (array_key_exists('q_date_creation_start',$aGroupeFilter)) {
                         $valFilterDateStart = $aGroupeFilter['q_date_creation_start'];
                     }
                     
                     $valFilterDateEnd = '';
-                    if (array_key_exists('doorGets_search_filter_q_date_creation_end',$aGroupeFilter)) {
+                    if (array_key_exists('q_date_creation_end',$aGroupeFilter)) {
                         $valFilterDateEnd = $aGroupeFilter['q_date_creation_end'];
                     }
                     

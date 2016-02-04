@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 20, February 2014
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -34,7 +34,7 @@
 <div class="doorGets-content-wrapper">
     <?php echo $doorgets->form['doorgets_licence']->open('post','',''); ?>
         <div class="doorGets-top-title-content">
-            doorGets 7.0 <small>Free OpenSource CMS PHP/MySQL</small>
+            <img src="<?php echo BASE_IMG; ?>doorgets.png">
         </div>
         <div class="doorGets-title-content">
             1/5 - <?php echo $doorgets->l("Conditions générales d'utilisation"); ?>
@@ -672,7 +672,9 @@
             
             <p>END OF TERMS AND CONDITIONS</p>
         </div>
-        <?php echo $doorgets->form['doorgets_licence']->checkbox($doorgets->l("J'ai lu et j'accepte les conditions d'utilisation de doorGets"),'licence_validation','1',''); ?>
+        <div class="check-license">
+            &nbsp;<?php echo $doorgets->form['doorgets_licence']->checkbox($doorgets->l("J'ai lu et j'accepte les conditions d'utilisation de doorGets"),'licence_validation','1',''); ?>
+        </div>
         <div class="separateur-tb"></div>
         <?php echo $doorgets->form['doorgets_licence']->submit($doorgets->l('Etape suivante'),'','submit-next');  echo $doorgets->form['doorgets_licence']->close();  echo $doorgets->getHtmlGoBack(); ?>
 </div>

@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -52,10 +52,10 @@ class doorGetsUserModuleOrderView extends doorGetsUserView{
         $version_id         = 0;
         
         // Check if is content modo
-        (in_array($moduleInfos['id'], $User['liste_module_modo'])) ? $is_modo = true : $is_modo = false;
+        $is_modo = (in_array($moduleInfos['id'], $User['liste_module_modo']))?true:false;
 
         // Check if is content admin
-        (in_array($moduleInfos['id'], $User['liste_module_admin'])) ? $is_admin = true : $is_admin = false;
+        $is_admin = (in_array($moduleInfos['id'], $User['liste_module_admin']))?true:false;
 
         // Check if is module modo
         (
@@ -65,10 +65,13 @@ class doorGetsUserModuleOrderView extends doorGetsUserView{
         ) ? $is_modules_modo = true : $is_modules_modo = false;
 
         // check if user can edit content
-        (in_array($moduleInfos['id'], $User['liste_module_edit'])) ? $user_can_edit = true : $user_can_edit = false;
+        $user_can_add = (in_array($moduleInfos['id'], $User['liste_module_add']))?true:false;
+        
+        // check if user can edit content
+        $user_can_edit = (in_array($moduleInfos['id'], $User['liste_module_edit']))?true:false;
 
         // check if user can delete content
-        (in_array($moduleInfos['id'], $User['liste_module_delete'])) ? $user_can_delete = true : $user_can_delete = false;
+        $user_can_delete = (in_array($moduleInfos['id'], $User['liste_module_delete']))?true:false;
 
         // Init count total contents
         $countContents = 0;
@@ -296,8 +299,8 @@ class doorGetsUserModuleOrderView extends doorGetsUserView{
                                                 $toFormat = trim($params['POST']['q_'.$valEnd.'_end']);
                                             }
                                             
-                                            $isValStart = $this->validateDate($fromFormat);
-                                            $isValEnd   = $this->validateDate($toFormat);
+                                            $isValStart = $this->doorGets->validateDate($fromFormat);
+                                            $isValEnd   = $this->doorGets->validateDate($toFormat);
                                             
                                             $from = "";
                                             $to = "";
@@ -390,11 +393,11 @@ class doorGetsUserModuleOrderView extends doorGetsUserView{
                             
                             $getCategorie = $params['GET']['categorie'];
                             
-                            $arrForCountSearchQuery[] = array('key'=>$this->doorGets->Table.'.categorie','type'=>'like','value'=>$getCategorie.',');
+                            $arrForCountSearchQuery[] = array('key'=>$this->doorGets->Table.'.categorie','type'=>'like','value'=>'#'.$getCategorie.',');
                             
                             $cResultsInt = $this->doorGets->getCountTable($tAll,$arrForCountSearchQuery);
                             
-                            $sqlCategorie = " AND ".$this->doorGets->Table.".categorie LIKE '%".$getCategorie.",%'";
+                            $sqlCategorie = " AND ".$this->doorGets->Table.".categorie LIKE '%#".$getCategorie.",%'";
                             $urlCategorie = '&categorie='.$getCategorie;
                             
                         }
@@ -612,22 +615,16 @@ class doorGetsUserModuleOrderView extends doorGetsUserView{
                         
                         for($i=0;$i<$cAll;$i++) {
                             
-                            $ImageStatut = BASE_IMG.'puce-rouge.png';
-                            if ($all[$i]['active'] == '2')
-                            {
-                                
-                                $ImageStatut = BASE_IMG.'puce-verte.png';
-                                
-                            }elseif ($all[$i]['active'] == '3') {
-                                
-                                $ImageStatut = BASE_IMG.'puce-orange.png';
-                                
-                            }elseif ($all[$i]['active'] == '4') {
-                                
-                                $ImageStatut = BASE_IMG.'icone_redaction.png';
-                                
+                            $ImageStatut = 'fa-ban red';
+                            if ($all[$i]['active'] == '2') {
+                                $ImageStatut = 'fa-eye green-c';
+                            } elseif ($all[$i]['active'] == '3') {
+                                $ImageStatut = 'fa-hourglass-start orange-c';
+                            } elseif ($all[$i]['active'] == '4') {
+                                $ImageStatut = 'fa-pencil gris-c';
                             }
-                            $urlStatut = '<img src="'.$ImageStatut.'" style="vertical-align: middle;" >';
+
+                            $urlStatut = '<i class="fa '.$ImageStatut.' fa-lg" ></i>';
                             
                             $urlMassdelete = $all[$i]['id_content'];
                             $urlTitle = $all[$i]["titre"];
@@ -693,6 +690,9 @@ class doorGetsUserModuleOrderView extends doorGetsUserView{
                         $isAuthorBadge = 'checked';
                     }
 
+                    $listeCategories = $this->doorGets->categorieSimple;
+                    unset($listeCategories[0]);
+                    
                     $formAddTop = $formAddBottom = '';
                     $fileFormAddTop = 'modules/'.$this->doorGets->zoneArea().'_form_add_top';
                     $tplFormAddTop = Template::getView($fileFormAddTop);
@@ -736,6 +736,14 @@ class doorGetsUserModuleOrderView extends doorGetsUserView{
                         $image_gallery = $this->doorGets->_toArray($isContent['image_gallery'],';');
                     }
                     
+                    $listeCategories = $this->doorGets->categorieSimple;
+                    unset($listeCategories[0]);
+                    $listeCategoriesContent = $this->doorGets->_toArray($isContent['categorie']);
+                    
+                    $phpOpen = '[[php/o]]';
+                    $phpClose = '[[php/c]]';
+                    
+                    $article = $this->doorGets->_cleanPHP($isContent['article_tinymce']);
 
                     $htmlCanotEdit = '';
                     $fileCanotEdit = 'modules/'.$this->doorGets->zoneArea().'_canot_edit';
@@ -823,6 +831,7 @@ class doorGetsUserModuleOrderView extends doorGetsUserView{
         $isContentVesion = $this->doorGets->dbQS($version_id,$this->doorGets->Table.'_version');
 
         if (!empty($isContentVesion) && $isContentVesion['langue'] === $lgActuel) {
+            
             foreach ($isContentVesion as $key => $value) {
                 if (array_key_exists($key, $content)) {
                     $content[$key] = $isContentVesion[$key];

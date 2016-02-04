@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -44,7 +44,7 @@ class moduleMultipageView extends doorgetsWebsiteView{
         $out = '';
         $Website = $this->Website;
         $Module = $Website->getModule();
-        $moduleInfo = $Website->getActiveModules();
+        $moduleInfo = $Website->activeModules;
 
         $tplPassword = $this->checkModulePassword(
             $moduleInfo[$Module]['all']['with_password'],
@@ -74,7 +74,7 @@ class moduleMultipageView extends doorgetsWebsiteView{
         
         if (empty($uri)) {
             
-            $isContentFirst = $Website->dbQS(1,$nameTable,'ordre');
+            $isContentFirst = $Website->dbQS(Constant::$websiteId,$nameTable,'ordre');
             if (!empty($isContentFirst)) {
                 
                 $groupeTraduction = @unserialize($isContentFirst['groupe_traduction']);
@@ -121,7 +121,7 @@ class moduleMultipageView extends doorgetsWebsiteView{
             $isContent['date_creation'] = GetDate::in($isContentActive['date_creation'],1,$Website->myLanguage);
             
         
-            $labelModuleGroup = $Website->getActiveModules();
+            $labelModuleGroup = $Website->activeModules;
             $labelModule = $labelModuleGroup[$Website->getModule()]['all']['nom'];
             $this->userPrivilege['modo']  =  ( $Website->isUser && 
                 (
@@ -157,7 +157,7 @@ class moduleMultipageView extends doorgetsWebsiteView{
             $urlAdd             = URL_USER.$Website->_lgUrl.'?controller=modulemultipage&uri='.$Website->getModule().'&action=add&back='.urlencode(BASE_URL.'?'.$Website->getModule());
  
             
-            $allModules  = $Website->getActiveModules();  
+            $allModules  = $Website->activeModules;  
             
             $nexContent = $Website->getUrlNextContent();
             $prevContent = $Website->getUrlPreviousContent();
@@ -165,14 +165,14 @@ class moduleMultipageView extends doorgetsWebsiteView{
             
             $urlEdition         = URL_USER.$Website->_lgUrl.'?controller=modulemultipage&uri='.$Website->getModule().'&action=edit&id='.$isContent['id_content'].'&lg='.$Website->getLangueTradution().'&back='.$urlAfterAction;
             $urlDelete          = URL_USER.$Website->_lgUrl.'?controller=modulemultipage&uri='.$Website->getModule().'&action=delete&id='.$isContent['id_content'].'&lg='.$Website->getLangueTradution().'&back='.$urlAfterAction;
-            $urlAdd             = URL_USER.$Website->_lgUrl.'?controller=modulemultipage&uri='.$Website->getModule().'&action=add&back='.$urlAfterAction;
+            $urlAdd             = URL_USER.$Website->_lgUrl.'?controller=modulemultipage&uri='.$Website->getModule().'&action=add';
             
-            $labelModuleGroup = $Website->getActiveModules();
+            $labelModuleGroup = $Website->activeModules;
             $labelModule = $labelModuleGroup[$Website->getModule()]['all']['nom'];
 
         }
 
-        $urlAdd             = URL_USER.$Website->_lgUrl.'?controller=modulemultipage&uri='.$Website->getModule().'&action=add&back='.$urlAfterAction;
+        $urlAdd             = URL_USER.$Website->_lgUrl.'?controller=modulemultipage&uri='.$Website->getModule().'&action=add';
             
         extract($isContent);
         

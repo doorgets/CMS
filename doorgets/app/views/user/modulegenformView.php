@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -53,7 +53,7 @@ class ModuleGenformView extends doorGetsUserModuleOrderView {
 
         $aActivation = $this->doorGets->getArrayForms('activation');
         
-        $extras = unserialize($moduleInfos['all']['extras']);
+        $extras = unserialize(base64_decode($moduleInfos['all']['extras']));
         
         $Rubriques = array(
             
@@ -195,8 +195,8 @@ class ModuleGenformView extends doorGetsUserModuleOrderView {
                                                 $toFormat = trim($params['POST']['doorGets_search_filter_q_'.$valEnd.'_end']);
                                             }
                                             
-                                            $isValStart = $this->validateDate($fromFormat);
-                                            $isValEnd   = $this->validateDate($toFormat);
+                                            $isValStart = $this->doorGets->validateDate($fromFormat);
+                                            $isValEnd   = $this->doorGets->validateDate($toFormat);
                                             
                                             $from = "";
                                             $to = "";
@@ -284,11 +284,11 @@ class ModuleGenformView extends doorGetsUserModuleOrderView {
                             
                             $getCategorie = $params['GET']['categorie'];
                             
-                            $arrForCountSearchQuery[] = array('key'=>$this->doorGets->Table.'.categorie','type'=>'like','value'=>$getCategorie.',');
+                            $arrForCountSearchQuery[] = array('key'=>$this->doorGets->Table.'.categorie','type'=>'like','value'=>'#'.$getCategorie.',');
                             
                             $cResultsInt = $this->doorGets->getCountTable($tAll,$arrForCountSearchQuery);
                             
-                            $sqlCategorie = " AND ".$this->doorGets->Table.".categorie LIKE '%".$getCategorie.",%'";
+                            $sqlCategorie = " AND ".$this->doorGets->Table.".categorie LIKE '%#".$getCategorie.",%'";
                             $urlCategorie = '&categorie='.$getCategorie;
                             
                         }
@@ -379,7 +379,7 @@ class ModuleGenformView extends doorGetsUserModuleOrderView {
                         $urlPage = "./?controller=module".$moduleInfos['type']."&uri=".$this->doorGets->Uri.$urlCategorie."&lg=$lgActuel&page=";
                         $urlPageGo = './?controller=module'.$moduleInfos['type'].'&uri='.$this->doorGets->Uri.$urlCategorie.'&lg='.$lgActuel;
                         
-                        $block->addTitle($dgSelMass,'sel_mass','td-title');
+                        // $block->addTitle($dgSelMass,'sel_mass','td-title');
                         foreach($isFieldArray as $fieldName=>$fieldNameLabel) {
                             
                             $_css   = '_css_'.$fieldName;
@@ -451,7 +451,7 @@ class ModuleGenformView extends doorGetsUserModuleOrderView {
                         $urlMassdelete = '<input type="checkbox" class="check-me-mass-all" />';
                         $urlMassdelete = '';
                         
-                        $block->addContent('sel_mass',$urlMassdelete );
+                        // $block->addContent('sel_mass',$urlMassdelete );
                         $block->addContent('id',$sFilterId );
                         $block->addContent('adresse_ip',$sFilterIp );
                         $block->addContent('date_creation',$sFilterDate,'center');
@@ -462,7 +462,7 @@ class ModuleGenformView extends doorGetsUserModuleOrderView {
                         
                         if (empty($cAll)) {
                             
-                            $block->addContent('sel_mass','' );
+                            // $block->addContent('sel_mass','' );
                             $block->addContent('id','' );
                             $block->addContent('adresse_ip','' );
                             $block->addContent('date_creation','','center');
@@ -479,12 +479,12 @@ class ModuleGenformView extends doorGetsUserModuleOrderView {
                             $urlMassdelete = '<input id="'.$all[$i]["id"].'" type="checkbox" class="check-me-mass" >';
                             $urlTitle = '<a title="'.$this->doorGets->__('Afficher').'" href="./?controller=module'.$moduleInfos['type'].'&uri='.$this->doorGets->Uri.'&action=select&id='.$all[$i]['id'].'&lg='.$lgActuel.'">'.$all[$i]["id"].'</a>';
                             $urlDelete = '<a title="'.$this->doorGets->__('Supprimer').'" href="./?controller=module'.$moduleInfos['type'].'&uri='.$this->doorGets->Uri.'&action=delete&id='.$all[$i]['id'].'&lg='.$lgActuel.'"><b class="glyphicon glyphicon-remove red"></b></a>';
-                            $urlEdit = '<a title="'.$this->doorGets->__('Afficher').'" href="./?controller=module'.$moduleInfos['type'].'&uri='.$this->doorGets->Uri.'&action=select&id='.$all[$i]['id'].'&lg='.$lgActuel.'"><b class="glyphicon glyphicon-file"></b></a>';
+                            $urlEdit = '<a title="'.$this->doorGets->__('Afficher').'" href="./?controller=module'.$moduleInfos['type'].'&uri='.$this->doorGets->Uri.'&action=select&id='.$all[$i]['id'].'&lg='.$lgActuel.'"><b class="glyphicon glyphicon-zoom-in"></b></a>';
                             
                             $dateCreation = GetDate::in($all[$i]['date_creation'],1,$this->doorGets->myLanguage());
                             
-                            $block->addContent('sel_mass',$urlMassdelete,'tb-30 ' );
-                            $block->addContent('id',$urlTitle );
+                            // $block->addContent('sel_mass',$urlMassdelete,'tb-30 ' );
+                            $block->addContent('id',$urlTitle,'tb-30 ' );
                             $block->addContent('adresse_ip',$all[$i]["adresse_ip"] );
                             $block->addContent('date_creation',$dateCreation,'center');
                             $block->addContent('edit',$urlEdit,'tb-30 center');
@@ -509,8 +509,6 @@ class ModuleGenformView extends doorGetsUserModuleOrderView {
                 
                 
                 case 'select':
-                    
-                    
                     $dataContent = array();
                     if (!empty($extras)) {
                         foreach($extras as $k=>$v) {
@@ -518,6 +516,7 @@ class ModuleGenformView extends doorGetsUserModuleOrderView {
                                 $v['type'] !== 'tag-title'
                                 && $v['type'] !== 'tag-quote'
                                 && $v['type'] !== 'tag-separatteur'
+                                && array_key_exists('value',$v)
                            ) {
                                 $value = str_replace('-','_',$v['value']);
                                 if (array_key_exists($value,$isContent)) {

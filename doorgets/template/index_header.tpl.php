@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -44,8 +44,9 @@
 
     <link href="[{!URL.'skin/lib/jquery/jquery-ui.min.css'!}]" rel="stylesheet" type="text/css" />
     <link href="[{!URL.'skin/lib/bootstrap/css/bootstrap.min.css'!}]" rel="stylesheet" type="text/css" />
+    <link href="[{!URL.'skin/css/font-awesome/css/font-awesome.min.css'!}]" rel="stylesheet" type="text/css" />
     <link href="[{!URL.'skin/css/bigadmin.m.css'!}]" rel="stylesheet" type="text/css" />
-
+    
     [{?($doorGets->isRtlLanguage):}]
         <link href="[{!URL.'skin/css/doorgets.rtl.css'!}]" rel="stylesheet" type="text/css" />
     [?]
@@ -66,4 +67,4 @@
     </head>
     <body>
         
-        <div class="doorGets-wrapper-index">
+        <div class="doorGets-wrapper-index-enter">

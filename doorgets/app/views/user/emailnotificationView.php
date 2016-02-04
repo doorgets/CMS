@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 20, February 2014
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2013 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -478,12 +478,12 @@ class EmailnotificationView extends doorGetsUserView{
                     
                     // end Seach
                      $valFilterDateStart = '';
-                    if (array_key_exists('doorGets_search_filter_q_date_creation_start',$aGroupeFilter)) {
+                    if (array_key_exists('q_date_creation_start',$aGroupeFilter)) {
                         $valFilterDateStart = $aGroupeFilter['q_date_creation_start'];
                     }
                     
                     $valFilterDateEnd = '';
-                    if (array_key_exists('doorGets_search_filter_q_date_creation_end',$aGroupeFilter)) {
+                    if (array_key_exists('q_date_creation_end',$aGroupeFilter)) {
                         $valFilterDateEnd = $aGroupeFilter['q_date_creation_end'];
                     }
                     
@@ -525,7 +525,7 @@ class EmailnotificationView extends doorGetsUserView{
                             } else {
 
                                 $all[$i][$nameField] = $this->doorGets->_truncate($all[$i][$nameField],'50');
-                                $all[$i][$nameField] = '<a title="'.$this->doorGets->__('Modifier').'" href="./?controller='.$this->doorGets->controllerNameNow().'&action=edit&id='.$all[$i]['id_content'].'&lg='.$lgActuel.'">'.$all[$i][$nameField].'</a>'; 
+                                $all[$i][$nameField] = $all[$i][$nameField]; 
                                 $block->addContent($nameField, $all[$i][$nameField],$css);
                             }
 

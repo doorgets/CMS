@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 20, February 2014
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2013 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -42,11 +42,13 @@ if (!empty($User)  )
     
 
     $modules = $allModules = $doorGets->loadModules(true,true);
+    $modulesCanShow = $allModules = $doorGets->loadModules(true,true,Constant::$modulesCanShow);
 
     $modulesBlocks      = $doorGets->loadModulesBlocks(true);
+    $modulesCarousel    = $doorGets->loadModulesCarousel(true);
     $modulesGenforms    = $doorGets->loadModulesGenforms(true);
 
-    $canAddType = array('blog','news','multipage','video','faq','image','partner');
+    $canAddType = Constant::$modulesCanAdd;
     
     $iCountContents = 0;
     
@@ -85,6 +87,11 @@ if (!empty($User)  )
 
     }
 
+    foreach($modulesCarousel as $k => $v) {
+       $modulesCarousel[$k]['count']    = 1;
+       $modulesCarousel[$k]['url']      = "?controller=module".$v['type']."&uri=".$v['uri'];
+    }
+    
     foreach($modulesGenforms as $k => $v) {
 
         $modulesGenforms[$k]['count']    = 1;

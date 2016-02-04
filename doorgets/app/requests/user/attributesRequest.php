@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 20, February 2014
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -66,17 +66,11 @@ class AttributesRequest extends doorGetsUserRequest
                         
                         $isContent = array_merge($isContent,$isContentTraduction);
                         $this->isContent = $isContent;
-                        
-                        
                     }
-                    
                 }
-                
             }
         }
-
-
-
+        
         switch($this->Action) {
             
             case 'index':
@@ -191,7 +185,7 @@ class AttributesRequest extends doorGetsUserRequest
                             'required'      => $isRequired,
                             'uri'           => $this->doorGets->Form->i['uri'],
                             'type'          => $this->doorGets->Form->i['type'],
-                            'params'        => serialize($paramsAttibute),
+                            'params'        => base64_encode(serialize($paramsAttibute)),
                             'date_creation' => time()
                         );
                         
@@ -327,7 +321,7 @@ class AttributesRequest extends doorGetsUserRequest
                             'required'      => $isRequired,
                             'uri'           => $this->doorGets->Form->i['uri'],
                             'type'          => $this->doorGets->Form->i['type'],
-                            'params'        => serialize($paramsAttibute)
+                            'params'        => base64_encode(serialize($paramsAttibute))
                         );
 
                         $dataTraduction = array(
@@ -365,7 +359,7 @@ class AttributesRequest extends doorGetsUserRequest
                     $this->doorGets->dbQD($isContent['id_attribute'],'_users_groupes_attributes','id','=','');
                     $this->doorGets->dbQD($isContent['id_attribute'],'_users_groupes_attributes_traduction','id_attribute','=','');
                     //$this->doorGets->clearDBCache();
-                    FlashInfo::set("Un attribut vient d'être supprimé avec succès");
+                    FlashInfo::set($this->doorGets->__("Un attribut vient d'être supprimé avec succès"));
                     header('Location:./?controller=attributes');
                     exit();
                     

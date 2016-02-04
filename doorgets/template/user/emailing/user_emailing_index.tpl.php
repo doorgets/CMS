@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -43,7 +43,7 @@
                 [{!$this->doorGets->Form['_tocsv']->open('post',$urlPageGo,'')!}]
                     <b class="glyphicon glyphicon-download-alt"></b>
                     [{!$this->doorGets->Form['_tocsv']->input('','i','hidden')!}]
-                    [{!$this->doorGets->Form['_tocsv']->submit($this->doorGets->__('Exporter au format CSV'),'','btn doorGets-export-csv-bt')!}]
+                    [{!$this->doorGets->Form['_tocsv']->submit($this->doorGets->__('Exporter au format CSV'),'','btn btn-default no-loader doorGets-export-csv-bt')!}]
                 [{!$this->doorGets->Form['_tocsv']->close('post')!}]
             </span>
             <b class="glyphicon violet glyphicon-send "></b> [{!$this->doorGets->__('Inscription à la newsletter')!}]
@@ -86,11 +86,11 @@
                
                 [{?(!empty($aGroupeFilter)):}]
                     <div class="alert alert-danger">
-                        [{!$this->doorGets->__("Aucun contact trouvé pour votre recherche");}]
+                        <i class="fa fa-exclamation-triangle"></i> [{!$this->doorGets->__("Aucun contact trouvé pour votre recherche");}]
                     </div>
                 [??]
                     <div class="alert alert-danger">
-                        [{!$this->doorGets->__("Il n'y a actuellement aucun contact")!}]
+                        <i class="fa fa-exclamation-triangle"></i> [{!$this->doorGets->__("Il n'y a actuellement aucun contact")!}]
                     </div>
                 [?]
                 

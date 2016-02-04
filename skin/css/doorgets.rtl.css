@@ -1090,8 +1090,11 @@ th {
   margin-right: -1px;
   margin-left: auto;
 }
+.dropdown-menu {
+    min-width: 200px;
+}
 .nav {
-  padding-right: 0;
+  padding-right: 67px !important;
   padding-left: initial;
 }
 .nav-tabs > li {

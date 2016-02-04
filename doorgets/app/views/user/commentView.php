@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -69,11 +69,11 @@ class CommentView extends doorGetsUserView{
             
             $urlPrevious = '';
             if (!empty($idPreviousContent)) {
-                $urlPrevious = '?controller='.$this->doorGets->controllerNameNow().'&action=select&uri='.$this->doorGets->Uri.'&id='.$idPreviousContent;
+                $urlPrevious = '?controller='.$this->doorGets->controllerNameNow().'&action=select&id='.$idPreviousContent;
             }
             $urlNext = '';
             if (!empty($idNextContent)) {
-                $urlNext = '?controller='.$this->doorGets->controllerNameNow().'&action=select&uri='.$this->doorGets->Uri.'&id='.$idNextContent;
+                $urlNext = '?controller='.$this->doorGets->controllerNameNow().'&action=select&id='.$idNextContent;
             }
         }
 
@@ -119,7 +119,7 @@ class CommentView extends doorGetsUserView{
                     
                     $isFieldArrayDate   = array('date_creation');
                     
-                    $urlOrderby         = '&orderby='.$isFieldArraySort[0];
+                    $urlOrderby         = '&orderby='.$isFieldArraySort[5];
                     $urlSearchQuery     = '';
                     $urlSort            = '&desc';
                     $urlLg              = '&lg='.$lgActuel;
@@ -194,8 +194,8 @@ class CommentView extends doorGetsUserView{
                                             $toFormat = trim($params['POST']['doorGets_search_filter_q_'.$valEnd.'_end']);
                                         }
                                         
-                                        $isValStart = $this->validateDate($fromFormat);
-                                        $isValEnd   = $this->validateDate($toFormat);
+                                        $isValStart = $this->doorGets->validateDate($fromFormat);
+                                        $isValEnd   = $this->doorGets->validateDate($toFormat);
                                         
                                         $from = "";
                                         $to = "";
@@ -369,7 +369,7 @@ class CommentView extends doorGetsUserView{
                         
                         if (
                             $getFilter === $fieldName
-                            || ( empty($getFilter) && $fieldName === $isFieldArraySort[0] )
+                            || ( empty($getFilter) && $fieldName === $isFieldArraySort[5] )
                        ) {
                             $$_css = ' class="green" ';
                             $$_img = $imgTop;
@@ -477,7 +477,7 @@ class CommentView extends doorGetsUserView{
                         $urlMassdelete  = '<input id="'.$all[$i]["id"].'" type="checkbox" class="check-me-mass" >';
                         
                         $urlDelete      = '<a title="'.$this->doorGets->__('Supprimer').'" href="./?controller='.$this->doorGets->controllerNameNow().'&action=delete&id='.$all[$i]['id'].'"><b class="glyphicon glyphicon-remove red"></b></a>';
-                        $urlSelect        = '<a title="'.$this->doorGets->__('Afficher').'" href="./?controller='.$this->doorGets->controllerNameNow().'&action=select&id='.$all[$i]['id'].'"><b class="glyphicon glyphicon-file"></b></a>';
+                        $urlSelect        = '<a title="'.$this->doorGets->__('Afficher').'" href="./?controller='.$this->doorGets->controllerNameNow().'&action=select&id='.$all[$i]['id'].'"><b class="glyphicon glyphicon-zoom-in"></b></a>';
                         
                         $dateCreation = GetDate::in($all[$i]['date_creation'],2,$this->doorGets->myLanguage());
                         
@@ -489,26 +489,26 @@ class CommentView extends doorGetsUserView{
                             if ($nameField === 'comment') {
                                 
                                 $all[$i][$nameField] = $this->doorGets->_truncate($all[$i][$nameField]);
-                                $all[$i][$nameField] = '<a title="'.$this->doorGets->__('Afficher').'" href="./?controller='.$this->doorGets->controllerNameNow().'&action=select&id='.$all[$i]['id'].'">'.$all[$i][$nameField].'</a>'; 
-                            
+                                //$all[$i][$nameField] = '<a title="'.$this->doorGets->__('Afficher').'" href="./?controller='.$this->doorGets->controllerNameNow().'&action=select&id='.$all[$i]['id'].'">'.$all[$i][$nameField].'</a>'; 
+                                $css = 'tb-200 text-left';
                             }
                             if ($nameField === 'validation') {
                                 $val = $all[$i][$nameField];
-                                $all[$i][$nameField] = '<img src="'.BASE_IMG.'puce-rouge.png" title="'.$this->doorGets->__('Bloquer').'" />';
+                                
+                                $all[$i][$nameField]  = '<i class="fa fa-ban fa-lg red-c"></i>';
                                 if ($val === '2') {
-                                    $all[$i][$nameField] = '<img src="'.BASE_IMG.'puce-verte.png" title="'.$this->doorGets->__('Activer').'" />';
+                                    $all[$i][$nameField]  = '<i class="fa fa-check fa-lg green-c"></i>';
+                                } elseif ($val === '3') {
+                                    $all[$i][$nameField]  = '<i class="fa fa-hourglass-end fa-lg orange-c"></i>';
                                 }
-                                if ($val === '3') {
-                                    $all[$i][$nameField] = '<img src="'.BASE_IMG.'puce-orange.png" title="'.$this->doorGets->__('En attente de modération').'" />';
-                                    
-                                }
-                                $css = 'center';
+                                $css = 'text-center';
                             }
+
                             
                             $block->addContent($nameField, $all[$i][$nameField],$css);
                         }
                         
-                        $block->addContent('date_creation',$dateCreation,'center');
+                        $block->addContent('date_creation',$dateCreation,'tb-50 text-center');
                         $block->addContent('edit',$urlSelect,'center');
                         $block->addContent('delete',$urlDelete,'center');
                         

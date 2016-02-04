@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -55,7 +55,7 @@ class ModuleBlogRequest extends doorGetsUserModuleRequest{
             $redirectUrl = './?controller=module'.$moduleInfos['type'].'&uri='.$this->doorGets->Uri.'&lg='.$lgActuel;
 
             // Check if is content modo
-            (in_array($moduleInfos['id'], $User['liste_module_modo'])) ? $is_modo = true : $is_modo = false;
+            $is_modo = (in_array($moduleInfos['id'], $User['liste_module_modo']))?true:false;
 
             // Check if is module modo
             (
@@ -65,10 +65,10 @@ class ModuleBlogRequest extends doorGetsUserModuleRequest{
             ) ? $is_modules_modo = true : $is_modules_modo = false;
 
             // check if user can edit content
-            (in_array($moduleInfos['id'], $User['liste_module_edit'])) ? $user_can_edit = true : $user_can_edit = false;
+            $user_can_edit = (in_array($moduleInfos['id'], $User['liste_module_edit']))?true:false;
 
             // check if user can delete content
-            (in_array($moduleInfos['id'], $User['liste_module_delete'])) ? $user_can_delete = true : $user_can_delete = false;
+            $user_can_delete = (in_array($moduleInfos['id'], $User['liste_module_delete']))?true:false;
             
             // Init count total contents
             $countContents = 0;
@@ -118,7 +118,7 @@ class ModuleBlogRequest extends doorGetsUserModuleRequest{
             }
             
             $champsNonObligatoire = array('meta_titre','meta_description','meta_keys','sendto','id_disqus','image_gallery','meta_facebook_titre','meta_facebook_description','meta_facebook_image',
-            'meta_twitter_titre','meta_twitter_description','meta_twitter_image','meta_twitter_player',);
+            'meta_twitter_titre','meta_twitter_description','meta_twitter_image','meta_twitter_player','tags');
             
             $messageSuccess = $this->doorGets->__("Vos informations ont bien été mises à jour");
 
@@ -147,7 +147,7 @@ class ModuleBlogRequest extends doorGetsUserModuleRequest{
                             $iCat = explode('_',$k);
                             if (!empty($iCat) && $iCat[0] === 'categories' && is_numeric($iCat[1])) {
                                 
-                                $listToCategories .= $iCat[1].',';
+                                $listToCategories .= '#'.$iCat[1].',';
                                 unset($this->doorGets->Form->i[$k]);
                                 
                             }
@@ -192,6 +192,7 @@ class ModuleBlogRequest extends doorGetsUserModuleRequest{
 
                             //
                             
+
                             $data['pseudo']         = $User['pseudo'];
                             $data['id_user']        = $User['id'];
                             $data['id_groupe']      = $User['groupe'];
@@ -207,11 +208,10 @@ class ModuleBlogRequest extends doorGetsUserModuleRequest{
                             $data['facebook']       = $this->doorGets->Form->i['facebook'];
                             $data['disqus']         = $this->doorGets->Form->i['disqus'];
                             $data['in_rss']         = $this->doorGets->Form->i['in_rss'];
+                            
                             $data['date_creation']  = time();
-                            
+                        
                             $idContent = $this->doorGets->dbQI($data,$this->doorGets->Table);
-                            
-                            //
                             
                             foreach($this->doorGets->getAllLanguages() as $k=>$v) {
 
@@ -224,6 +224,7 @@ class ModuleBlogRequest extends doorGetsUserModuleRequest{
                                     'meta_keys'         => $this->doorGets->Form->i['meta_keys'],
                                     'image'             => $this->doorGets->Form->i['image'],
                                     'image_gallery'     => $image_gallery,
+                                    'tags'              => $this->doorGets->Form->i['tags'],
                                     'meta_facebook_type'         => $this->doorGets->Form->i['meta_facebook_type'],
                                     'meta_facebook_titre'         => $this->doorGets->Form->i['meta_facebook_titre'],
                                     'meta_facebook_description'   => $this->doorGets->Form->i['meta_facebook_description'],
@@ -246,11 +247,15 @@ class ModuleBlogRequest extends doorGetsUserModuleRequest{
 
                             }
                             
+                            $dataModification['groupe_traduction'] = serialize($idTraduction);
+                            $this->doorGets->dbQU($idContent,$dataModification,$this->doorGets->Table);
+                            
                             // Copy image to real path
                             $this->doorGets->copyFileToRealPath($this->doorGets->Uri,$this->doorGets->Form->i['image']);
 
-                            $dataModification['groupe_traduction'] = serialize($idTraduction);
-                            $this->doorGets->dbQU($idContent,$dataModification,$this->doorGets->Table);
+                            // Copy image to real path
+                            $this->doorGets->copyFileToRealPath($this->doorGets->Uri,$this->doorGets->Form->i['meta_facebook_image']);
+                            $this->doorGets->copyFileToRealPath($this->doorGets->Uri,$this->doorGets->Form->i['meta_twitter_image']);
 
                             // Tracker
                             $usersTracking = new UsersTrackEntity(null,$this->doorGets);
@@ -265,8 +270,9 @@ class ModuleBlogRequest extends doorGetsUserModuleRequest{
                                 ->setUriModule($this->doorGets->Uri)
                                 ->setIdContent($idContent)
                                 ->setAction($this->Action)
-                                ->setDate(time())
+                                ->setDate($data['date_creation'])
                                 ->save();
+                               
 
                             if (!$is_modo) {
                                 
@@ -326,32 +332,49 @@ class ModuleBlogRequest extends doorGetsUserModuleRequest{
                             $iCat = explode('_',$k);
                             if (!empty($iCat) && $iCat[0] === 'categories' && is_numeric($iCat[1])) {
                                 
-                                $listToCategories .= $iCat[1].',';
+                                $listToCategories .= '#'.$iCat[1].',';
                                 unset($this->doorGets->Form->i[$k]);
                                 
                             }
                             
                         }
                         
-                        $image = $isContent['image'];
-                        if (!empty($this->doorGets->Form->i['image'])) {
-                            $image = $this->doorGets->Form->i['image'];
 
-                            // Copy image to real path
-                            $this->doorGets->copyFileToRealPath($this->doorGets->Uri,$this->doorGets->Form->i['image']);
-                        }
 
-                        
                         if (empty($this->doorGets->Form->e)) {
-
-                            $image_gallery = $this->doorGets->Form->i['image_gallery'];
-
-                            // Copy images gallery to real path
-                            $this->doorGets->copyFileToRealPath($this->doorGets->Uri,$image_gallery);
                             
-                        }
+                            $image = $isContent['image'];
+                            if (!empty($this->doorGets->Form->i['image'])) {
+                                $image = $this->doorGets->Form->i['image'];
 
-                        if (empty($this->doorGets->Form->e)) {
+                                // Copy image to real path
+                                $this->doorGets->copyFileToRealPath($this->doorGets->Uri,$this->doorGets->Form->i['image']);
+                            }
+
+                            $imageFacebook = $isContent['meta_facebook_image'];
+                            if (!empty($this->doorGets->Form->i['meta_facebook_image'])) {
+                                $imageFacebook = $this->doorGets->Form->i['meta_facebook_image'];
+
+                                // Copy image to real path
+                                $this->doorGets->copyFileToRealPath($this->doorGets->Uri,$this->doorGets->Form->i['meta_facebook_image']);
+                            }
+
+                            $imageTwitter = $isContent['meta_twitter_image'];
+                            if (!empty($this->doorGets->Form->i['meta_twitter_image'])) {
+                                $imageTwitter = $this->doorGets->Form->i['meta_twitter_image'];
+
+                                // Copy image to real path
+                                $this->doorGets->copyFileToRealPath($this->doorGets->Uri,$this->doorGets->Form->i['meta_twitter_image']);
+                            }
+                            
+                            if (empty($this->doorGets->Form->e)) {
+
+                                $image_gallery = $this->doorGets->Form->i['image_gallery'];
+
+                                // Copy images gallery to real path
+                                $this->doorGets->copyFileToRealPath($this->doorGets->Uri,$image_gallery);
+                                
+                            }
                             
                             if (!array_key_exists('active',$this->doorGets->Form->i)) {
                             $this->doorGets->Form->i['active'] = $isContent['active'];
@@ -394,6 +417,7 @@ class ModuleBlogRequest extends doorGetsUserModuleRequest{
                                 'uri'               => $this->doorGets->Form->i['uri'],
                                 'article_tinymce'   => $this->doorGets->Form->i['article_tinymce'],
                                 'image_gallery'     => $image_gallery,
+                                'tags'              => $this->doorGets->Form->i['tags'],
                                 'meta_titre'        => $this->doorGets->Form->i['meta_titre'],
                                 'meta_description'  => $this->doorGets->Form->i['meta_description'],
                                 'meta_keys'         => $this->doorGets->Form->i['meta_keys'],
@@ -401,11 +425,11 @@ class ModuleBlogRequest extends doorGetsUserModuleRequest{
                                 'meta_facebook_type'         => $this->doorGets->Form->i['meta_facebook_type'],
                                 'meta_facebook_titre'         => $this->doorGets->Form->i['meta_facebook_titre'],
                                 'meta_facebook_description'   => $this->doorGets->Form->i['meta_facebook_description'],
-                                'meta_facebook_image'         => $this->doorGets->Form->i['meta_facebook_image'],
+                                'meta_facebook_image'         => $imageFacebook,
                                 'meta_twitter_type'         => $this->doorGets->Form->i['meta_twitter_type'],
                                 'meta_twitter_titre'         => $this->doorGets->Form->i['meta_twitter_titre'],
                                 'meta_twitter_description'   => $this->doorGets->Form->i['meta_twitter_description'],
-                                'meta_twitter_image'         => $this->doorGets->Form->i['meta_twitter_image'],
+                                'meta_twitter_image'         => $imageTwitter,
                                 'meta_twitter_player'        => $this->doorGets->Form->i['meta_twitter_player'],
                                 'date_modification'     => time()
                             );
@@ -557,8 +581,8 @@ class ModuleBlogRequest extends doorGetsUserModuleRequest{
             }
 
         } catch (Exception $e) {
-            echo $e->getMessage();
-            exit();
+            // echo $e->getMessage();
+            // exit();
         } 
     }
 }

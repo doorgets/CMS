@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 20, February 2014
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -50,6 +50,8 @@ class doorgetsInstaller extends Langue{
     
     private $content;
     
+    public $hasRtl = false;
+
     public function __construct() {
         
         parent::__construct();
@@ -62,7 +64,7 @@ class doorgetsInstaller extends Langue{
         } else {
             $this->init();
         }
-        
+        $this->hasRtl = ($this->Language === 'iw' || $this->Language === 'ar')?true:false; 
     }
     
     public function checkModulesAndExtensions() {
@@ -80,19 +82,9 @@ class doorgetsInstaller extends Langue{
             if (!array_key_exists('database_password',$formData['success'])) {
                 $formData['success']['database_password'] = '';
             }
-            $isConnected = $this->isConnectedToDatabase(
-                $formData['success']['database_host'],
-                $formData['success']['database_name'],
-                $formData['success']['database_login'],
-                $formData['success']['database_password']
-            );
-
-            if ($isConnected) {
-                $this->installByOneclick($formData['success']);
-                $this->_successJson($formData['success']);
-            } else {
-                $this->_errorJson('Connection database error');
-            }
+            $this->installByOneclick($formData['success']);
+            
+            $this->_successJson($formData['success']);
 
             
         } else {

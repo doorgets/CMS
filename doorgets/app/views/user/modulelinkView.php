@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -49,7 +49,7 @@ class ModuleLinkView extends doorGetsUserModuleOrderView {
         $moduleInfos        = $this->doorGets->moduleInfos($this->doorGets->Uri,$lgActuel);
 
         // Check if is content modo
-        (in_array($moduleInfos['id'], $User['liste_module_modo'])) ? $is_modo = true : $is_modo = false;
+        $is_modo = (in_array($moduleInfos['id'], $User['liste_module_modo']))?true:false;
 
         // Check if is module modo
         (
@@ -59,10 +59,13 @@ class ModuleLinkView extends doorGetsUserModuleOrderView {
         ) ? $is_modules_modo = true : $is_modules_modo = false;
 
         // check if user can edit content
-        (in_array($moduleInfos['id'], $User['liste_module_edit'])) ? $user_can_edit = true : $user_can_edit = false;
+        $user_can_add = (in_array($moduleInfos['id'], $User['liste_module_add']))?true:false;
+        
+        // check if user can edit content
+        $user_can_edit = (in_array($moduleInfos['id'], $User['liste_module_edit']))?true:false;
 
         // check if user can delete content
-        (in_array($moduleInfos['id'], $User['liste_module_delete'])) ? $user_can_delete = true : $user_can_delete = false;
+        $user_can_delete = (in_array($moduleInfos['id'], $User['liste_module_delete']))?true:false;
         
         $Rubriques = array(
             

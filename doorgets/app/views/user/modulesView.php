@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorgets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -51,7 +51,9 @@ class ModulesView extends doorGetsUserView{
             
             'index'                 => $this->doorGets->__('Index'),
             'addblock'              => $this->doorGets->__('Ajouter'),
+            'addsurvey'             => $this->doorGets->__('Ajouter'),
             'addcarousel'           => $this->doorGets->__('Ajouter'),
+            //'addshop'               => $this->doorGets->__('Ajouter'),
             'addblog'               => $this->doorGets->__('Ajouter'),
             'addpage'               => $this->doorGets->__('Ajouter'),
             'addgendata'            => $this->doorGets->__('Ajouter'),
@@ -61,12 +63,15 @@ class ModulesView extends doorGetsUserView{
             'addlink'               => $this->doorGets->__('Ajouter'),
             'addnews'               => $this->doorGets->__('Ajouter'),
             'addsharedlinks'        => $this->doorGets->__('Ajouter'),
+            'addonepage'            => $this->doorGets->__('Ajouter'),
             'addimage'              => $this->doorGets->__('Ajouter'),
             'addvideo'              => $this->doorGets->__('Ajouter'),
             'addfaq'                => $this->doorGets->__('Ajouter'),
             'addpartner'            => $this->doorGets->__('Ajouter'),
             'editblock'             => $this->doorGets->__('Modifier'),
+            'editsurvey'            => $this->doorGets->__('Modifier'),
             'editcarousel'          => $this->doorGets->__('Modifier'),
+            //'editshop'              => $this->doorGets->__('Modifier'),
             'editblog'              => $this->doorGets->__('Modifier'),
             'editpage'              => $this->doorGets->__('Modifier'),
             'editmultipage'         => $this->doorGets->__('Modifier'),
@@ -74,13 +79,14 @@ class ModulesView extends doorGetsUserView{
             'editgenform'           => $this->doorGets->__('Modifier'),
             'editlink'              => $this->doorGets->__('Modifier'),
             'editnews'              => $this->doorGets->__('Modifier'),
+            'editonepage'           => $this->doorGets->__('Modifier'),
             'editsharedlinks'       => $this->doorGets->__('Modifier'),
             'editimage'             => $this->doorGets->__('Modifier'),
             'editvideo'             => $this->doorGets->__('Modifier'),
             'editfaq'               => $this->doorGets->__('Modifier'),
             'editpartner'           => $this->doorGets->__('Modifier'),
             'delete'                => $this->doorGets->__('Supprimer'),
-            'type'                  => $this->doorGets->__('Chox du module'),
+            'type'                  => $this->doorGets->__('Module'),
             'massdelete'            => $this->doorGets->__('Supprimer par groupe'),
             
         );
@@ -146,7 +152,6 @@ class ModulesView extends doorGetsUserView{
         }
         
         $editMode = true;
-        // include config/modules.php 
         include CONFIG.'modules.php';
         
         $arrayEmpty = array('' => ' -------' );
@@ -158,10 +163,12 @@ class ModulesView extends doorGetsUserView{
         $modules = $allModules = $this->doorGets->loadModules(true,true);
 
         $modulesBlocks      = $this->doorGets->loadModulesBlocks(true);
+        $modulesSurvey      = $this->doorGets->loadModulesSurvey(true);
+        $modulesCarousel    = $this->doorGets->loadModulesCarousel(true);
         $modulesGenforms    = $this->doorGets->loadModulesGenforms(true);
 
-        $canAddType = array('blog','news','multipage','video','faq','image','partner','genform','sharedlinks');
-        $moduleType = array('page','blog','news','multipage','video','faq','image','partner','inbox','sharedlinks');
+        $canAddType = array_merge(Constant::$modulesCanAdd,array('genform','carousel'));;
+        $moduleType = array('page','blog','news','multipage','video','faq','image','partner','inbox','sharedlinks','onepage');
         $iCountContents = 0;
         
         $_uri_module = str_replace('add', '', $this->Action);
@@ -171,6 +178,9 @@ class ModulesView extends doorGetsUserView{
 
         (in_array($_uri_module, $moduleType)) ? $_type = 'modules/'  : $_type = 'widgets/';
 
+        if (!array_key_exists($_uri_module, $liste) && array_key_exists($_uri_module, $listeWidgets) ) { 
+            $liste = $listeWidgets;
+        }
         if (!array_key_exists($_uri_module, $liste)) { 
             $__uri = $_type = '';
         } 
@@ -214,7 +224,7 @@ class ModulesView extends doorGetsUserView{
 
         $htmlFormAddTop = 'user/modules/user_modules_form_edit';
         $tpl = Template::getView($htmlFormAddTop);  ob_start();if (is_file($tpl)) { include $tpl; } $getHtmlFormEditTop = ob_get_clean();
-
+        
         if (array_key_exists($this->Action,$Rubriques) )
         {
             switch($this->Action) {
@@ -240,7 +250,7 @@ class ModulesView extends doorGetsUserView{
                 case 'editgenform':
                     
                     
-                    $isContent['extras'] = unserialize($isContent['extras']);
+                    $isContent['extras'] = unserialize(base64_decode($isContent['extras']));
                     
                     $this->genArraysForm($isContent['extras']);
                     
@@ -271,71 +281,363 @@ class ModulesView extends doorGetsUserView{
                 case 'type':
 
                     $editMode = false;
-                    // include config/modules.php 
                     include CONFIG.'modules.php';
 
                     break;
 
                 case 'index':
                     
-                    $out = '';
+                    $tableName = $this->doorGets->Table;
                     
-                    // Modules without blocks and genforms
+                    $q = '';
+                    $urlSearchQuery = '';
                     
-                    $nbStringCount = '';
-                    $per = 300;
+                    $p = 1;
                     $ini = 0;
+                    $per = 50;
                     
-                    $cResultsInt = $this->doorGets->getCountTable('_modules',array()," WHERE type != 'block' AND type != 'genform'");
+                    $params = $this->doorGets->Params();
+                    $lgActuel = $this->doorGets->getLangueTradution();
                     
-                    $sqlLimit = " WHERE type != 'block' AND type != 'genform' ORDER BY type  LIMIT ".$ini.",".$per;
-                    
-                    $all = $this->doorGets->dbQA('_modules',$sqlLimit);
-                    foreach ($all as $key => $value) {
-                        if (!array_key_exists($value['id'], $allModules)) {
-                            unset($all[$key]);
-                        }
-                    }
-                    sort($all);
+                    $arFilterActivation = $this->doorGets->getArrayForms('activation_mod');
+                    $groupes = $this->doorGets->loadGroupesOptionToSelect($this->doorGets->Table,'type',Constant::$_modules);
 
-                    $cAll = count($all);
-                    if ($cAll > 4) {
-                        $nbStringCount = $cResultsInt.' '.$this->doorGets->__('Modules');
+                    $isFieldArray       = array(
+                        "titre"=>$this->doorGets->__('Titre'),
+                        "uri"=>$this->doorGets->__('Clée'),
+                        "active"=>$this->doorGets->__('Statut'),
+                        "type"=>$this->doorGets->__('Type'),
+                    );
+                    
+                    $isFieldArraySearchType = array(
+                        
+                        'titre'      => array('type' =>'text','value'=>''),
+                        'uri'        => array('type' =>'text','value'=>''),
+                        'type'       => array('type' =>'select','value'=>$groupes),
+                        'active'     => array('type' =>'select','value'=>$arFilterActivation),
+                        
+                    );
+
+                    $isFieldTraductionArray       = array("titre");
+
+                    $isFieldArraySort   = array('titre','uri','active','type',);
+                    $isFieldArraySearch = array('titre','uri','active','type',);
+                    $isFieldArrayDate   = array();
+                    
+                    $urlOrderby         = '&orderby='.$isFieldArraySort[0];
+                    $urlSearchQuery     = '';
+                    $urlSort            = '&desc';
+                    $urlLg              = '&lg='.$lgActuel;
+                    $urlCategorie       = '';
+                    $urlGroupBy         = '&gby='.$per;
+                    
+                    // Init table query
+                    $tAll = " ".$this->doorGets->Table.",".$this->doorGets->Table."_traduction "; 
+                    
+                    // Create query search for mysql
+                    $sqlLabelSearch = '';
+                    $arrForCountSearchQuery = array();
+                    $arrForCountSearchQuery[] = array('key'=>$this->doorGets->Table."_traduction.id_module",'type'=>'!=!','value'=>$this->doorGets->Table.".id");
+                    $arrForCountSearchQuery[] = array('key'=>$this->doorGets->Table."_traduction.langue",'type'=>'like','value'=>$lgActuel);
+                    $nextCondition = ' AND (';
+                    foreach (Constant::$_modules as $key => $value) {
+                        $nextCondition .= ' '.$this->doorGets->Table.".type = '$value' OR ";
                     }
+                    $nextCondition = substr($nextCondition,0,-3);
+                    $nextCondition .= ')';
+
+                    // Init Query Search
+                    $aGroupeFilter = array();
+                    if (!empty($isFieldArraySearch)) {
+                        
+                        // Récupére les paramêtres du get et post pour la recherche par filtre
+                        foreach($isFieldArraySearch as $v)
+                        {
+                            
+                            $valueQP = '';
+                            if (
+                                array_key_exists('doorGets_search_filter_q_'.$v,$params['GET'])
+                                && (!empty($params['GET']['doorGets_search_filter_q_'.$v])
+                                    || ($params['GET']['doorGets_search_filter_q_'.$v] === '0' && $v === 'active'))
+                            ) {
+                                
+                                $valueQP = trim($params['GET']['doorGets_search_filter_q_'.$v]);
+                                $aGroupeFilter['doorGets_search_filter_q_'.$v] = $valueQP;
+                                
+                            }
+                            
+                            if (
+                                array_key_exists('doorGets_search_filter_q_'.$v,$params['POST'])
+                                && !array_key_exists('doorGets_search_filter_q_'.$v,$params['GET'])
+                                && (!empty($params['POST']['doorGets_search_filter_q_'.$v])
+                                    || ($params['POST']['doorGets_search_filter_q_'.$v] === '0' && $v === 'active'))
+                            ) {
+                                
+                                $valueQP = trim($params['POST']['doorGets_search_filter_q_'.$v]);
+                                $aGroupeFilter['doorGets_search_filter_q_'.$v] = $valueQP;
+                                
+                            }
+                            
+                            if (
+                                ( array_key_exists('doorGets_search_filter_q_'.$v,$params['GET'])
+                                    && (!empty($params['GET']['doorGets_search_filter_q_'.$v])
+                                    || ($params['GET']['doorGets_search_filter_q_'.$v] === '0' && $v === 'active'))
+                                )
+                                ||
+                                ( array_key_exists('doorGets_search_filter_q_'.$v,$params['POST'])
+                                    && !array_key_exists('doorGets_search_filter_q_'.$v,$params['GET'])
+                                    && (!empty($params['POST']['doorGets_search_filter_q_'.$v])
+                                    || ($params['POST']['doorGets_search_filter_q_'.$v] === '0' && $v === 'active'))
+                                )
+                            ) {
+                                
+                                if (in_array($v,$isFieldArraySort)) {
+                                    
+                                    if (in_array($v,$isFieldTraductionArray)) {    
+                                        $sqlLabelSearch .= $tableName."_traduction.".$v." LIKE '%".$valueQP."%' AND ";
+                                        $arrForCountSearchQuery[] = array('key'=>$tableName."_traduction.".$v,'type'=>'like','value'=>$valueQP);
+                                    } else {
+                                        $sqlLabelSearch .= $tableName.".".$v." LIKE '%".$valueQP."%' AND ";
+                                        $arrForCountSearchQuery[] = array('key'=>$tableName.".".$v,'type'=>'like','value'=>$valueQP);
+                                    }
+                                }
+                                
+                            }
+                            
+                        }
+                        
+                        // préparation de la requête mysql
+                        if (!empty($sqlLabelSearch)) {
+                            
+                            $sqlLabelSearch = substr($sqlLabelSearch,0,-4);
+                            $sqlLabelSearch = " AND ( $sqlLabelSearch ) ";
+                            
+                        }
+                        
+                    }
+                    
+                    // Init Group By
+                    if (
+                        array_key_exists('gby',$params['GET'])
+                        && is_numeric($params['GET']['gby'])
+                        && $params['GET']['gby'] < 300
+                    ) {
+                        $per = $params['GET']['gby'];
+                        $urlGroupBy = '&gby='.$per;
+                    }
+                    
+                    // Init count total fields
+                    $cResultsInt = $this->doorGets->getCountTable($tAll,$arrForCountSearchQuery,$nextCondition);
+                    
+                    // Init categorie
+                    $sqlCategorie = '';
+                    
+                    // Init sort 
+                    $getDesc = 'ASC';
+                    $getSort = '&desc';
+                    if (isset($_GET['desc']))
+                    {
+                        $getDesc = 'DESC';
+                        $getSort = '&asc';
+                        $urlSort = '&desc';
+                    }
+                    
+                    // Init filter for order by 
+                    $outFilterORDER = $tableName.'_traduction.titre  '.$getDesc;
+                    
+                    $getFilter = '';
+                    if (
+                        array_key_exists('orderby',$params['GET'])
+                        && !empty($params['GET']['orderby'])
+                        && in_array($params['GET']['orderby'],$isFieldArraySort)
+                   ) {
+                        
+                        $getFilter      = $params['GET']['orderby'];
+                        
+                        if (in_array($getFilter,$isFieldTraductionArray)) { 
+                            $outFilterORDER = $tableName.'_traduction.'.$getFilter.'  '.$getDesc;
+                        } else {
+                            $outFilterORDER = $tableName.'.'.$getFilter.'  '.$getDesc;
+                        }
+                        $urlOrderby     = '&orderby='.$getFilter;
+                        
+                    }
+                    
+                    // Init page position
+                    if (
+                        array_key_exists('page',$params['GET'])
+                        && is_numeric($params['GET']['page'])
+                        && $params['GET']['page'] <= (ceil($cResultsInt / $per))
+                   ) {
+                        
+                        $p = $params['GET']['page'];
+                        $ini = $p * $per - $per;
+                    }
+                    
+                    $finalPer = $ini+$per;
+                    if ($finalPer >  $cResultsInt) {
+                        $finalPer = $cResultsInt;
+                    }
+                    
+                    // Create sql query for transaction
+                    $outSqlGroupe = " WHERE 1=1 ".$sqlLabelSearch;
+                    $sqlLimit = " $outSqlGroupe AND ".$this->doorGets->Table.".id = ".$this->doorGets->Table."_traduction.id_module AND langue = '$lgActuel' $nextCondition ORDER BY $outFilterORDER  LIMIT ".$ini.",".$per;
+                    
+                    // Create url to go for pagination
+                    $urlPage = "./?controller=".$this->doorGets->controllerNameNow().$urlCategorie.$urlOrderby.$urlSearchQuery.$urlSort.$urlGroupBy.$urlLg.'&page=';
+                    $urlPagePosition = "./?controller=".$this->doorGets->controllerNameNow().$urlCategorie.$urlOrderby.$urlSearchQuery.$urlSort.$urlLg.'&page='.$p;
+                    // Generate the pagination system
+                    $valPage = '';
+                    if ($cResultsInt > $per) {
+                        
+                        $valPage = Pagination::page($cResultsInt,$p,$per,$urlPage);
+                        
+                    }
+                    
+                    $tAll = " ".$this->doorGets->Table.", ".$this->doorGets->Table."_traduction"; 
+                
+                    // Select all contents / Query SQL
+                    $all = $this->doorGets->dbQA($tAll,$sqlLimit);
+                    $cAll = count($all);
+                    
+                    /**********
+                     *
+                     *  Start block creation for listing fields
+                     * 
+                     **********/
                     
                     $block = new BlockTable();
                     
+                    $imgTop = '<div class="d-top"></div>';
+                    $imgBottom= '<div class="d-bottom"></div>';
                     $block->setClassCss('doorgets-listing');
                     
-                    $block->addTitle('','statut','td-title');
-                    $block->addTitle('','image','td-title');
-                    $block->addTitle('','titre','first-title td-title left');
-                    $block->addTitle('','rubrique','td-title');
-                    $block->addTitle('','gerer','td-title');
-                    $block->addTitle('','editer','td-title');
-                    $block->addTitle('','supprimer','td-title');
+                    $iPos = 0;
+                    $dgSelMass = '';
+                    $urlPage = "./?controller=".$this->doorGets->controllerNameNow()."&page=";
+                    $urlPageGo = './?controller='.$this->doorGets->controllerNameNow();
                     
-                    $isHomePageIn = '';
+                    foreach($isFieldArray as $fieldName=>$fieldNameLabel) {
+                        
+                        $_css   = '_css_'.$fieldName;
+                        $_img   = '_img_'.$fieldName;
+                        $_desc  = '_desc_'.$fieldName;
+                        
+                        $$_css = $$_img = $$_desc = $leftFirst = '';
+                        
+                        if (
+                            $getFilter === $fieldName
+                            || ( empty($getFilter) && $fieldName === $isFieldArraySort[0] )
+                       ) {
+                            $$_css = ' class="green" ';
+                            $$_img = $imgTop;
+                            $$_desc = $getSort;
+                            if ($getDesc === 'ASC') {
+                                $$_img = $imgBottom;
+                                $$_desc = '';
+                            }
+                        }
+                        
+                        if ($iPos === 0) {
+                            $leftFirst = 'first-title text-left';
+                        }
+                        
+                        $dgLabel = $fieldNameLabel;
+                        if (in_array($fieldName,$isFieldArraySort))
+                        {
+                            $dgLabel = '<a href="'.$urlPageGo.'&orderby='.$fieldName.$urlSearchQuery.'&gby='.$per.$$_desc.'" '.$$_css.'  >'.$$_img.$fieldNameLabel.'</a>';
+                        }
+                        
+                        $block->addTitle($dgLabel,$fieldName,"$leftFirst td-title ");
+                        $iPos++;
+                        
+                    }
                     
+                    $block->addTitle('','show','td-title');
+                    $block->addTitle('','edit','td-title');
+                    $block->addTitle('','delete','td-title');
+                    
+                    
+
+                    // $valFilterTitle = '';
+                    // if (array_key_exists('doorGets_search_filter_q_titre',$aGroupeFilter)) {
+                    //     $valFilterTitle = $aGroupeFilter['doorGets_search_filter_q_titre'];
+                    // }
+                    
+                    
+                    // $sFilterTitle  = $this->doorGets->Form['_search_filter']->input('','q_titre','text',$valFilterTitle);
+                    
+                    $outFilter = '';
+                    foreach($isFieldArraySearchType as $nameField => $value) {
+                        
+                        $nameFieldVal   = 'valFilter'.ucfirst($nameField);
+                        $sNameFieldVar  = 'sFilter'.ucfirst($nameField);
+                        
+                        $keyNameField   = 'q_'.$nameField;
+                        $keyNameFieldVal   = 'q_'.$nameField;
+                        
+                        $$nameFieldVal  = '';
+                        
+                        if (array_key_exists($keyNameField,$aGroupeFilter)) {
+                            $$nameFieldVal = $aGroupeFilter[$keyNameField];
+                        }
+                        
+                        switch($value['type']) {
+                            
+                            case 'text':
+                                
+                                $$sNameFieldVar = $this->doorGets->Form['_search_filter']->input('',$keyNameFieldVal,'text',$$nameFieldVal);
+                                
+                                break;
+                            case 'select':
+                                
+                                $$sNameFieldVar  = $this->doorGets->Form['_search_filter']->select('',$keyNameFieldVal,$value['value'],$$nameFieldVal);
+                                
+                                break;
+                            
+                        }
+                        
+                        $block->addContent($nameField,$$sNameFieldVar);
+                        
+                    }
+                    // Search
+                    
+                    $block->addContent('show','--','tb-30 text-center');
+                    $block->addContent('edit','--','tb-30 text-center');
+                    $block->addContent('delete','--','tb-30 text-center');
+                    
+                    // end Seach
+                    
+                    if (empty($cAll)) {
+
+                        foreach($isFieldArraySearchType as $nameField => $value) {
+                            $block->addContent($nameField,'' );
+                        }
+                        $block->addContent('show','','text-center');
+                        $block->addContent('edit','','text-center');
+                        $block->addContent('delete','','text-center');
+                        
+                    }
+                    
+                    include CONFIG.'modules.php';
+
                     for($i=0;$i<$cAll;$i++) {
-                        
-                        
-                        $lgGroupe = unserialize($all[$i]['groupe_traduction']);
-                        $idTraduction = $lgGroupe[$lgActuel];
-                        
-                        $isContentTraduction = $this->doorGets->dbQS($idTraduction,'_modules_traduction');
                         
                         $cResultsComInt = '';
                         $cResultsContentsInt = '';
                         $cResultsCatInt = '';
                         $cResultsRub = '-';
                         $idRub = 0;
-                        
+                        $urlActive = '<i class="fa fa-ban fa-lg red-c"></i>';
+
                         if (
                             $all[$i]['type'] !== 'page'  
                             && $all[$i]['type'] !== 'inbox'
                             && $all[$i]['type'] !== 'block'
-                            && $all[$i]['type'] !== 'link' 
+                            && $all[$i]['type'] !== 'carousel'
+                            && $all[$i]['type'] !== 'survey'
+                            && $all[$i]['type'] !== 'link'
+                            && $all[$i]['type'] !== 'onepage' 
                        ) {
                             
                             $iComments = $this->doorGets->dbQ("SELECT COUNT(*) as counter FROM _dg_comments WHERE uri_module = '".$all[$i]['uri']."' ");
@@ -347,20 +649,19 @@ class ModulesView extends doorGetsUserView{
                             $iCat = $this->doorGets->dbQ("SELECT COUNT(*) as counters FROM _categories WHERE uri_module = '".$all[$i]['uri']."' ");
                             $cResultsCatInt = (int)$iCat[0]['counters'];
                             
-                            $aRubrique = $this->doorGets->dbQS($all[$i]['id'],'_rubrique','idModule');
-                            
+                            $aRubrique = $this->doorGets->dbQS($all[$i]['id_module'],'_rubrique','idModule');
                             if (!empty($aRubrique)) {
-                                $cResultsRub = $aRubrique['name'];
+                                $cResultsRub = $aRubrique['name'].' <i class="fa fa-sort"></i> '.$aRubrique['ordre'];
                                 $idRub = $aRubrique['id'];
                             }
                             
                         }
                         
-                        if ($all[$i]['type'] === 'page' || $all[$i]['type'] === 'link' || $all[$i]['type'] === 'block' || $all[$i]['type'] === 'genform' ) {
+                        if ($all[$i]['type'] === 'page' || $all[$i]['type'] === 'onepage' || $all[$i]['type'] === 'link' || $all[$i]['type'] === 'block' || $all[$i]['type'] === 'genform' || $all[$i]['type'] === 'carousel' || $all[$i]['type'] === 'survey' ) {
                             
-                            $aRubrique = $this->doorGets->dbQS($all[$i]['id'],'_rubrique','idModule');
+                            $aRubrique = $this->doorGets->dbQS($all[$i]['id_module'],'_rubrique','idModule');
                             if (!empty($aRubrique)) {
-                                $cResultsRub = $aRubrique['name'];
+                                $cResultsRub = $aRubrique['name'].' <i class="fa fa-sort"></i> '.$aRubrique['ordre'];
                                 $idRub = $aRubrique['id'];
                             }
                             
@@ -372,9 +673,9 @@ class ModulesView extends doorGetsUserView{
                             $iContents = $this->doorGets->dbQ("SELECT COUNT(*) as counters FROM _dg_inbox WHERE uri_module = '".$all[$i]['uri']."'  ");
                             $cResultsContentsInt = (int)$iContents[0]['counters'];
                             
-                            $aRubrique = $this->doorGets->dbQS($all[$i]['id'],'_rubrique','idModule');
+                            $aRubrique = $this->doorGets->dbQS($all[$i]['id_module'],'_rubrique','idModule');
                             if (!empty($aRubrique)) {
-                                $cResultsRub = $aRubrique['name'];
+                                $cResultsRub = $aRubrique['name'].' <i class="fa fa-sort"></i> '.$aRubrique['ordre'];
                                 $idRub = $aRubrique['id'];
                             }
                             
@@ -389,166 +690,75 @@ class ModulesView extends doorGetsUserView{
                             
                         }
                         
-                        $imgRubrique = '<img src="'.BASE_IMG.'list-rubrique.png" class="px20 doorgets-img-ico" />';
+                        $imgRubrique = '<i class="fa fa-list"></i>';
                         
-                        $ImageStatut = BASE_IMG.'puce-orange.png';
-                        if ($all[$i]['active'] == '1' AND $cResultsRub !== '-')
-                        {
-                            
-                            $ImageStatut = BASE_IMG.'puce-verte.png';
-                            
-                        }elseif ($all[$i]['active'] == '0') {
-                            
-                            $ImageStatut = BASE_IMG.'puce-rouge.png';
-                            
-                        }
-                        
-                        
-                        $imageIcone = BASE_IMG.'ico_module.png';
 
+                        $imageIcone = BASE_IMG.'ico_module.png';
                         if (array_key_exists($all[$i]['type'],$listeInfos)) {$imageIcone = $listeInfos[$all[$i]['type']]['image'];}
+                        $urlImage = '<img src="'.$imageIcone.'" class="px36"> ';
+                            
+                        $urlGerer   = '<a title="'.$this->doorGets->__('Afficher').'" href="./?controller=module'.$all[$i]['type'].'&uri='.$all[$i]['uri'].'&lg='.$lgActuel.'"><b class="glyphicon glyphicon-pencil green-font" ></b></a>';
+                        $urlDelete  = '<a title="'.$this->doorGets->__('Supprimer').'" href="./?controller=modules&action=delete&id='.$all[$i]['id_module'].'&lg='.$lgActuel.'"><b class="glyphicon glyphicon-remove red"></b></a>';
+                        $urlEdit    = '<a title="'.$this->doorGets->__('Modifier').'" href="./?controller=modules&action=edit'.$all[$i]['type'].'&id='.$all[$i]['id_module'].'&lg='.$lgActuel.'"><b class="glyphicon glyphicon-cog" ></b></a>';
                         
-                        if ($all[$i]['type'] === 'block' || $all[$i]['type'] === 'genform') { $ImageStatut = BASE_IMG.'puce-verte.png'; }
-                        
-                        if (!empty($isContentTraduction)) {
-                            
-                            $tGerer = $this->doorGets->__("Gérer le contenu du module").' '.$all[$i]['uri'];
-                            $tEditer = $this->doorGets->__("Paramètres du module").' '.$all[$i]['uri'];
-                            $tDel = $this->doorGets->__("Supprimer le module").' '.$all[$i]['uri'];
-                            
-                            $urlGerer = '<a title="'.$tGerer.'" href="./?controller=module'.$all[$i]['type'].'&uri='.$all[$i]['uri'].'&lg='.$lgActuel.'"><b class="glyphicon glyphicon-pencil green-font"></b>';
-                            $urlEditer = '<a title="'.$tEditer.'" href="./?controller=modules&action=edit'.$all[$i]['type'].'&id='.$all[$i]['id'].'&lg='.$lgActuel.'"><b class="glyphicon glyphicon-cog"></b>';
-                            $urlSupprimer = '<a title="'.$tDel.'" href="./?controller=modules&action=delete&id='.$all[$i]['id'].'&lg='.$lgActuel.'"><b class="glyphicon glyphicon-remove red"></b></a>';
-                            
-                            $urlImage = '<a title="'.$tGerer.'"  href="./?controller=module'.$all[$i]['type'].'&uri='.$all[$i]['uri'].'&lg='.$lgActuel.'" title="'.ucfirst($isContentTraduction['nom']).'" ><img src="'.$imageIcone.'" class="px36" alt="'.ucfirst($isContentTraduction['nom']).'" ></a>';
-                            $urlTitre = '<a title="'.$tGerer.'"  href="./?controller=module'.$all[$i]['type'].'&uri='.$all[$i]['uri'].'&lg='.$lgActuel.'" style="font-size:12pt;padding:8px;"  >'.$imgFirst.'<b> '.ucfirst($isContentTraduction['titre']).'</b>';
-                            if ($all[$i]['type'] === 'inbox') {
-                                $urlImage = '<a title="'.$tGerer.'"  href="./?controller='.$all[$i]['type'].'&q_uri_module='.$all[$i]['uri'].'" title="'.ucfirst($isContentTraduction['nom']).'" ><img src="'.$imageIcone.'" class="px36" ></a>';
-                                $urlTitre = '<a title="'.$tGerer.'"  href="./?controller='.$all[$i]['type'].'&q_uri_module='.$all[$i]['uri'].'" style="font-size:12pt;padding:8px;"  >'.$imgFirst.' <b>'.ucfirst($isContentTraduction['titre']).'</b>';
-                                $urlGerer = '<a title="'.$tGerer.'"  href="./?controller='.$all[$i]['type'].'&q_uri_module='.$all[$i]['uri'].'"><b class="glyphicon glyphicon-pencil green-font"></b>';
-                            
-                            }
-                            $urlStatut = '<img src="'.$ImageStatut.'" style="vertical-align: middle;" >';
-                            $urlType = '<em>'.$all[$i]['type'].'</em>';
-                            $urlName = '<small><em>'.$all[$i]['uri'].'</em></small>';
-                            
-                            $urlRubrique = '<a class="size12" href="./?controller=rubriques&action=edit&id='.$idRub.'">'.$imgRubrique.' '.$cResultsRub.'</a>';
-                            if ($cResultsRub === '-') { $urlRubrique = ''; }
-                            
-                            if (!empty($cResultsContentsInt)) {
-                                $urlTitre = $urlTitre.' '.'<span class="badge right">'.$cResultsContentsInt.'</span>';
-                            }
-                            
-                            $block->addContent('statut',$urlStatut,'tb-30');
-                            $block->addContent('image',$urlImage,'tb-30');
-                            $block->addContent('titre',$urlTitre);
-                            $block->addContent('rubrique',$urlRubrique,'tb-250 ');
-                            $block->addContent('gerer',$urlGerer,'tb-30');
-                            $block->addContent('editer',$urlEditer,'tb-30');
-                            $block->addContent('supprimer',$urlSupprimer,'tb-30');
-                            
-                            
-                            
+                        if ($all[$i]['active'] === '1') {
+                            $urlActive ='<i class="fa fa-check fa-lg green-c"></i>'; 
                         }
-                        
-                    }
-                    
-                    // Modules  blocks, genforms
-                    
-                    $nbStringCount = '';
-                    $per = 300;
-                    $ini = 0;
-                    
-                    $cResultsInt = $this->doorGets->getCountTable('_modules',array()," WHERE type = 'block' OR type = 'genform' ");
-                    
-                    $sqlLimit = " WHERE type = 'block' OR type = 'genform' ORDER BY type  LIMIT ".$ini.",".$per;
-                    
-                    $allWidgets = $this->doorGets->dbQA('_modules',$sqlLimit);
-                    foreach ($allWidgets as $key => $value) {
-                        if (!array_key_exists($value['id'], $modulesBlocks) && !array_key_exists($value['id'], $modulesGenforms)) {
-                            unset($allWidgets[$key]);
-                        }
-                    }
-                    sort($allWidgets);
-                    $callWidgets = count($allWidgets);
-                    if ($callWidgets > 4) {
-                        $nbStringCount = $cResultsInt.' '.$this->doorGets->__('Modules');
-                    }
-                    
-                    $blockWidgets = new BlockTable();
-                    
-                    $blockWidgets->setClassCss('doorgets-listing');
-                    
-                    $blockWidgets->addTitle('','statut','td-title');
-                    $blockWidgets->addTitle('','image','td-title');
-                    $blockWidgets->addTitle('','titre','first-title td-title left');
-                    //$blockWidgets->addTitle('','rubrique','td-title');
-                    $blockWidgets->addTitle('','gerer','td-title');
-                    $blockWidgets->addTitle('','editer','td-title');
-                    $blockWidgets->addTitle('','supprimer','td-title');
-                    
-                    $isHomePageIn = '';
-                    
-                    for($i=0;$i<$callWidgets;$i++) {
-                        
-                        $lgGroupe = unserialize($allWidgets[$i]['groupe_traduction']);
-                        $idTraduction = $lgGroupe[$lgActuel];
-                        
-                        $isContentTraduction = $this->doorGets->dbQS($idTraduction,'_modules_traduction');
-                        
-                        $cResultsComInt = '';
-                        $cResultsContentsInt = '';
-                        $cResultsCatInt = '';
-                        $cResultsRub = '-';
-                        $idRub = 0;
-                        
-                        
-                        $imageIcone = BASE_IMG.'ico_module.png';
-                        if (array_key_exists($allWidgets[$i]['type'],$listeInfos)) {$imageIcone = $listeInfos[$allWidgets[$i]['type']]['image'];}
-                        
 
-                        if (!empty($isContentTraduction)) {
-                            
-                            $tGerer = $this->doorGets->__("Gérer le contenu du module").' '.$allWidgets[$i]['uri'];
-                            $tEditer = $this->doorGets->__("Paramètres du module").' '.$allWidgets[$i]['uri'];
-                            $tDel = $this->doorGets->__("Supprimer le module").' '.$allWidgets[$i]['uri'];
-                            
-                            $urlGerer = '<a title="'.$tGerer.'" href="./?controller=module'.$allWidgets[$i]['type'].'&uri='.$allWidgets[$i]['uri'].'&lg='.$lgActuel.'"><b class="glyphicon glyphicon-pencil green-font"></b>';
-                            $urlEditer = '<a title="'.$tEditer.'" href="./?controller=modules&action=edit'.$allWidgets[$i]['type'].'&id='.$allWidgets[$i]['id'].'&lg='.$lgActuel.'"><b class="glyphicon glyphicon-cog"></b>';
-                            $urlSupprimer = '<a title="'.$tDel.'" href="./?controller=modules&action=delete&id='.$allWidgets[$i]['id'].'&lg='.$lgActuel.'"><b class="glyphicon glyphicon-remove red"></b></a>';
-                            
-                            $urlImage = '<a title="'.$tGerer.'"  href="./?controller=module'.$allWidgets[$i]['type'].'&uri='.$allWidgets[$i]['uri'].'&lg='.$lgActuel.'" title="'.ucfirst($isContentTraduction['nom']).'" ><img src="'.$imageIcone.'" class="px36" alt="'.ucfirst($isContentTraduction['nom']).'" ></a>';
-                            $urlTitre = '<a title="'.$tGerer.'"  href="./?controller=module'.$allWidgets[$i]['type'].'&uri='.$allWidgets[$i]['uri'].'&lg='.$lgActuel.'" style="font-size:12pt;padding:8px;"  ><b> '.ucfirst($isContentTraduction['titre']).'</b>';
-                            
-                            $urlStatut = '';
-                            $urlType = '<em>'.$allWidgets[$i]['type'].'</em>';
-                            $urlName = '<small><em>'.$allWidgets[$i]['uri'].'</em></small>';
-                            
-                            $urlRubrique = '<a href="./?controller=rubriques&action=edit&id='.$idRub.'">'.$cResultsRub.'</a>';
-                            if ($cResultsRub === '-') { $urlRubrique = ''; }
-                            
-                            if (!empty($cResultsContentsInt)) {
-                                $urlTitre = $urlTitre.' '.'<span class="badge right">'.$cResultsContentsInt.'</span>';
-                            }
-                            
-                            $blockWidgets->addContent('statut',$urlStatut,'tb-30');
-                            $blockWidgets->addContent('image',$urlImage,'tb-30');
-                            $blockWidgets->addContent('titre',$urlTitre);
-                            //$blockWidgets->addContent('rubrique',$urlRubrique,'nb-link ');
-                            $blockWidgets->addContent('gerer',$urlGerer,'tb-30');
-                            $blockWidgets->addContent('editer',$urlEditer,'tb-30');
-                            $blockWidgets->addContent('supprimer',$urlSupprimer,'tb-30');
-                            
-                            
-                            
+                        $tGerer = $this->doorGets->__("Gérer le contenu du module").' '.$all[$i]['uri'];
+                        $tEditer = $this->doorGets->__("Paramètres du module").' '.$all[$i]['uri'];
+                        $tDel = $this->doorGets->__("Supprimer le module").' '.$all[$i]['uri'];
+                        
+                        $urlGerer = '<a title="'.$tGerer.'" href="./?controller=module'.$all[$i]['type'].'&uri='.$all[$i]['uri'].'&lg='.$lgActuel.'"><b class="glyphicon glyphicon-pencil green-font"></b></a>';
+                        $urlEditer = '<a title="'.$tEditer.'" href="./?controller=modules&action=edit'.$all[$i]['type'].'&id='.$all[$i]['id_module'].'&lg='.$lgActuel.'"><b class="glyphicon glyphicon-cog"></b></a>';
+                        $urlSupprimer = '<a title="'.$tDel.'" href="./?controller=modules&action=delete&id='.$all[$i]['id_module'].'&lg='.$lgActuel.'"><b class="glyphicon glyphicon-remove red"></b></a>';
+                        
+                        $urlImage = '<img src="'.$imageIcone.'" class="px36" alt="'.ucfirst($all[$i]['nom']).'" > ';
+                        $urlTitre = $imgFirst.ucfirst($all[$i]['titre']);
+                        if ($all[$i]['type'] === 'inbox') {
+                            $urlImage = '<img src="'.$imageIcone.'" class="px36" >';
+                            $urlTitre = $imgFirst.' '.ucfirst($all[$i]['titre']).'';
+                            $urlGerer = '<a title="'.$tGerer.'"  href="./?controller='.$all[$i]['type'].'&q_uri_module='.$all[$i]['uri'].'"><b class="glyphicon glyphicon-pencil green-font"></b></a>';
+                        
+                        }
+
+                        $urlType = '<em>'.$all[$i]['type'].'</em>';
+                        $urlName = '<small><em>'.$all[$i]['uri'].'</em></small>';
+                        
+                        $urlRubrique = '<a class="size12" href="./?controller=rubriques&action=edit&id='.$idRub.'">'.$imgRubrique.' '.$cResultsRub.'</a>';
+                        if ($cResultsRub === '-') { $urlRubrique = ''; } 
+                        $all[$i]["uri"] = ' <span class="pull-right">'.$urlRubrique.'</span>'.$all[$i]["uri"];
+                        if (!empty($cResultsContentsInt)) {
+                            $cResultsContentsInt = number_format($cResultsContentsInt,0,',',' ');
+                            $urlTitre = $urlTitre.' '.'<span class="badge right">'.$cResultsContentsInt.'</span>';
                         }
                         
+                        $block->addContent('active',$urlActive,'tb-30 text-center');
+                        $block->addContent('titre',$urlImage.$urlTitre);
+                        $block->addContent('uri',$all[$i]["uri"]);
+                        $block->addContent('type',$all[$i]["type"],'tb-70 text-center');
+                        $block->addContent('show',$urlGerer,'text-center');
+                        $block->addContent('edit',$urlEdit,'text-center');
+                        $block->addContent('delete',$urlDelete,'text-center');
+                        // $block->addContent('image',$urlImage,'tb-30');
+                        // $block->addContent('titre',$urlTitre);
+                        // $block->addContent('rubrique',$urlRubrique,'tb-250 ');
+                        // $block->addContent('gerer',$urlGerer,'tb-30');
+                        // $block->addContent('editer',$urlEditer,'tb-30');
+                        // $block->addContent('supprimer',$urlSupprimer,'tb-30');
+                        
                     }
+                    
+                    
+                    /**********
+                     *
+                     *  End block creation for listing fields
+                     * 
+                     */
                     
                     break;
                 
             }
-            
             $ActionFile = 'user/modules/'.$_type.$__uri.'user_modules_'.$this->Action;
             $tpl = Template::getView($ActionFile);  ob_start();if (is_file($tpl)) { include $tpl; } $out = $tpl; $out = ob_get_clean();
             

@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 20, February 2014
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2013 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -82,18 +82,18 @@
 </div>
 <div class="text-center ">
     
-    <a href="?controller=authentification" class="btn btn-lg btn-link"><b class="glyphicon glyphicon-user"></b> [{!$this->doorGets->__("Se connecter")!}]</a>
+    <a href="?controller=authentification" class="btn btn-lg btn-link "><b class="glyphicon glyphicon-user"></b> [{!$this->doorGets->__("Se connecter")!}]</a>
     [{?($countGroupes > 0):}]
         <br />
         [{?($countGroupes === 1):}]
-            <a href="?controller=authentification&action=register" class="btn btn-lg btn-link"><b class="glyphicon glyphicon-star"></b> [{!$this->doorGets->__("S'inscrire")!}]</a>
+            <a href="?controller=authentification&action=register" class="btn btn-lg btn-link "><b class="glyphicon glyphicon-star"></b> [{!$this->doorGets->__("S'inscrire")!}]</a>
         [??]
             [{/($groupes as $id => $groupe):}]
-                <a href="?controller=authentification&action=register&groupe=[{!$groupe['uri']!}]" class="btn btn-lg btn-link"><b class="glyphicon glyphicon-star"></b> [{!$this->doorGets->__("S'inscrire en tant que")!}] [{!$groupe['title']!}]</a>
+                <a href="?controller=authentification&action=register&groupe=[{!$groupe['uri']!}]" class="btn btn-lg btn-link "><b class="glyphicon glyphicon-star"></b> [{!$this->doorGets->__("S'inscrire en tant que")!}] [{!$groupe['title']!}]</a>
                 <br />
             [/]
         [?]
     [?]
     <br />
-    <a href="[{!URL!}][{?(count($this->doorGets->allLanguagesWebsite > 1)):}][{!'t/'.$this->doorGets->myLanguage.'/'!}][?]" class="btn btn-lg btn-link"><b class="glyphicon glyphicon-home"></b> [{!$this->doorGets->__('Accéder au site')!}]</a>
+    <a href="[{!URL!}][{?(count($this->doorGets->allLanguagesWebsite > 1)):}][{!'t/'.$this->doorGets->myLanguage.'/'!}][?]" class="btn btn-lg btn-link "><b class="glyphicon glyphicon-home"></b> [{!$this->doorGets->__('Accéder au site')!}]</a>
 </div>

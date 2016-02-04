@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -42,8 +42,8 @@
 ?>
 <!-- doorGets:start:widgets/search -->
 <div class="doorGets-module-search">
-    [{!$form->open('get','','','')!}]
-    [{!$form->inputt('',$this->getModule(),'hidden',1)!}]
+    [{!$form->open('get','','','',false)!}]
+    [{!$form->inputt('',$this->getModule(),'hidden','')!}]
     [{!$form->inputt($this->__('Recherche'),'q','text',$q)!}]
     [{!$form->close()!}]
 </div>

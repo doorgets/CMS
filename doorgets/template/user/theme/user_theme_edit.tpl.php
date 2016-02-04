@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -31,7 +31,7 @@
 ******************************************************************************
 ******************************************************************************/
 
-
+$theme_bootstrap = $this->doorGets->configWeb['theme_bootstrap'];
 ?>
 <div class="doorGets-rubrique-center">
     <div class="doorGets-rubrique-center-content">
@@ -39,7 +39,13 @@
         </div>
 
         <legend>
-            <span class="create" ><a class="doorGets-comebackform" href="?controller=theme"><img src="[{!BASE_IMG!}]retour.png" class="Retour-img"> [{!$this->doorGets->__('Retour')!}]</a></span>
+            <span class="create" ><a class="doorGets-comebackform" href="?controller=theme"><i class="fa fa-undo fa-lg green-c"></i> [{!$this->doorGets->__('Retour')!}]</a></span>
+            <span class="create" >
+                [{!$this->doorGets->Form['download']->open('post')!}]
+                [{!$this->doorGets->Form['download']->input('','hidden','hidden','hidden')!}]
+                [{!$this->doorGets->Form['download']->submit($this->doorGets->__("Télécharger ce thème"),'','btn no-loader')!}]
+                [{!$this->doorGets->Form['download']->close()!}]
+            </span>
             <b class="glyphicon glyphicon-tint"></b> <a href="?controller=theme">[{!$this->doorGets->__('Thème')!}] </a> / [{!$theme!}] 
             [{?($nameTheme === $theme):}]<div class="right-theme-title "><img src="[{!BASE_IMG.'activer.png'!}]"  /> <small>[{!$this->doorGets->__('Thème par défaut')!}]</small></div>[?]
         </legend>
@@ -87,14 +93,29 @@
             </div>
             <div class="col-md-12">
                 <div class="u-title"><label>[{!$this->doorGets->__('Fichier')!}] &#187; [{!$fileSelected!}]</label></div>
-                [{!$this->doorGets->Form->open('post')!}]
-                [{!$this->doorGets->Form->textarea('','content_nofi',$fileContent)!}]
+                [{!$this->doorGets->Form['edit']->open('post')!}]
+                <textarea id="theme_content_nofi" name="theme_content_nofi">[{!$fileContent!}]</textarea>
+                <div class="separateur-tb"></div>
+                [{!$this->doorGets->Form['edit']->select($this->doorGets->__("Version de bootstrap"),'bootstrap_version',Constant::$bootstrapThemes,$theme_bootstrap)!}]
                 <div class="separateur-tb"></div>
                 <div class="text-center">
-                    [{!$this->doorGets->Form->submit($this->doorGets->__("Sauvegarder"))!}]
+                    <img id="img-bootstap-theme-used" src="[{!BASE_IMG.'bootstrap_'.$theme_bootstrap!}].png">
                 </div>
-                [{!$this->doorGets->Form->close()!}]
+                <div class="separateur-tb"></div>
+                <div class="text-center">
+                    [{!$this->doorGets->Form['edit']->submit($this->doorGets->__("Sauvegarder"))!}]
+                </div>
+                [{!$this->doorGets->Form['edit']->close()!}]
             </div>
         </div>
     </div>
 </div>
+<script type="text/javascript">
+    window.addEventListener('load',function(){
+        $("#edit_theme_bootstrap_version").on('change',function(){
+            var newBootstap = $(this).val();
+            var newUrlBoostrap = "[{!BASE_IMG!}]bootstrap_"+newBootstap+".png"
+            $("#img-bootstap-theme-used").attr('src',newUrlBoostrap);
+        })
+    });
+</script>

@@ -2,7 +2,7 @@
 
 /*******************************************************************************
 /*******************************************************************************
-    doorGets 7.0 - 31, August 2015
+    doorGets 7.0 - 01, February 2016
     doorGets it's free PHP Open Source CMS PHP & MySQL
     Copyright (C) 2012 - 2015 By Mounir R'Quiba -> Crazy PHP Lover
     
@@ -39,7 +39,7 @@
 
         </div>
         <legend>
-            <span class="create" ><a class="doorGets-comebackform" href="?controller=media"><img src="[{!BASE_IMG!}]retour.png" class="Retour-img"> [{!$this->doorGets->__('Retour')!}]</a></span>
+            <span class="create" ><a class="doorGets-comebackform" href="?controller=media"><i class="fa fa-undo fa-lg green-c"></i> [{!$this->doorGets->__('Retour')!}]</a></span>
             <b class="glyphicon violet glyphicon-folder-open"></b> <a href="?controller=media">[{!$this->doorGets->__('Media')!}]</a> 
              / [{!$this->doorGets->__('Ajouter un fichier')!}] 
         </legend>
