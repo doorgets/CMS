@@ -280,14 +280,6 @@ class ConfigurationRequest extends doorGetsUserRequest{
                         }
                     }
                     
-                    if (array_key_exists('id_disqus',$this->doorGets->Form->i)) {
-                        $this->doorGets->Form->i['id_disqus'] = $this->doorGets->configWeb['id_disqus'];
-                    }
-
-                    if (array_key_exists('id_facebook',$this->doorGets->Form->i)) {
-                        $this->doorGets->Form->i['id_facebook'] = $this->doorGets->configWeb['id_facebook'];
-                    }
-
                     if (empty($this->doorGets->Form->e)) {
                         
                         $dDefault['statut']      = $this->doorGets->Form->i['statut'];
