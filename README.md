@@ -3,6 +3,7 @@ CMS PHP doorGets offers a free, fully scalable, Open-source CMS PHP Website solu
 
 #Demo
 http://www.doorgets.com/demo
+http://www.doorgets.com/demo/dg-user
 
 #Installer
 https://sourceforge.net/projects/doorgets-cms/files/latest/download?source=directory
