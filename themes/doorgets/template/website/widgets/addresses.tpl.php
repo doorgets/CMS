@@ -65,13 +65,13 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div id="addressGmap-[{!$k!}]" class="gmap3"></div>
+                        <div id="addressGmap-[{!$k!}]" class="gmap3 img-responcive"></div>
                     </div>
                 [??]
                     <div class="col-md-6">
-                        <div id="addressGmap-[{!$k!}]" class="gmap3"></div>
+                        <div id="addressGmap-[{!$k!}]" class="gmap3 img-responcive"></div>
                     </div>
-                    <div class="col-md-6 text-left">
+                    <div class="col-md-6 text-center">
                         <div class="address-localisation-box">
                         <h3>[{!$_address['title']!}]</h3>
                         [{!$_address['address']!}]<br />

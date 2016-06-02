@@ -2541,6 +2541,7 @@ class ModulesRequest extends doorGetsUserRequest{
                 }
             break;
             
+            case 'editonepage':
             case 'editpage': 
           
                 $Form = $this->doorGets->Form->i;

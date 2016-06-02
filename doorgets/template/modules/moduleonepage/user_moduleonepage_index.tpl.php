@@ -44,7 +44,7 @@
     <div class="doorGets-rubrique-center-content">
         <legend>
             <span class="create" ><a class="doorGets-comebackform" href="?controller=modules"><img src="[{!BASE_IMG!}]retour.png" class="retour-img"> [{!$this->doorGets->__('Retour')!}]</a></span>
-            <span class="create" ><a  href="?controller=modules&action=editblock&id=[{!$moduleInfos['id']!}]&lg=[{!$lgActuel!}]"><b class="glyphicon glyphicon-cog"></b> [{!$this->doorGets->__('Paramètres')!}]</a></span>
+            <span class="create" ><a  href="?controller=modules&action=editonepage&id=[{!$moduleInfos['id']!}]&lg=[{!$lgActuel!}]"><b class="glyphicon glyphicon-cog"></b> [{!$this->doorGets->__('Paramètres')!}]</a></span>
             <span class="create">[{!$this->doorGets->genLangueMenuAdmin()!}]</span>
             <img src="[{!BASE_IMG.'mod_onepage.png'!}]" title="[{!$this->doorGets->__("Onepage")!}]" class="doorGets-img-ico px25" />
             [{!$moduleInfos['titre']!}]

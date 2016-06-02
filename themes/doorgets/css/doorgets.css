@@ -18,7 +18,7 @@ body.mce-content-body {padding: 20px;}
 .featurette-divider{margin:80px 0}
 .featurette-heading{font-weight:300;line-height:1;letter-spacing:-1px}
 footer{text-align:center;padding-bottom:20px}
-.gmap3{ margin: 20px auto;border: 1px dashed #C0C0C0;width: 500px;height: 250px;}
+.gmap3{ margin: 20px auto;border: 1px dashed #C0C0C0;width: auto;height: 250px;}
 .address-localisation {border-radius: 0;}
 .address-localisation-box {font-size: 18pt;margin-top:30px;}
 .address-localisation-box small{font-size: 12pt;margin-top:10px;}
@@ -149,7 +149,7 @@ input.sum{width:40px}
 .navbar-wrapper{margin-top:20px}
 .navbar-wrapper .navbar{border-radius:4px}
 }
-.navbar .container .navbar-brand {margin-left: 14px;margin-top: 19px;font-weight: 700;	}
+.navbar .container .navbar-brand {margin-left: 14px;margin-top: 14px;font-weight: 700;	}
 .menu-level-0{color:#90c;}
 .menu-level-1{margin-left:20px;}
 .menu-level-2{margin-left:40px;}
@@ -264,3 +264,15 @@ pre {
     font-family: Consolas,"Courrier New",Courrier,monospace;
 }
 .owl-item img {width: 90%;}
+
+.modal-dialog { 
+  z-index: 1045; 
+}
+
+@media (max-width: 768px) {
+  .navbar .container .navbar-brand {
+    margin-left: 11px;
+    margin-top: 13px;
+    font-weight: 700;
+  }
+}

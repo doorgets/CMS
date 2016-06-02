@@ -96,7 +96,6 @@
       <a href="http://www.doorgets.com" title="http://www.doorgets.com" target="blank" rel="nofollow">
           [{!$this->__('Propulsé avec')!}] doorGets ™
       </a>
-      [{!$this->getHtmlChangeTemplate()!}]
   </footer>
 </div>
 [{!$this->getHtmlAnalytics()!}]
